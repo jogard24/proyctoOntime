@@ -1,0 +1,143 @@
+-- Base de datos para Sistema de Control de Acceso
+CREATE DATABASE IF NOT EXISTS control_acceso;
+USE control_acceso;
+
+-- Tabla de roles
+CREATE TABLE roles (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    nombre VARCHAR(50) NOT NULL UNIQUE,
+    descripcion TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Tabla de usuarios/empleados
+CREATE TABLE usuarios (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    nombre VARCHAR(100) NOT NULL,
+    apellido VARCHAR(100) NOT NULL,
+    email VARCHAR(150) UNIQUE NOT NULL,
+    telefono VARCHAR(20),
+    documento VARCHAR(20) UNIQUE NOT NULL,
+    cargo VARCHAR(100),
+    departamento VARCHAR(100),
+    rol_id INT DEFAULT 2,
+    password_hash VARCHAR(255), -- Para acceso administrativo
+    huella_template LONGTEXT, -- Template de huella dactilar
+    tarjeta_rfid VARCHAR(50) UNIQUE, -- ID de tarjeta RFID
+    foto_url VARCHAR(255), -- Para reconocimiento facial
+    activo BOOLEAN DEFAULT TRUE,
+    fecha_ingreso DATE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (rol_id) REFERENCES roles(id)
+);
+
+-- Tabla de dispositivos biométricos
+CREATE TABLE dispositivos (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    nombre VARCHAR(100) NOT NULL,
+    tipo ENUM('huella', 'facial', 'rfid', 'manual') NOT NULL,
+    ubicacion VARCHAR(150) NOT NULL,
+    direccion_ip VARCHAR(45),
+    puerto INT,
+    activo BOOLEAN DEFAULT TRUE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Tabla de registros de acceso
+CREATE TABLE accesos (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    usuario_id INT NOT NULL,
+    dispositivo_id INT,
+    tipo_acceso ENUM('entrada', 'salida') NOT NULL,
+    metodo_verificacion ENUM('huella', 'facial', 'rfid', 'manual', 'app_movil') NOT NULL,
+    fecha_hora TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    exitoso BOOLEAN DEFAULT TRUE,
+    observaciones TEXT,
+    direccion_ip VARCHAR(45),
+    latitud DECIMAL(10, 8), -- Para acceso móvil con GPS
+    longitud DECIMAL(11, 8),
+    FOREIGN KEY (usuario_id) REFERENCES usuarios(id),
+    FOREIGN KEY (dispositivo_id) REFERENCES dispositivos(id),
+    INDEX idx_usuario_fecha (usuario_id, fecha_hora),
+    INDEX idx_fecha_hora (fecha_hora)
+);
+
+-- Tabla de horarios laborales
+CREATE TABLE horarios (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    usuario_id INT NOT NULL,
+    dia_semana TINYINT NOT NULL, -- 1=Lunes, 7=Domingo
+    hora_entrada TIME NOT NULL,
+    hora_salida TIME NOT NULL,
+    activo BOOLEAN DEFAULT TRUE,
+    FOREIGN KEY (usuario_id) REFERENCES usuarios(id),
+    UNIQUE KEY unique_usuario_dia (usuario_id, dia_semana)
+);
+
+-- Tabla de permisos especiales
+CREATE TABLE permisos_especiales (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    usuario_id INT NOT NULL,
+    tipo ENUM('vacaciones', 'permiso', 'licencia_medica', 'viaje_trabajo') NOT NULL,
+    fecha_inicio DATE NOT NULL,
+    fecha_fin DATE NOT NULL,
+    descripcion TEXT,
+    aprobado_por INT,
+    estado ENUM('pendiente', 'aprobado', 'rechazado') DEFAULT 'pendiente',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (usuario_id) REFERENCES usuarios(id),
+    FOREIGN KEY (aprobado_por) REFERENCES usuarios(id)
+);
+
+-- Tabla de configuración del sistema
+CREATE TABLE configuracion (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    clave VARCHAR(100) NOT NULL UNIQUE,
+    valor TEXT NOT NULL,
+    descripcion TEXT,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+-- Tabla de logs del sistema
+CREATE TABLE logs_sistema (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    usuario_id INT,
+    accion VARCHAR(255) NOT NULL,
+    tabla_afectada VARCHAR(100),
+    registro_id INT,
+    datos_anteriores JSON,
+    datos_nuevos JSON,
+    direccion_ip VARCHAR(45),
+    user_agent TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (usuario_id) REFERENCES usuarios(id),
+    INDEX idx_fecha (created_at),
+    INDEX idx_usuario (usuario_id)
+);
+
+-- Insertar datos iniciales
+INSERT INTO roles (nombre, descripcion) VALUES
+('super_admin', 'Administrador del sistema con todos los permisos'),
+('admin', 'Administrador con permisos de gestión'),
+('supervisor', 'Supervisor de área con permisos limitados'),
+('empleado', 'Empleado regular sin permisos administrativos');
+
+-- Usuario administrador por defecto
+INSERT INTO usuarios (nombre, apellido, email, documento, cargo, rol_id, password_hash) VALUES
+('Admin', 'Sistema', 'admin@empresa.com', '00000000', 'Administrador Sistema', 1, '$2b$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/LwjK3.2K8q9Z1k8sG');
+-- Contraseña: admin123 (hasheada con bcrypt)
+
+-- Dispositivo manual por defecto
+INSERT INTO dispositivos (nombre, tipo, ubicacion) VALUES
+('Registro Manual', 'manual', 'Sistema Web/Móvil');
+
+-- Configuraciones por defecto
+INSERT INTO configuracion (clave, valor, descripcion) VALUES
+('empresa_nombre', 'Mi Empresa S.A.S', 'Nombre de la empresa'),
+('horario_laboral_inicio', '08:00', 'Hora de inicio laboral por defecto'),
+('horario_laboral_fin', '17:00', 'Hora de fin laboral por defecto'),
+('tolerancia_entrada_minutos', '15', 'Minutos de tolerancia para entrada'),
+('tolerancia_salida_minutos', '15', 'Minutos de tolerancia para salida'),
+('biometria_habilitada', 'false', 'Indica si la biometría está habilitada'),
+('gps_obligatorio', 'false', 'Indica si el GPS es obligatorio para registro móvil');

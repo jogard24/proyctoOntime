@@ -1,0 +1,4 @@
+Empezar con el backend (API Python + MySQL)
+Crear la estructura web básica
+Definir la base de datos completa
+Mockup más detallado de una pantalla específica

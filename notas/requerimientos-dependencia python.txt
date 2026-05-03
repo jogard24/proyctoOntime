@@ -1,0 +1,38 @@
+# Framework web
+Flask==2.3.3
+Flask-CORS==4.0.0
+Flask-JWT-Extended==4.5.2
+
+# Base de datos
+PyMySQL==1.1.0
+SQLAlchemy==2.0.21
+Flask-SQLAlchemy==3.0.5
+
+# Validación y serialización
+marshmallow==3.20.1
+Flask-Marshmallow==0.15.0
+marshmallow-sqlalchemy==0.29.0
+
+# Seguridad
+bcrypt==4.0.1
+python-dotenv==1.0.0
+
+# Utilidades
+python-dateutil==2.8.2
+pytz==2023.3
+
+# Para desarrollo y testing
+pytest==7.4.2
+pytest-flask==1.2.0
+
+# Para producción (opcional)
+gunicorn==21.2.0
+supervisor==4.2.5
+
+# Para biometría (cuando esté listo)
+# opencv-python==4.8.1.78
+# numpy==1.24.3
+
+# Para reportes (cuando esté listo)
+# pandas==2.0.3
+# openpyxl==3.1.2

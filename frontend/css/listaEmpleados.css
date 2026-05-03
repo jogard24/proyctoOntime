@@ -1,0 +1,14 @@
+@import url(./../css/variablestyle.css);
+@import url(./../css/colorStyle.css);
+
+.tabla-empleados{
+    background-color: var(--blue);
+    width: 20px;
+    height: 20px;
+}
+
+.lista-empleados{
+    background-color: aqua;
+    width: 20px;
+    height: 20px;
+}

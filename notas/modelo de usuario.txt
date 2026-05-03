@@ -1,0 +1,37 @@
+from utils.database import db, BaseModel
+from werkzeug.security import generate_password_hash, check_password_hash
+from datetime import datetime
+
+class Rol(BaseModel):
+    """Modelo para roles de usuario"""
+    __tablename__ = 'roles'
+    
+    id = db.Column(db.Integer, primary_key=True)
+    nombre = db.Column(db.String(50), nullable=False, unique=True)
+    descripcion = db.Column(db.Text)
+    
+    # Relación con usuarios
+    usuarios = db.relationship('Usuario', backref='rol', lazy=True)
+    
+    def __repr__(self):
+        return f'<Rol {self.nombre}>'
+
+class Usuario(BaseModel):
+    """Modelo para usuarios del sistema"""
+    __tablename__ = 'usuarios'
+    
+    id = db.Column(db.Integer, primary_key=True)
+    nombre = db.Column(db.String(100), nullable=False)
+    apellido = db.Column(db.String(100), nullable=False)
+    email = db.Column(db.String(150), nullable=False, unique=True)
+    telefono = db.Column(db.String(20))
+    documento = db.Column(db.String(20), nullable=False, unique=True)
+    cargo = db.Column(db.String(100))
+    departamento = db.Column(db.String(100))
+    rol_id = db.Column(db.Integer, db.ForeignKey('roles.id'), default=2)
+    password_hash = db.Column(db.String(255))
+    huella_template = db.Column(db.Text)  # Template de huella dactilar
+    tarjeta_rfid = db.Column(db.String(50), unique=True)
+    foto_url = db.Column(db.String(255))
+    activo = db.Column(db.Boolean, default=True)
+    fecha_ingreso = db.Column(db.Date)

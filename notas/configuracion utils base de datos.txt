@@ -1,0 +1,132 @@
+from flask_sqlalchemy import SQLAlchemy
+from datetime import datetime
+import pytz
+
+# Instancia global de SQLAlchemy
+db = SQLAlchemy()
+
+def init_db():
+    """Inicializar la base de datos creando todas las tablas"""
+    from models.usuario import Usuario, Rol
+    from models.acceso import Acceso, Dispositivo
+    from models.configuracion import Configuracion
+    
+    # Crear todas las tablas
+    db.create_all()
+    
+    # Insertar datos iniciales si no existen
+    _insert_initial_data()
+
+def _insert_initial_data():
+    """Insertar datos iniciales en la base de datos"""
+    
+    # Crear roles si no existen
+    if not Rol.query.first():
+        roles = [
+            Rol(nombre='super_admin', descripcion='Administrador del sistema con todos los permisos'),
+            Rol(nombre='admin', descripcion='Administrador con permisos de gestión'),
+            Rol(nombre='supervisor', descripcion='Supervisor de área con permisos limitados'),
+            Rol(nombre='empleado', descripcion='Empleado regular sin permisos administrativos')
+        ]
+        
+        for rol in roles:
+            db.session.add(rol)
+    
+    # Crear usuario administrador por defecto si no existe
+    if not Usuario.query.filter_by(email='admin@empresa.com').first():
+        from werkzeug.security import generate_password_hash
+        
+        admin_role = Rol.query.filter_by(nombre='super_admin').first()
+        admin_user = Usuario(
+            nombre='Admin',
+            apellido='Sistema',
+            email='admin@empresa.com',
+            documento='00000000',
+            cargo='Administrador Sistema',
+            rol_id=admin_role.id if admin_role else 1,
+            password_hash=generate_password_hash('admin123')
+        )
+        db.session.add(admin_user)
+    
+    # Crear dispositivo manual por defecto
+    if not Dispositivo.query.first():
+        dispositivo_manual = Dispositivo(
+            nombre='Registro Manual',
+            tipo='manual',
+            ubicacion='Sistema Web/Móvil'
+        )
+        db.session.add(dispositivo_manual)
+    
+    # Crear configuraciones por defecto
+    configuraciones_default = [
+        ('empresa_nombre', 'Mi Empresa S.A.S', 'Nombre de la empresa'),
+        ('horario_laboral_inicio', '08:00', 'Hora de inicio laboral por defecto'),
+        ('horario_laboral_fin', '17:00', 'Hora de fin laboral por defecto'),
+        ('tolerancia_entrada_minutos', '15', 'Minutos de tolerancia para entrada'),
+        ('tolerancia_salida_minutos', '15', 'Minutos de tolerancia para salida'),
+        ('biometria_habilitada', 'false', 'Indica si la biometría está habilitada'),
+        ('gps_obligatorio', 'false', 'Indica si el GPS es obligatorio para registro móvil')
+    ]
+    
+    for clave, valor, descripcion in configuraciones_default:
+        if not Configuracion.query.filter_by(clave=clave).first():
+            config = Configuracion(clave=clave, valor=valor, descripcion=descripcion)
+            db.session.add(config)
+    
+    # Guardar todos los cambios
+    try:
+        db.session.commit()
+        print("✅ Datos iniciales insertados correctamente")
+    except Exception as e:
+        db.session.rollback()
+        print(f"❌ Error al insertar datos iniciales: {e}")
+
+def get_current_timestamp():
+    """Obtener timestamp actual en UTC"""
+    return datetime.now(pytz.UTC)
+
+def format_datetime(dt):
+    """Formatear datetime para respuestas JSON"""
+    if dt:
+        return dt.strftime('%Y-%m-%d %H:%M:%S')
+    return None
+
+class BaseModel(db.Model):
+    """Modelo base con campos comunes"""
+    __abstract__ = True
+    
+    created_at = db.Column(db.DateTime, default=get_current_timestamp)
+    updated_at = db.Column(db.DateTime, default=get_current_timestamp, onupdate=get_current_timestamp)
+    
+    def to_dict(self):
+        """Convertir modelo a diccionario"""
+        result = {}
+        for column in self.__table__.columns:
+            value = getattr(self, column.name)
+            if isinstance(value, datetime):
+                result[column.name] = format_datetime(value)
+            else:
+                result[column.name] = value
+        return result
+    
+    def save(self):
+        """Guardar el modelo en la base de datos"""
+        try:
+            db.session.add(self)
+            db.session.commit()
+            return True
+        except Exception as e:
+            db.session.rollback()
+            print(f"Error al guardar: {e}")
+            return False
+    
+    def delete(self):
+        """Eliminar el modelo de la base de datos"""
+        try:
+            db.session.delete(self)
+            db.session.commit()
+            return True
+        except Exception as e:
+            db.session.rollback()
+            print(f"Error al eliminar: {e}")
+            return False

@@ -1,0 +1,9 @@
+puntos a tener en cuenta
+como enviar pin de recuperación al correo o por mensaje de texto
+como se manejar el control de permisos
+sistema de nomina
+roles crear ingreso para admin , empleado , contador
+instalar servidor MySQL en la misma red o pc 
+sincronizar datos al estar modo online 
+visualizar movimientos
+el administrador debe justificar sus acciones 

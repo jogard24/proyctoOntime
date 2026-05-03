@@ -1,0 +1,145 @@
+# Estructura del Proyecto - Control de Acceso API
+
+## 📁 Estructura de Carpetas
+
+```
+control_acceso_api/
+│
+├── app.py                      # Archivo principal de la aplicación
+├── config.py                   # Configuraciones de la aplicación
+├── requirements.txt            # Dependencias de Python
+├── .env                       # Variables de entorno
+├── .gitignore                 # Archivos a ignorar en Git
+│
+├── models/                    # Modelos de base de datos
+│   ├── __init__.py
+│   ├── usuario.py
+│   ├── acceso.py
+│   ├── dispositivo.py
+│   └── base.py
+│
+├── routes/                    # Rutas/Endpoints de la API
+│   ├── __init__.py
+│   ├── auth.py               # Autenticación y autorización
+│   ├── usuarios.py           # CRUD de usuarios
+│   ├── accesos.py            # Registro y consulta de accesos
+│   ├── reportes.py           # Endpoints de reportes
+│   └── admin.py              # Funciones administrativas
+│
+├── services/                  # Lógica de negocio
+│   ├── __init__.py
+│   ├── auth_service.py       # Servicios de autenticación
+│   ├── biometric_service.py  # Servicios biométricos
+│   └── notification_service.py # Servicios de notificaciones
+│
+├── utils/                     # Utilidades generales
+│   ├── __init__.py
+│   ├── database.py           # Conexión a base de datos
+│   ├── validators.py         # Validadores de datos
+│   └── helpers.py            # Funciones auxiliares
+│
+└── tests/                     # Pruebas unitarias
+    ├── __init__.py
+    ├── test_auth.py
+    ├── test_usuarios.py
+    └── test_accesos.py
+```
+
+## 🔧 Instalación y Configuración
+
+### 1. Crear entorno virtual
+```bash
+python -m venv venv
+source venv/bin/activate  # En Windows: venv\Scripts\activate
+```
+
+### 2. Instalar dependencias
+```bash
+pip install -r requirements.txt
+```
+
+### 3. Configurar variables de entorno (.env)
+```env
+DB_HOST=localhost
+DB_USER=root
+DB_PASSWORD=tu_password
+DB_NAME=control_acceso
+SECRET_KEY=tu_secret_key_super_segura
+JWT_SECRET_KEY=jwt_secret_key_diferente
+FLASK_ENV=development
+```
+
+### 4. Inicializar base de datos
+```bash
+python -c "from utils.database import init_db; init_db()"
+```
+
+### 5. Ejecutar la aplicación
+```bash
+python app.py
+```
+
+## 📋 Endpoints de la API
+
+### Autenticación
+- `POST /api/auth/login` - Iniciar sesión
+- `POST /api/auth/logout` - Cerrar sesión
+- `POST /api/auth/refresh` - Renovar token
+
+### Usuarios
+- `GET /api/usuarios` - Listar usuarios
+- `POST /api/usuarios` - Crear usuario
+- `GET /api/usuarios/{id}` - Obtener usuario
+- `PUT /api/usuarios/{id}` - Actualizar usuario
+- `DELETE /api/usuarios/{id}` - Eliminar usuario
+
+### Accesos
+- `POST /api/accesos/registrar` - Registrar entrada/salida
+- `GET /api/accesos/usuario/{id}` - Historial de usuario
+- `GET /api/accesos/hoy` - Accesos del día
+- `GET /api/accesos/rango` - Accesos por rango de fechas
+
+### Reportes
+- `GET /api/reportes/asistencia` - Reporte de asistencia
+- `GET /api/reportes/tardanzas` - Reporte de tardanzas
+- `GET /api/reportes/ausencias` - Reporte de ausencias
+- `GET /api/reportes/dashboard` - Datos para dashboard
+
+### Administración
+- `GET /api/admin/dispositivos` - Gestión de dispositivos
+- `POST /api/admin/configuracion` - Configuración del sistema
+- `GET /api/admin/logs` - Logs del sistema
+
+## 🔐 Seguridad
+
+- **JWT Tokens** para autenticación
+- **Bcrypt** para hashear contraseñas
+- **Rate Limiting** en endpoints críticos
+- **Validación** de datos de entrada
+- **CORS** configurado apropiadamente
+- **Logs** de auditoría para todas las acciones
+
+## 📊 Respuestas de la API
+
+### Formato estándar de respuesta
+```json
+{
+  "success": true,
+  "data": {...},
+  "message": "Operación exitosa",
+  "timestamp": "2025-06-21T08:30:00Z"
+}
+```
+
+### Formato de errores
+```json
+{
+  "success": false,
+  "error": {
+    "code": "VALIDATION_ERROR",
+    "message": "Datos inválidos",
+    "details": {...}
+  },
+  "timestamp": "2025-06-21T08:30:00Z"
+}
+```
