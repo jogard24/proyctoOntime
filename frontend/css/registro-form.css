@@ -20,7 +20,8 @@
     justify-content: center;
     align-items: center;
     gap: 4%;
-    background-color: var(--black-glass);
+    background-color: var(--blue);
+    backdrop-filter: blur(15px);
     border-radius: 35px;
 }
 
