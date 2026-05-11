@@ -9,7 +9,7 @@
     justify-content: center;
 }
 
-.formulario{
+/* .formulario{
     border-color: rgb(0, 0, 0);
     border: 40px;
     height: 500px;
@@ -20,7 +20,7 @@
     justify-content: center;
     align-items: center;
     gap: 30px;
-}
+} */
 
 .bt-iniciar {
     background-color: rgba(0, 0, 0, 0.425);
@@ -75,7 +75,7 @@ label .labelModificador:focus{
     z-index: 10;
 }
 
-.labelModificador{
+.label-modificador{
     color: rgb(0, 0, 0);
     background-color: rgba(255, 255, 255, 0.562);
     border-radius: 10px;
@@ -92,16 +92,16 @@ label .labelModificador:focus{
     width: 250px; /* Ajusta al ancho que desees */
 }
 
-.labelModificador:focus + .label-flotante,
-.labelModificador:not(:placeholder-shown) + .label-flotante {
+.label-modificador:focus + .label-flotante,
+.label-modificador:not(:placeholder-shown) + .label-flotante {
     transform: translateY(-35px); /* Sube la etiqueta */
     font-size: 14px;
     color: #ffffffde; /* Color blanco para que resalte en tu fondo azul */
     font-weight: bold;
 }
 
-.labelModificador:focus + .label-flotante,
-.labelModificador:not(:placeholder-shown) + .label-flotante {
+.label-modificador:focus + .label-flotante,
+.label-modificador:not(:placeholder-shown) + .label-flotante {
     /* -22px lo deja exactamente sobre la línea superior del input */
     transform: translateY(-22px) scale(0.9); 
     

@@ -1,19 +1,17 @@
 @import url(variablestyle.css);
 @import url(colorStyle.css);
 
-.contenedor{
+/* .contenedor{
 
-    /* background-color: var(--blue); */
     gap: 3%;
     display: flex;
     justify-content: center;
     align-items: center;
     width: 500px;
     margin: 80px auto;
-    /* box-shadow: 0 0 70px 5px var(--white); */
-}
+} */
 
-.contenedor-form{
+/* .contenedor-form{
     width: 500px;
     height: 600px;
     display: flex;
@@ -23,44 +21,48 @@
     background-color: var(--blue);
     backdrop-filter: blur(15px);
     border-radius: 35px;
-}
+} */
 
 
 .formulario{
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
     gap:22px;
+    background: var(--blue);
+    /* justify-content: center; */
+    align-items: center;
+    color: var(--white);
+    justify-content: space-between;
     align-items: center;
 }
+
 
 .titulo-formulario{
     width: 460px;
     margin: 10px auto;
     color: var(--white);
 }
-
-/* .menu-item{
-    background-color: var(--bt-menu);
-    color: var(--white);
-    height: 40px;
-    width: 150px;
-    border-radius: 10px;
-    margin-top: 10px;
-    text-align: center;
-    text-decoration: none;
-    padding: 10px;
-    transition: 0.3s;
-    cursor: pointer;
-    backdrop-filter: blur(2px);
-    border: 1px solid #183357;
-    box-shadow: 0 0 5px 3px var(--blue);
-    transition: 0.3s;
-    border: var(--border-btn);
+.contenedor-formulario-modular {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    animation: fadeIn 0.5s ease; /* Para que aparezca suavemente */
 }
 
-.menu-item:hover{
-    border: var(--border-btn-activo);
-    background: var(--bt-hover) ;
-    transform: scale(1.1);
-} */
+/* Asegúrate de que el formulario se adapte al ancho del dashboard */
+.contenedor-form {
+    background: var(--black-glass);
+    backdrop-filter: blur(15px);
+    border-radius: 15px;
+    border: 1px solid var(--border-btn-activo);
+    width: 100%;
+    max-width: 600px; 
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 20px auto;
+    
+}
+

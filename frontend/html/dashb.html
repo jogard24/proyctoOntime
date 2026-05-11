@@ -1,136 +1,159 @@
 <!doctype html>
 <html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="../css/dashb.css" />
+    <title>dashb</title>
+  </head>
 
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link rel="stylesheet" href="../css/dashb.css" />
-  <title>dashb</title>
-</head>
+  <body>
+    <section class="dash">
+      <!-- conetenedor menu lateral -->
+      <section class="contenedor-menu">
+        <aside class="menu-lateral">
+          <!-- foto perfil -->
+          <div class="editar-perfil">
+            <form id="form-foto" enctype="multipart/form-data">
+              <div class="avatar-perfil">
+                <img
+                  id="visualizar"
+                  src="../img/perfil.png"
+                  alt="vista-previa"
+                />
+                <input
+                  type="file"
+                  id="subir-foto"
+                  name="foto-perfil"
+                  accept="imagen"
+                  hidden
+                />
+                <label for="subir-foto" class="btn-cambiar-foto"
+                  ><i class="fast-camara"></i>
+                </label>
+              </div>
+              <button type="submit" class="btn-guardar">Guardar</button>
+            </form>
+          </div>
+          <!-- botones menu lateral -->
+          <nav class="menu">
+            <button
+              type="button"
+              class="bt-menu-item"
+              id="btn-gestionEmpleados"
+            >
+              Gestion empleados
+            </button>
+            <button type="button" class="bt-menu-item" id="btn-Registro">
+              Registro
+            </button>
+            <button type="button" class="bt-menu-item" id="btn-Asistencia">
+              Asistencia
+            </button>
+            <button type="button" class="bt-menu-item" id="btn-Permisos">
+              Permisos
+            </button>
+            <button type="button" class="bt-menu-item" id="btn-Nomina">
+              Nomina
+            </button>
+            <button type="button" class="bt-menu-item" id="btn-Informes">
+              Informes
+            </button>
+            <button type="button" class="bt-menu-item" id="btn-calendario">
+              Calendario
+            </button>
 
-<body>
-  <section class="dash">
-    <!-- conetenedor menu lateral -->
-    <section class="contenedor-menu">
-      <aside class="menu-lateral">
-        <!-- foto perfil -->
-        <div class="editar-perfil">
-          <form id="form-foto" enctype="multipart/form-data">
-            <div class="avatar-perfil">
-              <img id="visualizar" src="../img/perfil.png" alt="vista-previa" />
-              <input type="file" id="subir-foto" name="foto-perfil" accept="imagen" hidden />
-              <label for="subir-foto" class="btn-cambiar-foto"><i class="fast-camara"></i>
-              </label>
+
+
+          </nav>
+        </aside>
+      </section>
+      <!-- contenedor dashboard -->
+      <div class="contenedor-dash" id="contenedor-dinamico">
+        <!-- card contenedor empleados -->
+        <div class="card-contenedor">
+          <!-- izquierda  -->
+          <div class="card-empleados card-admin">
+            <div class="widget-card-glass">
+              <div class="widget-data">
+                <span class="widget-title">Empleados activos</span>
+                <h3 id="count-empleados">24</h3>
+              </div>
             </div>
-            <button type="submit" class="btn-guardar">Guardar</button>
-          </form>
-        </div>
-        <!-- botones menu lateral -->
-        <nav class="menu">
-          <button type="button" class="bt-menu-item" id="btn-gestionEmpleados">
-            Gestion empleados
-          </button>
-          <button type="button" class="bt-menu-item" id="btn-Registro">
-            Registro
-          </button>
-          <button type="button" class="bt-menu-item" id="btn-Asistencia">
-            Asistencia
-          </button>
-          <button type="button" class="bt-menu-item" id="btn-Permisos">
-            Permisos
-          </button>
-          <button type="button" class="bt-menu-item" id="btn-Nomina">
-            Nomina
-          </button>
-          <button type="button" class="bt-menu-item" id="btn-Informes">
-            Informes
-          </button>
-        </nav>
-      </aside>
-    </section>
-    <!-- contenedor dashboard -->
-    <div class="contenedor-dash" id="contenedot-dinamico">
-      <!-- card contenedor empleados -->
-      <div class="widgets-contenedor">
-        <div class="widget-card-glass">
-          <div class="widget-icon blue"><i class="fas fa-users"></i></div>
-          <div class="widget-data">
-            <span class="widget-title">Empleados</span>
-            <h3 id="count-empleados">24</h3>
+          </div>
+          <!-- derecha -->
+          <div class="card-retrazos card-admin">
+            <div class="widget-card-glass">
+              <div class="widget-data">
+                <span class="widget-title">Retrazos</span>
+                <h3 id="count-asistencias">18</h3>
+              </div>
+            </div>
+          </div>
+          <div class="card-asistencia card-admin">
+            <div class="widget-card-glass">
+              <div class="widget-data">
+                <span class="widget-title">Asistencias</span>
+                <h3 id="count-asistencias">18</h3>
+              </div>
+            </div>
           </div>
         </div>
         <!-- card contenedor registro -->
-        <div id="vistaRegistro" class="card-registro">
+        <div id="vistaRegistro" class="card-registro"></div>
+        <div id="vistaAsistencia" class="seccion-dashboard" style="display: none">
+          <h2 class="card-admin">Reporte asistencia</h2>
+        </div>
+        <section id="vistaAsistencia" class="card-asistencia"></section>
+        <section id="vista-empleados" class="seccion-dashboard" style="display: none">
+          <div class="header-seccion">
+            <div>
+              <h2>Gestión de Personal</h2>
+              <p>Administra informacion</p>
+            </div>
+            <!-- Botón para abrir el modal de registro (RF 01) -->
+            <button class="menu-item" id="btn-Registro">
+              <i class="fas fa-plus"></i> Nuevo Empleado
+            </button>
+          </div>
 
+        <div id="vistacalendario" class="seccion-dashboard" style="display: none;">
+          <div class="calendario-ontime">
+            <div class="calendario-header">
+              <button id="mes-ant" class="bt-menu-item bt-left">←</button>
+              <h2 id="mes-año-actual" class="nombre-mes"></h2>
+              <button id="mes-siguiente" class="bt-menu-item bt-right">→</button>
+            </div>
+            <div class="tabla-calendario">
+              <div class="calendario-dias-semanas">
+                <div class="dia">Lun</div>
+                <div class="dia">Mar</div>
+                <div class="dia">Mier</div>
+                <div class="dia">Jue</div>
+                <div class="dia">Vie</div>
+                <div class="fin-semana">Sab</div>
+                <div class="fin-semana">Dom</div>
+              </div>
+              <div id="calendario-rejilla-dias" class="calendario-rejilla"></div>
+            </div>
+          </div>
         </div>
 
-      </div>
-      <div id="vistaAsistencia" class="seccion-dashboard" style="display: none">
-        <h2>Reporte asistencia</h2>
-      </div>
-      <section id="vistaAsistencia" class="card-asistencia"></section>
-    </div>
-    <section id="vista-empleados" class="seccion-dashboard" style="display: none">
-      <div class="header-seccion">
-        <div>
-          <h2>Gestión de Personal</h2>
-          <p>Administra la información de los colaboradores</p>
-        </div>
-        <!-- Botón para abrir el modal de registro (RF 01) -->
-        <button class="menu-item" id="btn-Registro">
-          <i class="fas fa-plus"></i> Nuevo Empleado
-        </button>
+            <section id="vistacalendario" class="calendario-ontime" ></section>
+            <section id="vista-calendario" class="seccion-dashboard" style="display: none"></section>
+  
+          <!-- Buscador (RF 17) -->
+          <div class="tabla-tools card-glass">
+            <div class="search-box">
+              <i class="fas fa-search"></i>
+              <input type="text" placeholder="Buscar por nombre o documento..." />
+            </div>
+          </div>
+        </section>
       </div>
 
-      <!-- Buscador (RF 17) -->
-      <div class="tabla-tools card-glass">
-        <div class="search-box">
-          <i class="fas fa-search"></i>
-          <input type="text" placeholder="Buscar por nombre o documento..." />
-        </div>
-      </div>
-
-      
-
-      <!-- Tabla de Empleados -->
-      <div class="tabla-contenedor card-glass">
-        <table class="tabla-ontime">
-          <thead>
-            <tr>
-              <th>Foto</th>
-              <th>Documento</th>
-              <th>Nombre Completo</th>
-              <th>Cargo/Rol</th>
-              <th>Estado</th>
-              <th>Acciones</th>
-            </tr>
-          </thead>
-          <tbody id="lista-empleados">
-            <!-- Ejemplo de un empleado -->
-            <tr>
-              <td><img src="../img/perfil.png" class="avatar-tabla" /></td>
-              <td>1098765432</td>
-              <td>Camilo Andrés Pérez</td>
-              <td>Desarrollador</td>
-              <td><span class="status-pill green">Activo</span></td>
-              <td>
-                <div class="acciones-flex">
-                  <button class="btn-icon edit" title="Editar">
-                    <i class="fas fa-edit"></i>
-                  </button>
-                  <button class="btn-icon delete" title="Eliminar">
-                    <i class="fas fa-trash"></i>
-                  </button>
-                </div>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
     </section>
-  </section>
 
-  <script type="module" src="./../js/dash.js"></script>
-</body>
-
+    <script type="module" src="./../js/dash.js"></script>
+  </body>
 </html>

@@ -63,7 +63,7 @@ body {
     z-index: 10;
 }
 
-.labelModificador{
+.label-modificador{
     color: rgb(0, 0, 0);
     background-color: rgba(255, 255, 255, 0.562);
     border-radius: 10px;
@@ -80,16 +80,16 @@ body {
     width: 250px; /* Ajusta al ancho que desees */
 }
 
-.labelModificador:focus + .label-flotante,
-.labelModificador:not(:placeholder-shown) + .label-flotante {
+.label-modificador:focus + .label-flotante,
+.label-modificador:not(:placeholder-shown) + .label-flotante {
     transform: translateY(-35px); /* Sube la etiqueta */
     font-size: 14px;
     color: #ffffffde; /* Color blanco para que resalte en tu fondo azul */
     font-weight: bold;
 }
 
-.labelModificador:focus + .label-flotante,
-.labelModificador:not(:placeholder-shown) + .label-flotante {
+.label-modificador:focus + .label-flotante,
+.label-modificador:not(:placeholder-shown) + .label-flotante {
 
     
     font-size: 14px;

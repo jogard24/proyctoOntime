@@ -27,6 +27,8 @@ btn.addEventListener ( "click", () => {
     seccion.style.display = "block";
 })
 
+
+
 // 1. Referencias al DOM (Tal cual están en tu HTML)
 const mesAnioTexto = document.getElementById('mes-año-actual');
 const rejillaDias = document.getElementById('calendario-rejilla-dias');
@@ -42,7 +44,8 @@ const meses = [
 let fechaActual = new Date(); // Fecha de hoy por defecto
 
 // 3. Función Principal
-function renderizarCalendario() 
+
+function renderizarCalendario() {
     // Obtener año y mes actual del estado
     const anio = fechaActual.getFullYear();
     const mes = fechaActual.getMonth();
@@ -103,3 +106,36 @@ btnSiguiente.addEventListener('click', () => {
 // 7. Ejecutar al cargar
 renderizarCalendario();
 
+// Buscamos el botón que debe abrir el formulario
+const btnAbrirRegistro = document.getElementById('btn-Registro'); // Asegúrate de que este ID coincida con tu menú lateral
+
+if (btnAbrirRegistro) {
+    btnAbrirRegistro.addEventListener('click', async () => {
+        // Usamos la función de carga que ya conocemos
+        await cargarSeccion('registro-form.html');
+        
+        // Una vez cargado, podemos inicializar lógica específica del formulario
+        configurarFormularioRegistro();
+    });
+}
+
+async function cargarSeccion(archivo) {
+    const contenedor = document.getElementById('contenedor-dinamico');
+    try {
+        const respuesta = await fetch(archivo);
+        const html = await respuesta.text();
+        contenedor.innerHTML = html;
+    } catch (error) {
+        console.error("Error al cargar el formulario:", error);
+    }
+}
+
+function configurarFormularioRegistro() {
+    const btnGuardar = document.getElementById('btn-guardar-empleado');
+    if (btnGuardar) {
+        btnGuardar.addEventListener('click', () => {
+            console.log("¡Click en guardar! Aquí irá la lógica de Java después.");
+            // Aquí puedes validar los campos antes de enviarlos
+        });
+    }
+}
