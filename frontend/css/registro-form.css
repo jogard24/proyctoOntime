@@ -27,13 +27,9 @@
 .formulario{
     display: flex;
     flex-direction: column;
-    gap:22px;
-    background: var(--blue);
-    /* justify-content: center; */
+    gap:25px;
     align-items: center;
-    color: var(--white);
-    justify-content: space-between;
-    align-items: center;
+
 }
 
 
@@ -53,10 +49,7 @@
 
 /* Asegúrate de que el formulario se adapte al ancho del dashboard */
 .contenedor-form {
-    background: var(--black-glass);
-    backdrop-filter: blur(15px);
-    border-radius: 15px;
-    border: 1px solid var(--border-btn-activo);
+
     width: 100%;
     max-width: 600px; 
     display: flex;
