@@ -119,6 +119,9 @@ if (btnAbrirRegistro) {
     });
 }
 
+
+
+
 async function cargarSeccion(archivo) {
     const contenedor = document.getElementById('contenedor-dinamico');
     try {
@@ -134,8 +137,32 @@ function configurarFormularioRegistro() {
     const btnGuardar = document.getElementById('btn-guardar-empleado');
     if (btnGuardar) {
         btnGuardar.addEventListener('click', () => {
-            console.log("¡Click en guardar! Aquí irá la lógica de Java después.");
+            console.log("¡Click en guardar!");
             // Aquí puedes validar los campos antes de enviarlos
         });
     }
+}
+
+
+const generarNominabtn = document.getElementById('btn-generarNomina');
+
+if (generarNominabtn) {
+    generarNominabtn.addEventListener('click', async () => {
+        await cargarSeccion('nomina.html');
+        generarNominabtn();
+});
+
+function generarNomina() {
+    const generarNominaBtn = document.getElementById('btn-generarNomina');
+    if (generarNominaBtn) {
+        generarNominaBtn.addEventListener('click', () => {
+            console.log('¡Nómina generada con éxito!');
+            
+        });
+    }
+}
+
+// Llamamos a la función para configurar el botón de nómina
+generarNomina();
+
 }
