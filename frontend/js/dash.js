@@ -103,6 +103,9 @@ btnSiguiente.addEventListener('click', () => {
     renderizarCalendario();
 });
 
+
+
+
 // 7. Ejecutar al cargar
 renderizarCalendario();
 
@@ -119,7 +122,17 @@ if (btnAbrirRegistro) {
     });
 }
 
+const btngenerarcalendario = document.getElementById('btn-calendario');
+const seccionCalendario = document.getElementById('vista-calendario');
 
+
+
+if (btngenerarcalendario) {
+    btngenerarcalendario.addEventListener('click', async () => {
+        await cargarSeccion('calendario.html');
+        renderizarCalendario();
+    });
+}
 
 
 async function cargarSeccion(archivo) {

@@ -93,6 +93,10 @@ function renderizarCalendario() {
 const btn = document.querySelector("#btn-calendario");
 const seccion = document.querySelector("#vista-calendario");
 
-btn.addEventListener ( "click", () => {
+btn.addEventListener ( "click", async () => {
     seccion.style.display = "block";
-})
+    await cargarSeccion('calendario.html');
+
+    renderizarCalendario();
+
+});
