@@ -11,3 +11,9 @@
 // - Calcular horas trabajadas
 // - Aplicar descuentos o bonificaciones
 // - Generar un reporte o descargar un archivo PDF/Excel
+
+export function configurarNomina() {
+    console.log("Nomina cargada");
+    // Aquí tu lógica de nómina
+}
+
