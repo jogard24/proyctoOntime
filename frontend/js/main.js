@@ -27,6 +27,17 @@ document.getElementById('btn-generarNomina').addEventListener('click', async () 
     await cargarSeccion('../html/nomina.html');
     configurarNomina();
 });
+
+// botón de asistencia
+document.getElementById('btn-Asistencia').addEventListener('click', async () => {
+    await cargarSeccion('../html/asistencias.html');
+});
+
+// botón de permisos
+document.getElementById('btn-Permisos').addEventListener('click', async () => {
+    await cargarSeccion('../html/permisos.html');
+});
+
 // botón de gestión de empleados
 document.getElementById('btn-gestionEmpleados').addEventListener('click', async () => {
     await cargarSeccion('../html/gestion-empleados.html');

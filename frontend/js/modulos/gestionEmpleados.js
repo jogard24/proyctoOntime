@@ -1,8 +1,4 @@
-const btngestionempleados = document.getElementById('btn-gestionEmpleados');
-const contenedor = document.getElementById('contenedor-dinamico');
-
-btngestionempleados.addEventListener('click', () => {
-    await cargarSeccion('gestion-empleados.html');
-    // Aquí puedes inicializar cualquier lógica específica para la gestión de empleados
-    configurarGestionEmpleados();
-});
+export function configurarGestionEmpleados() {
+    console.log('Gestión de empleados cargada');
+    // Añade aquí la lógica que necesites cuando se cargue la sección de gestión de empleados.
+}

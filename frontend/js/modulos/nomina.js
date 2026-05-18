@@ -14,6 +14,5 @@
 
 export function configurarNomina() {
     console.log("Nomina cargada");
-    // Aquí tu lógica de nómina
 }
 

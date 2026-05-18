@@ -4,6 +4,8 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="../css/dashb.css" />
+    <link rel="stylesheet" href="../css/gestionempleados.css" />
+    <link rel="stylesheet" href="../css/calendario.css" />
     <title>dashb</title>
   </head>
 
@@ -71,7 +73,7 @@
       <!-- contenedor dashboard -->
       <div class="contenedor-dash" id="contenedor-dinamico">
         <!-- card contenedor empleados -->
-                <div class="card-contenedor">
+          <div class="card-contenedor">
           <!-- izquierda  -->
           <div class="card-empleados card-admin">
             <div class="widget-card-glass">
@@ -117,43 +119,12 @@
             </button>
           </div>
 
-        <div id="vistacalendario" class="seccion-dashboard" style="display: none;">
-          <div class="calendario-ontime">
-            <div class="calendario-header">
-              <button id="mes-ant" class="bt-menu-item bt-left">←</button>
-              <h2 id="mes-año-actual" class="nombre-mes"></h2>
-              <button id="mes-siguiente" class="bt-menu-item bt-right">→</button>
-            </div>
-            <div class="tabla-calendario">
-              <div class="calendario-dias-semanas">
-                <div class="dia">Lun</div>
-                <div class="dia">Mar</div>
-                <div class="dia">Mier</div>
-                <div class="dia">Jue</div>
-                <div class="dia">Vie</div>
-                <div class="fin-semana">Sab</div>
-                <div class="fin-semana">Dom</div>
-              </div>
-              <div id="calendario-rejilla-dias" class="calendario-rejilla"></div>
-            </div>
-          </div>
-        </div>
 
-            <section id="vistacalendario" class="calendario-ontime" ></section>
-            <section id="vista-calendario" class="seccion-dashboard" style="display: none"></section>
-  
-          <!-- Buscador (RF 17) -->
-          <div class="tabla-tools card-glass">
-            <div class="search-box">
-              <i class="fas fa-search"></i>
-              <input type="text" placeholder="Buscar por nombre o documento..." />
-            </div>
-          </div>
         </section>
       </div>
 
     </section>
 
-    <script type="module" src="./../js/dash.js"></script>
+    <script type="module" src="../js/main.js"></script>
   </body>
 </html>
