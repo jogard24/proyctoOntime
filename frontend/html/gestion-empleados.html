@@ -1,25 +1,38 @@
+<!-- Tabla de Empleados -->
 
+<div class="tabla-contenedor card-glass">
+  <div class="panel-empleados"></div>
+  <h2 class="">Gestión de Empleados</h2>
 
-    <link rel="stylesheet" href="../css/variablestyle.css">
-    <link rel="stylesheet" href="../css/dashb.css">
-</head>
-<body>
-          <!-- Tabla de Empleados -->
-      <div class="tabla-contenedor card-glass">
-        <table class="tabla-ontime">
-          <thead>
-            <tr>
-              <th>Foto</th>
-              <th>Documento</th>
-              <th>Nombre Completo</th>
-              <th>Cargo/Rol</th>
-              <th>Estado</th>
-              <th>Acciones</th>
-            </tr>
-          </thead>
-
-        </table>
-      </div>
-
-</body>
-</html>
+  <div class="buscador">
+    <input type="text" placeholder="Buscar por nombre o ID" class="input-busqueda">
+    <button class="bt-menu-item" id="btn-buscarEmpleado">Buscar</button>
+  </div>
+  <table class="tabla-ontime">
+    <thead>
+      <tr>
+        <th>Foto</th>
+        <th>Documento</th>
+        <th>Nombre Completo</th>
+        <th>Cargo/Rol</th>
+        <th>Estado</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody id="tabla-empleados-body">
+      <!-- Aquí se llenará dinámicamente con JavaScript -->
+       <tr>
+        <td><img src="../img/perfil.png" class="avatar-tabla" alt="foto"></td>
+        <td>1098788788</td>
+        <td>Juan Pérez</td>
+        <td>Desarrollador</td>
+        <td>Activo</td>
+        <td>
+          <button class="bt-menu-item">Editar</button>
+          <button class="bt-menu-item">Eliminar</button>
+        </td>
+       </tr>
+    </tbody>
+  </table>
+  <script src="../js/modulos/gestionEmpleados.js"></script>
+</div>

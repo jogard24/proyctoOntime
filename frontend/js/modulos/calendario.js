@@ -88,15 +88,14 @@ function renderizarCalendario() {
 
         rejillaDias.appendChild(divDia);
     }
-}
+};
 
-const btn = document.querySelector("#btn-calendario");
-const seccion = document.querySelector("#vista-calendario");
+// const btn = document.querySelector("#btn-calendario");
+// const seccion = document.querySelector("#vista-calendario");
 
-btn.addEventListener ( "click", async () => {
-    seccion.style.display = "block";
-    await cargarSeccion('calendario.html');
+// btn.addEventListener ( "click", async () => {
+//     seccion.style.display = "block";
+//     await cargarSeccion('calendario.html');
 
-    renderizarCalendario();
+//     renderizarCalendario();
 
-});

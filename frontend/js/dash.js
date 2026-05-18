@@ -165,17 +165,6 @@ if (generarNominabtn) {
         generarNominabtn();
 });
 
-function generarNomina() {
-    const generarNominaBtn = document.getElementById('btn-generarNomina');
-    if (generarNominaBtn) {
-        generarNominaBtn.addEventListener('click', () => {
-            console.log('¡Nómina generada con éxito!');
-            
-        });
-    }
-}
 
-// Llamamos a la función para configurar el botón de nómina
-generarNomina();
 
 }
