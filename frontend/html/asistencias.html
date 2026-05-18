@@ -1,0 +1,51 @@
+  <div class="contenedor-dash">
+      <div class="card-button ">
+        <button type="button" class="bt-menu-item bt-modificador-asistencia" id="btn-registroentrada">
+            Registro entrada
+          </button>
+        <button type="button" class="bt-menu-item bt-modificador-salida" id="btn-registrosalida">
+            Registro salida
+          </button> 
+      </div>
+      <div class="panel">
+          <div class="panel-header">
+            <h2>Reporte de asistencia</h2>
+            <div class="filtros-fecha">
+              <input type="date" class="input-fecha" id="filtro-fecha-desde" />
+              <span>—</span>
+              <input type="date" class="input-fecha" id="filtro-fecha-hasta" />
+              <button class="btn-secundario">Filtrar</button>
+            </div>
+          </div>
+          <table class="tabla-ontime">
+            <thead>
+              <tr>
+                <th>Empleado</th>
+                <th>Fecha</th>
+                <th>Entrada</th>
+                <th>Salida</th>
+                <th>Horas</th>
+                <th>Estado</th>
+              </tr>
+            </thead>
+            <tbody id="tabla-asistencia-body">
+              <tr>
+                <td>Camilo Pérez</td>
+                <td>2025-05-15</td>
+                <td>07:58</td>
+                <td>17:02</td>
+                <td>9h 04m</td>
+                <td><span class="pill verde">Puntual</span></td>
+              </tr>
+              <tr>
+                <td>Laura Gómez</td>
+                <td>2025-05-15</td>
+                <td>08:23</td>
+                <td>17:00</td>
+                <td>8h 37m</td>
+                <td><span class="pill amarillo">Retardo</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>

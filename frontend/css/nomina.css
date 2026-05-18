@@ -1,0 +1,68 @@
+@import url(variablestyle.css);
+@import url(colorStyle.css);
+
+.contenedorNomina {
+    display: flex; /* Cambiado a flex para controlar mejor el flujo vertical */
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+    gap: 25px;
+    padding: 20px;
+    color: var(--white);
+    box-sizing: border-box;
+}
+
+.busquedaNomina {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    align-items: flex-start;
+    width: 100%;
+}
+
+/* --- TABLA  --- */
+.tablaNomina {
+    display: table; 
+    width: 100%;
+    border-collapse: collapse;
+    background: rgba(255, 255, 255, 0.03); 
+    backdrop-filter: blur(10px);
+    border-radius: 12px;
+    overflow: hidden; /* Para que los bordes redondeados corten las esquinas de las filas */
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    margin-top: 10px;
+}
+
+.tablaNomina thead {
+    background: rgba(0, 0, 0, 0.2); /* Fondo ligeramente más oscuro para la cabecera */
+}
+
+.tablaNomina th, 
+.tablaNomina td {
+    padding: 14px 18px;
+    text-align: left; /* Alinea el texto de manera ordenada */
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05); /* Línea que divide muy suave */
+    font-size: 0.95rem;
+}
+
+.tablaNomina th {
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.85rem;
+    letter-spacing: 0.5px;
+    color: var(--border-btn-activo, #00d4ff); /* Usamos el color brillante de tu marca para resaltar */
+}
+
+/* Efecto Hover opcional para saber qué fila se está mirando */
+.tablaNomina tbody tr:hover {
+    background: rgba(255, 255, 255, 0.05);
+    transition: background 0.2s ease;
+}
+
+.btn-contnomina {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    gap: 20px;
+    margin-top: auto; /* Empuja los botones hacia abajo si hay espacio disponible */
+}

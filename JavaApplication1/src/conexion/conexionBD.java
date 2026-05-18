@@ -8,7 +8,7 @@ public class conexionBD {
 
     private Connection con;
 
-    String url = "jdbc:mysql://localhost:3306/OntimeBD";
+    String url = "jdbc:mysql://localhost:3306/Ontime2bd";
     String user = "root";
     String pass = "#Aprendiz2024";
     String driver = "com.mysql.cj.jdbc.Driver";
