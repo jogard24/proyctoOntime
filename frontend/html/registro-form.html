@@ -1,44 +1,57 @@
-
-
-
 <div id="vistaRegistro" class="contenedor-formulario-modular">
     <section class="contenedor-form">
-        <form class="formulario" >
+        <form class="formulario">
             <h1 class="titulo-formulario titulo-general">FORMULARIO DE REGISTRO</h1>
-            
-            <div class="input-login">
-                <input class="label-modificador" type="text" name="Nombre" id="nombre" placeholder=" ">
-                <label for="nombre" class="label-flotante">👷Nombre</label>
-            </div>
-            <div class="input-login">
-                <input class="label-modificador" type="text" name="👷Apellido" id="apellido" placeholder=" ">
-                <label for="apellido" class="label-flotante">👷Apellido</label>
-            </div>
-            <div class="input-login">
-                <input class="label-modificador" type="text" name="Email" id="email" placeholder=" ">
-                <label for="email" class="label-flotante">👷@email</label>
-            </div>
-            <div class="input-login">
-                <input class="label-modificador" type="number" name="Celular" id="celular" placeholder=" ">
-                <label for="celular" class="label-flotante">👷Celular</label>
-            </div>
-            <div class="input-login">
-                <input class="label-modificador" type="text" name="Direccion" id="direccion" placeholder=" ">
-                <label for="direccion" class="label-flotante">👷Direccion</label>
-            </div>
-            <div class="input-login">
-                <input class="label-modificador" type="text" name="tipoSangre" id="tipoSangre" placeholder=" ">
-                <label for="tipoSangre" class="label-flotante">👷Tipo de sangre</label>
+
+            <div class="datos-principales">
+                <div class="input-login">
+                    <input class="label-modificador" type="text" name="Nombre" id="nombre" placeholder=" ">
+                    <label for="nombre" class="label-flotante">Nombre</label>
+                </div>
+                <div class="input-login">
+                    <input class="label-modificador" type="text" name="Apellido" id="apellido" placeholder=" ">
+                    <label for="apellido" class="label-flotante">Apellido</label>
+                </div>
+                <div class="input-login">
+                    <input class="label-modificador" type="text" name="Email" id="email" placeholder=" ">
+                    <label for="email" class="label-flotante">Email</label>
+                </div>
+                <div class="input-login">
+                    <input class="label-modificador" type="number" name="Celular" id="celular" placeholder=" ">
+                    <label for="celular" class="label-flotante">Celular</label>
+                </div>
+                <div class="input-login">
+                    <input class="label-modificador" type="text" name="Direccion" id="direccion" placeholder=" ">
+                    <label for="direccion" class="label-flotante">Direccion</label>
+                </div>
+                <div class="input-login">
+                    <input class="label-modificador" type="text" name="tipoSangre" id="tipoSangre" placeholder=" ">
+                    <label for="tipoSangre" class="label-flotante">Tipo de sangre</label>
+                </div>
+
+                <button type="button" class="bt-menu-item" id="btn-guardar-empleado">
+                    Guardar
+                </button>
             </div>
 
-            <button type="button" class="bt-menu-item" id="btn-guardar-empleado">
-                Guardar
-            </button>                
-
-    
+            <div class="info-emergencia">
+                <h2 class="titulo-info-emergencia">Información de emergencia</h2>
+                <div class="input-login">
+                    <input class="label-modificador" type="text" name="nombreContacto" id="nombreContacto" placeholder=" ">
+                    <label for="nombreContacto" class="label-flotante">Nombre del contacto</label>
+                </div>
+                <div class="input-login">
+                    <input class="label-modificador" type="number" name="celularContacto" id="celularContacto" placeholder=" ">
+                    <label for="celularContacto" class="label-flotante">Celular del contacto</label>
+                </div>
+                <div class="input-login">
+                    <input class="label-modificador" type="text" name="relacionContacto" id="relacionContacto" placeholder=" ">
+                    <label for="relacionContacto" class="label-flotante">Parentesco</label>
+                </div>
+            </div>
         </form>
-        
+
     </section>
-    
+
 </div>
 <link rel="stylesheet" href="../css/registro-form.css">

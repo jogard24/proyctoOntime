@@ -1,0 +1,142 @@
+@import url(variablestyle.css);
+@import url(colorStyle.css);
+
+.tabla-contenedor {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    min-height: 100%;
+    gap: 25px;
+    padding: 20px;
+    color: var(--white);
+    box-sizing: border-box;
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.tabla-contenedor h2 {
+    margin: 0;
+    font-size: 1.7rem;
+    letter-spacing: 0.2px;
+}
+
+.buscador {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    align-items: flex-end;
+    width: 100%;
+}
+
+.input-busqueda {
+    flex: 1;
+    min-width: 220px;
+    padding: 12px 16px;
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--white);
+    outline: none;
+}
+
+.input-busqueda::placeholder {
+    color: rgba(255, 255, 255, 0.6);
+}
+
+/* .buscador .bt-menu-item {
+    padding: 12px 22px;
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    background: rgba(255, 255, 255, 0.08);
+    color: var(--white);
+    cursor: pointer;
+    transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.buscador .bt-menu-item:hover {
+    background: rgba(255, 255, 255, 0.15);
+    transform: translateY(-1px);
+} */
+
+.bt-ejecucion-editar {
+    width: 75px;
+    height: 40px;
+    border-radius: 10%;
+}
+
+.bt-ejecucion-eliminar {
+    width: 75px;
+    height: 40px;
+    border-radius: 10%;
+}
+
+.bt-ejecucion-eliminar:hover{
+    background-color: var(--color-rojo);
+    border: 1px solid var(--border-btn-activo);
+    box-shadow: 0 0 10px 1px var(--border-btn-activo);
+    transform: scale(1.05);
+}
+
+.bt-ejecucion-editar:hover{
+    background-color: var(--color-verde);
+    border: 1px solid var(--border-btn-activo);
+    box-shadow: 0 0 10px 1px var(--border-btn-activo);
+    transform: scale(1.05);
+}
+
+.tabla-ontime {
+    display: table;
+    width: 100%;
+    border-collapse: collapse;
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(10px);
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    margin-top: 10px;
+}
+
+.tabla-ontime thead {
+    background: rgba(0, 0, 0, 0.2);
+}
+
+.tabla-ontime th,
+.tabla-ontime td {
+    padding: 14px 18px;
+    text-align: left;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    font-size: 0.95rem;
+}
+
+.tabla-ontime th {
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.85rem;
+    letter-spacing: 0.5px;
+    color: var(--border-btn-activo, #00d4ff);
+}
+
+.tabla-ontime tbody tr:hover {
+    background: rgba(255, 255, 255, 0.05);
+    transition: background 0.2s ease;
+}
+
+.avatar-tabla {
+    width: 42px;
+    height: 42px;
+    object-fit: cover;
+    border-radius: 50%;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.tabla-ontime td:last-child {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.tabla-ontime td .bt-menu-item {
+    padding: 8px 12px;
+    font-size: 0.9rem;
+}

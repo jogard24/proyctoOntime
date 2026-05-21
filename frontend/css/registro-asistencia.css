@@ -1,0 +1,117 @@
+@import url(variablestyle.css);
+@import url(colorStyle.css);
+
+.contenedor-asistencia-pinpad {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.tarjeta-pinpad {
+    background: rgba(255, 1, 1, 0.06);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 20px;
+    padding: 30px;
+    width: 50%;
+    max-width: 400px;
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+    text-align: center;
+}
+
+.encabezado-pinpad h2 {
+    color: #f7f7f7;
+    margin-bottom: 5px;
+    font-size: 1.4rem;
+    letter-spacing: 0.5px;
+}
+
+.encabezado-pinpad p {
+    color: #ccc;
+    font-size: 0.85rem;
+    margin-bottom: 25px;
+}
+
+/* Pantalla de visualización */
+.pantalla-pinpad input {
+    width: 100%;
+    background: rgba(0, 0, 0, 0.25);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    padding: 15px;
+    color: #fff;
+    font-size: 2rem;
+    text-align: center;
+    letter-spacing: 3px;
+    margin-bottom: 25px;
+    outline: none;
+    font-weight: bold;
+}
+
+/* Distribución del Teclado tipo Calculadora */
+.teclado-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
+}
+
+.teclado-grid button {
+    height: 65px;
+    border-radius: 12px;
+    font-size: 1.5rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Botones Numéricos */
+.btn-num {
+    background: rgba(255, 255, 255, 0.08);
+    color: #fff;
+}
+
+.btn-num:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: scale(1.03);
+}
+
+/* Botón Borrar */
+.btn-borrar {
+    background: rgba(239, 83, 83, 0.2);
+    color: #ff6b6b;
+    border-color: rgba(239, 83, 83, 0.3) !important;
+}
+
+.btn-borrar:hover {
+    background: rgba(239, 83, 83, 0.4);
+}
+
+/* Botón OK / Confirmar */
+.btn-confirmar {
+    background: rgba(46, 213, 115, 0.25);
+    color: #2ed573;
+    border-color: rgba(46, 213, 115, 0.4) !important;
+}
+
+.btn-confirmar:hover {
+    background: rgba(46, 213, 115, 0.45);
+    transform: scale(1.03);
+}
+
+/* Mensajes de Feedback */
+.feedback-mensaje {
+    margin-top: 20px;
+    font-size: 1rem;
+    font-weight: 500;
+    min-height: 24px;
+    transition: all 0.3s ease;
+}
+
+.feedback-exito { color: #2ed573; }
+.feedback-error { color: #ff6b6b; }

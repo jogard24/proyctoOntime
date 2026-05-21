@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../css/registro-asistencia.css">
+
+    <title>Document</title>
+</head>
+<body>
+    
+    <div class="contenedor-asistencia-pinpad">
+        <div class="tarjeta-pinpad">
+            <div class="encabezado-pinpad">
+                <h2>REGISTRO DE ASISTENCIA</h2>
+                <p>Ingresa tu ID para marcar tu entrada/salida</p>
+            </div>
+    
+            <div class="pantalla-pinpad">
+                <input type="text" id="asistencia-id-display" placeholder="* * * * * *" readonly>
+                <label for="asistencia-id-display" class="instruccion-pinpad">ID de empleado</label>
+            </div>
+    
+            <div class="teclado-grid">
+                <button class="btn-num" data-valor="1">1</button>
+                <button class="btn-num" data-valor="2">2</button>
+                <button class="btn-num" data-valor="3">3</button>
+                
+                <button class="btn-num" data-valor="4">4</button>
+                <button class="btn-num" data-valor="5">5</button>
+                <button class="btn-num" data-valor="6">6</button>
+                
+                <button class="btn-num" data-valor="7">7</button>
+                <button class="btn-num" data-valor="8">8</button>
+                <button class="btn-num" data-valor="9">9</button>
+                
+                <button class="btn-accion btn-borrar" id="pinpad-borrar">
+                    <i class="fas fa-backspace"></i> ←
+                </button>
+                <button class="btn-num" data-valor="0">0</button>
+                <button class="btn-accion btn-confirmar" id="pinpad-confirmar">
+                    <i class="fas fa-check"></i> OK
+                </button>
+            </div>
+    
+            <div id="asistencia-feedback" class="feedback-mensaje"></div>
+            
+            <button class="bt-menu-item" id="btn-menu-login">Admin / Cont</button>
+        </div>
+
+        
+    </div>
+    
+</body>
+</html>

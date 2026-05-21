@@ -28,8 +28,8 @@
     float: left;
     margin-top: 10px;
     border-radius: 15px;
-    -webkit-backdrop-filter: blur(15px);
-    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(5px);
+    backdrop-filter: blur(5px);
 }
 
 .contenedor-dash{
@@ -42,8 +42,8 @@
     /* flex-direction:column; */
     align-items: center;
     background-color: var(--black-glass);
-    -webkit-backdrop-filter: blur(15px);
-    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(5px);
+    backdrop-filter: blur(5px);
     margin: 10px;
     border-radius: 15px;
     
