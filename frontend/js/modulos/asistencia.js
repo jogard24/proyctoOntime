@@ -48,12 +48,12 @@ export function configurarAsistenciaPinpad() {
     btnConfirmar.addEventListener('click', async (e) => {
         e.preventDefault();
         if (cadenaId.trim() === "") {
-            mostrarFeedback("⚠️ Por favor ingresa tu identificación", "error");
+            mostrarFeedback(" Por favor ingresa tu identificación", "error");
             return;
         }
 
         try {
-            const respuesta = await fetch('/proyectoOntime/api/asistencia', {
+            const respuesta = await fetch('http://localhost:8080/proyectoOntime/api/asistencia', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/x-www-form-urlencoded',
