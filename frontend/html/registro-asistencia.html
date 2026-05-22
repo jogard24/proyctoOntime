@@ -17,8 +17,9 @@
             </div>
     
             <div class="pantalla-pinpad">
+
                 <input type="text" id="asistencia-id-display" placeholder="* * * * * *" readonly>
-                <label for="asistencia-id-display" class="instruccion-pinpad">ID de empleado</label>
+                <label for="asistencia-id-display" class="instruccion-pinpad">ID</label>
             </div>
     
             <div class="teclado-grid">
@@ -45,11 +46,16 @@
     
             <div id="asistencia-feedback" class="feedback-mensaje"></div>
             
-            <button class="bt-menu-item" id="btn-menu-login">Admin / Cont</button>
+            <button class="bt-menu-item" id="btnAdminCont">Admin / Cont</button>
         </div>
 
         
     </div>
-    
+    <script type="module">
+        import { configurarAsistenciaPinpad } from '../js/modulos/asistencia.js';
+        
+        // Se ejecuta automáticamente apenas la tablet cargue este HTML a pantalla completa
+        configurarAsistenciaPinpad();
+    </script>
 </body>
 </html>

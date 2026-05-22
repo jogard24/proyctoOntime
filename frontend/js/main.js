@@ -1,89 +1,55 @@
-
 import { configurarCalendario, configurarNomina, configurarGestionEmpleados, configurarRegistro } from './modulos/index.js';
+import { configurarAsistenciaPinpad } from './modulos/index.js';
 
 const contenedor = document.getElementById('contenedor-dinamico');
 
 async function cargarSeccion(ruta) {
-    const respuesta = await fetch(ruta);
-    const html = await respuesta.text();
-    contenedor.innerHTML = html;
+    try {
+        const respuesta = await fetch(ruta);
+        if (!respuesta.ok) throw new Error(`No se pudo cargar la ruta: ${ruta}`);
+        const html = await respuesta.text();
+        contenedor.innerHTML = html;
+    } catch (error) {
+        console.error("Error cargando sección:", error);
+    }
 }
 
-// botón de calendario
-document.getElementById('btn-calendario').addEventListener('click', async () => {
-    await cargarSeccion('../html/calendario.html');
-    configurarCalendario();
-
-});
-
-// botón de registro
-document.getElementById('btn-Registro').addEventListener('click', async () => {
-    await cargarSeccion('../html/registro-form.html');
-    configurarRegistro();
-});
-
-// botón de nómina
-document.getElementById('btn-generarNomina').addEventListener('click', async () => {
-    await cargarSeccion('../html/nomina.html');
-    configurarNomina();
-});
-
-// botón de asistencia
-document.getElementById('btn-Asistencia').addEventListener('click', async () => {
-    await cargarSeccion('../html/asistenciaTabla.html');
-});
-
-// botón de permisos
-document.getElementById('btn-Permisos').addEventListener('click', async () => {
-    await cargarSeccion('../html/permisos.html');
-});
-
-// botón de gestión de empleados
-document.getElementById('btn-gestionEmpleados').addEventListener('click', async () => {
-    await cargarSeccion('../html/gestion-empleados.html');
-    configurarGestionEmpleados();
-});
-
-document.getElementById('btn-Informes').addEventListener('click', async () => {
-    await cargarSeccion('../html/informes.html');
-
-});
-
-// Dentro del evento de nuevoBtnConfirmar en tu asistencia.js:
-nuevoBtnConfirmar.addEventListener('click', async () => {
-    if (cadenaId.trim() === "") {
-        mostrarFeedback(" Por favor ingresa tu identificación", "error");
-        return;
-    }
-
-    try {
-        // Llamamos al Servlet que acabamos de crear en Java
-        const respuesta = await fetch('/proyectoOntime/api/asistencia', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded',
-            },
-            body: `empleadoId=${encodeURIComponent(cadenaId)}`
+// --- FUNCIÓN UTILITARIA PARA ASIGNAR EVENTOS SEGUROS ---
+function asignarEvento(idBoton, rutaHtml, funcionModulo = null) {
+    const boton = document.getElementById(idBoton);
+    if (boton) {
+        boton.addEventListener('click', async (e) => {
+            e.preventDefault();
+            await cargarSeccion(rutaHtml);
+            if (funcionModulo) funcionModulo();
         });
-
-        const resultado = await respuesta.json();
-
-        if (respuesta.ok) {
-            mostrarFeedback(` ${resultado.message}`, "exito");
-        } else {
-            mostrarFeedback(` ${resultado.message}`, "error");
-        }
-
-    } catch (error) {
-        console.error("Error de conexión:", error);
-        mostrarFeedback("💥 Error al conectar con el servidor", "error");
+    } else {
+        console.warn(` Advertencia: El botón con id '${idBoton}' no se encontró en el HTML.`);
     }
+}
 
-    // Limpiamos el pinpad
-    cadenaId = "";
-    actualizarPantalla();
-});
+// --- ASIGNACIÓN DE TU MENÚ LATERAL ---
+asignarEvento('btn-calendario', '../html/calendario.html', configurarCalendario);
+asignarEvento('btn-Registro', '../html/registro-form.html', configurarRegistro);
+asignarEvento('btn-generarNomina', '../html/nomina.html', configurarNomina);
+asignarEvento('btn-gestionEmpleados', '../html/gestion-empleados.html', configurarGestionEmpleados);
+
+// Historial de asistencia (solo carga la tabla)
+asignarEvento('btn-Asistencia', '../html/asistenciaTabla.html');
+asignarEvento('btn-Permisos', '../html/permisos.html');
+asignarEvento('btn-Informes', '../html/informes.html');
 
 
+// --- LOGOUT: CERRAR SESIÓN (Código independiente y seguro) ---
+const btnCerrarSesion = document.getElementById('btn-CerrarSesion');
 
-
+if (btnCerrarSesion) {
+    console.log(" El botón Cerrar Sesión fue detectado correctamente.");
+    btnCerrarSesion.addEventListener('click', (e) => {
+        e.preventDefault();
+        console.log(" Cerrando sesión... Redirigiendo al Pinpad.");
+        window.location.href = './registro-asistencia.html'; 
+    });
+} else {
+    console.error(" Error Crítico: No se encontró ningún elemento con id='btn-CerrarSesion' en dashb.html");
+}

@@ -4,12 +4,13 @@ export function configurarAsistenciaPinpad() {
     const btnBorrar = document.getElementById('pinpad-borrar');
     const btnConfirmar = document.getElementById('pinpad-confirmar');
     const feedback = document.getElementById('asistencia-feedback');
+    const btnAdminCont = document.getElementById('btnAdminCont'); // 👈 Apuntamos directo a su ID real
 
-    // Guardián modular para evitar que falle si la vista no está cargada
+    // Guardián: si no encuentra la pantalla o los botones de control, no arranca
     if (!display || !btnBorrar || !btnConfirmar) return;
 
     let cadenaId = "";
-    const MAX_DIGITOS = 12; // Límite estándar para un documento de identidad
+    const MAX_DIGITOS = 12;
 
     function actualizarPantalla() {
         display.value = cadenaId;
@@ -18,53 +19,70 @@ export function configurarAsistenciaPinpad() {
     function mostrarFeedback(mensaje, tipo) {
         feedback.textContent = mensaje;
         feedback.className = `feedback-mensaje feedback-${tipo}`;
-        
-        // Limpiar el mensaje después de 4 segundos
         setTimeout(() => {
             feedback.textContent = "";
             feedback.className = "feedback-mensaje";
         }, 4000);
     }
 
-    // Evento para los botones numéricos (0-9)
+    // Configurar números virtuales (Clics con el mouse)
     botonesNum.forEach(boton => {
-        // Clonamos para mitigar la duplicación de Listeners de la carga dinámica
-        const nuevoBoton = boton.cloneNode(true);
-        boton.parentNode.replaceChild(nuevoBoton, boton);
-
-        nuevoBoton.addEventListener('click', () => {
-            if (cadenaId.length < MAX_DIGITOS) {
-                cadenaId += nuevoBoton.getAttribute('data-valor');
+        boton.addEventListener('click', (e) => {
+            e.preventDefault();
+            const valor = boton.getAttribute('data-valor');
+            if (cadenaId.length < MAX_DIGITOS && valor !== null) {
+                cadenaId += valor;
                 actualizarPantalla();
             }
         });
     });
 
-    // Evento para el botón de borrar (retroceso)
-    const nuevoBtnBorrar = btnBorrar.cloneNode(true);
-    btnBorrar.parentNode.replaceChild(nuevoBtnBorrar, btnBorrar);
-    nuevoBtnBorrar.addEventListener('click', () => {
+    // Configurar botón borrar
+    btnBorrar.addEventListener('click', (e) => {
+        e.preventDefault();
         cadenaId = cadenaId.slice(0, -1);
         actualizarPantalla();
     });
 
-    // Evento para el botón de confirmar (OK)
-    const nuevoBtnConfirmar = btnConfirmar.cloneNode(true);
-    btnConfirmar.parentNode.replaceChild(nuevoBtnConfirmar, btnConfirmar);
-    nuevoBtnConfirmar.addEventListener('click', () => {
+    // Configurar botón OK (Envío de datos al Backend)
+    btnConfirmar.addEventListener('click', async (e) => {
+        e.preventDefault();
         if (cadenaId.trim() === "") {
-            mostrarFeedback("Por favor ingresa tu identificación", "error");
+            mostrarFeedback("⚠️ Por favor ingresa tu identificación", "error");
             return;
         }
 
-        // --- ENLACE FUTURO CON BACKEND (JAVA SERVLET) ---
-        console.log(`Enviando ID al sistema OnTime: ${cadenaId}`);
-        
-        // Simulación temporal de respuesta exitosa del servidor
-        mostrarFeedback(`Registro exitoso. ¡Buen día! ID: ${cadenaId}`, "exito");
-        
-        // Limpiamos el pinpad para el siguiente empleado
+        try {
+            const respuesta = await fetch('/proyectoOntime/api/asistencia', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: `empleadoId=${encodeURIComponent(cadenaId)}`
+            });
+
+            const resultado = await respuesta.json();
+
+            if (respuesta.ok) {
+                mostrarFeedback(` ${resultado.message}`, "exito");
+            } else {
+                mostrarFeedback(` ${resultado.message}`, "error");
+            }
+
+        } catch (error) {
+            console.error("Error de conexión:", error);
+            mostrarFeedback(" ✘ Error al conectar con el servidor", "error");
+        }
+
         cadenaId = "";
         actualizarPantalla();
     });
+
+    // Redirección limpia al Login de administración
+    if (btnAdminCont) {
+        btnAdminCont.addEventListener('click', (e) => {
+            e.preventDefault();
+            window.location.href = '../html/login.html'; 
+        });
+    }
 }
