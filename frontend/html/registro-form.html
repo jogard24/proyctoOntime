@@ -2,6 +2,16 @@
     <section class="contenedor-form">
         <form class="formulario">
             <h1 class="titulo-formulario titulo-general">FORMULARIO DE REGISTRO</h1>
+            
+            <div class="form-group mb-3 text-center">
+            <label for="fotoInput" class="form-label d-block text-start fw-bold"></label>
+            
+            <div class="contenedor-preview mb-2">
+                <img id="vistaPrevia" src="img/usuario-defecto.png" alt="Vista previa" >
+            </div>
+            
+            <input type="file" id="fotoInput" name="fotoPerfil" accept="image/png, image/jpeg, image/jpg" class="form-control">
+            </div>
 
             <div class="datos-principales">
                 <div class="input-login">
@@ -29,11 +39,8 @@
                     <label for="tipoSangre" class="label-flotante">Tipo de sangre</label>
                 </div>
 
-                <button type="button" class="bt-menu-item" id="btn-guardar-empleado">
-                    Guardar
-                </button>
             </div>
-
+            
             <div class="info-emergencia">
                 <h2 class="titulo-info-emergencia">Información de emergencia</h2>
                 <div class="input-login">
@@ -48,6 +55,9 @@
                     <input class="label-modificador" type="text" name="relacionContacto" id="relacionContacto" placeholder=" ">
                     <label for="relacionContacto" class="label-flotante">Parentesco</label>
                 </div>
+                <button type="button" class="bt-menu-item" id="btn-guardar-empleado">
+                    Guardar
+                </button>
             </div>
         </form>
 

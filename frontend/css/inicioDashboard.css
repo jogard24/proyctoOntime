@@ -1,0 +1,215 @@
+/* ==========================================================================
+   ESTILOS PARA EL MÓDULO DE INICIO (HOME DASHBOARD)
+   ========================================================================== */
+
+.panel-inicio {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+    animation: fadeIn 0.4s ease-in-out;
+}
+
+/* Encabezado */
+.inicio-header {
+    margin-bottom: 25px;
+}
+
+.inicio-header h2 {
+    font-size: 1.8rem;
+    color: #111111;
+    margin: 0;
+}
+
+.inicio-subtitulo {
+    color: var(--black);
+    margin: 5px 0 0 0;
+    font-size: 1.1rem;
+}
+
+/* Contenedor de Tarjetas */
+.contenedor-cards-estadisticas {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin-bottom: 5px;
+    width: 100%;
+
+}
+
+.card-est {
+    border: 1px solid var(--blue);
+    background-color: var(--white-glass);
+    border-radius: 10px;
+    width: 300px;
+    height: 150px;
+    text-align: center;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.card-est:hover {
+    background-color: var(--blue);
+    border: 1px solid var(--border-btn-activo);
+    box-shadow: 0 0 20px 1px var(--border-btn-activo);
+    transform: scale(1.05);
+}
+
+.card-icon {
+    font-size: 2rem;
+    background: rgba(255, 255, 255, 0.8);
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+
+.card-info h3 {
+    margin: 0;
+    font-size: 1.5rem;
+    color: #444444;
+    font-weight: 500;
+}
+
+.card-info p {
+    margin: 5px 0 0 0;
+    font-size: 2.2rem;
+    font-weight: 700;
+    color: #111111;
+    line-height: 1;
+}
+
+/* Colores sutiles para los números */
+.card-retardos #stat-retardos {
+    color: #d32f2f;
+}
+
+.card-salidas #stat-salidas {
+    color: #2e7d32;
+}
+
+/* Sección Tabla */
+/* ==========================================================================
+   SECCIÓN TABLA DE NOVEDADES - CORREGIDA Y ADAPTATIVA
+   ========================================================================== */
+
+.seccion-novedades-inicio {
+    background: var(--colorFondobotn);
+    /* backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px); */
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
+    
+    /* CONTROL DE DESBORDAMIENTO CRÍTICO */
+    box-sizing: border-box; /* Fuerza a que el padding no estire la caja */
+    width: 100%;            /* Se adapta exactamente al ancho de tu fondo oscuro */
+    max-width: 100%;        /* Evita que se pase ni un solo píxel */
+    margin-top: 20px;
+}
+
+.btn-actualizar-on{
+    background-color: var(--colorFondobotn);
+    color: var(--white);
+    height: 35px;
+    width: 150px;
+    border-radius: 10px;
+    margin-top: 5px;
+    margin-bottom: 12px;
+    text-align: center;
+    text-decoration: none;
+    padding: 7px;
+    transition: 0.3s;
+    cursor: pointer;
+    -webkit-backdrop-filter: blur(5px);
+    backdrop-filter: blur(5px);
+    border: 1px solid #183357;
+    box-shadow: 0 0 5px 3px var(--blue);
+}
+
+.btn-actualizar-on:hover{
+    /* background-color:var(--bt-hover) ; */
+    transform: scale(1.1);
+    border: 1px solid var(--border-btn-activo);
+    transition: all 0.2s ease;
+    box-shadow: 0 0 8px 5px var(--blue);
+}
+
+.novedades-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: -5px;
+    box-sizing: border-box;
+}
+
+.novedades-header h3 {
+    margin: 0;
+    font-size: 1.1rem;
+    color: #000000;
+    margin-top: -20px;
+}
+
+/* Envoltura con Scroll Interno Controlado */
+.tabla-contenedor-scroll {
+    width: 100%;
+    max-height: 280px;      /* Altura perfecta para que no empuje el dashboard hacia abajo */
+    overflow-y: auto;       /* Scroll vertical si hay muchos registros */
+    overflow-x: auto;       /* Scroll horizontal SOLO si la pantalla se hace muy pequeña */
+    box-sizing: border-box;
+    border-radius: 8px;     /* Redondeado interno para la tabla */
+}
+
+/* Tu Tabla OnTime Adaptada */
+.tabla-ontime {
+    width: 100%;            /* Obliga a la tabla a ocupar exactamente el ancho disponible */
+    border-collapse: collapse;
+    text-align: left;
+}
+
+/* Mantener el encabezado de la tabla fijo al scrolear */
+.tabla-ontime thead th {
+    position: sticky;
+    top: 0;
+    background-color: rgba(235, 235, 235, 0.95); /* Color sutil para el título fijo */
+    backdrop-filter: blur(5px);
+    z-index: 2;
+    padding: 12px 10px;
+    font-size: 0.9rem;
+    color: #333;
+}
+
+.tabla-ontime tbody td {
+    padding: 12px 10px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    font-size: 0.9rem;
+}
+
+/* Personalización moderna de la barra de scroll */
+.tabla-contenedor-scroll::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+
+.tabla-contenedor-scroll::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.03);
+    border-radius: 10px;
+}
+
+.tabla-contenedor-scroll::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.15);
+    border-radius: 10px;
+}
+
+.tabla-contenedor-scroll::-webkit-scrollbar-thumb:hover {
+    background: rgba(0, 0, 0, 0.3);
+}
+/* Animación de entrada suave */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}

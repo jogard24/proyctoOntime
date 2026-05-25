@@ -1,3 +1,6 @@
+@import url(variablestyle.css);
+@import url(colorStyle.css);
+
 /* Contenedor principal del calendario */
 .calendario-ontime {
     width: 100%;

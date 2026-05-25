@@ -1,7 +1,19 @@
-import { configurarCalendario, configurarNomina, configurarGestionEmpleados, configurarRegistro } from './modulos/index.js';
-import { configurarAsistenciaPinpad } from './modulos/index.js';
+// Jalamos absolutamente todo desde tu archivo índice centralizado
+import { 
+    configurarCalendario, 
+    configurarNomina, 
+    configurarGestionEmpleados, 
+    configurarRegistro,
+    configurarInicioDashboard 
+} from './modulos/index.js';
 
 const contenedor = document.getElementById('contenedor-dinamico');
+
+// Validar sesión antes de renderizar la vista
+const sesionStr = sessionStorage.getItem("usuarioActual");
+if (!sesionStr) {
+    window.location.href = "login.html";
+}
 
 async function cargarSeccion(ruta) {
     try {
@@ -14,7 +26,6 @@ async function cargarSeccion(ruta) {
     }
 }
 
-// --- FUNCIÓN UTILITARIA PARA ASIGNAR EVENTOS SEGUROS ---
 function asignarEvento(idBoton, rutaHtml, funcionModulo = null) {
     const boton = document.getElementById(idBoton);
     if (boton) {
@@ -24,7 +35,7 @@ function asignarEvento(idBoton, rutaHtml, funcionModulo = null) {
             if (funcionModulo) funcionModulo();
         });
     } else {
-        console.warn(` Advertencia: El botón con id '${idBoton}' no se encontró en el HTML.`);
+        console.warn(`Advertencia: El botón con id '${idBoton}' no se encontró en el HTML.`);
     }
 }
 
@@ -34,22 +45,38 @@ asignarEvento('btn-Registro', '../html/registro-form.html', configurarRegistro);
 asignarEvento('btn-generarNomina', '../html/nomina.html', configurarNomina);
 asignarEvento('btn-gestionEmpleados', '../html/gestion-empleados.html', configurarGestionEmpleados);
 
-// Historial de asistencia (solo carga la tabla)
+// El botón asistencia carga tu tabla nativa limpia sin funciones que lo rompan
 asignarEvento('btn-Asistencia', '../html/asistenciaTabla.html');
 asignarEvento('btn-Permisos', '../html/permisos.html');
 asignarEvento('btn-Informes', '../html/informes.html');
 
-
-// --- LOGOUT: CERRAR SESIÓN (Código independiente y seguro) ---
+// --- CERRAR SESIÓN ---
 const btnCerrarSesion = document.getElementById('btn-CerrarSesion');
-
 if (btnCerrarSesion) {
-    console.log(" El botón Cerrar Sesión fue detectado correctamente.");
     btnCerrarSesion.addEventListener('click', (e) => {
         e.preventDefault();
-        console.log(" Cerrando sesión... Redirigiendo al Pinpad.");
-        window.location.href = './registro-asistencia.html'; 
+        sessionStorage.clear();
+        window.location.href = './login.html'; 
     });
-} else {
-    console.error(" Error Crítico: No se encontró ningún elemento con id='btn-CerrarSesion' en dashb.html");
 }
+
+// --- CARGA INICIAL Y ESCUCHA DEL BOTÓN HOME ---
+window.addEventListener('DOMContentLoaded', async () => {
+    const btnhome = document.getElementById('btn-home');
+    
+    if (btnhome) {
+        // Le asignamos el evento real al botón físico de tu menú
+        btnhome.addEventListener('click', async (e) => {
+            e.preventDefault();
+            await cargarSeccion('../html/inicio.html');
+            configurarInicioDashboard();
+        });
+
+        // Disparamos el clic automático para que renderice el inicio apenas cargue la página
+        btnhome.click();
+    } else {
+        // En caso de que el botón 'btn-home' no exista en dashb.html, cargamos la sección por defecto de todos modos
+        await cargarSeccion('../html/inicio.html');
+        configurarInicioDashboard();
+    }
+});

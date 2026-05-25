@@ -46,9 +46,10 @@
 }
 
 .info-emergencia {
-    display: grid;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     gap: 16px;
-    grid-column: 2 / 3;
     padding: 24px;
     border-radius: 24px;
     border: 1px solid rgba(255, 255, 255, 0.18);
@@ -70,12 +71,74 @@
 }
 
 .label-modificador {
-    width: 100%;
+    width: 80%;
 }
 
 .bt-menu-item {
     justify-self: flex-end;
     max-width: 160px;
+}
+
+
+
+/* Contenedor principal de la foto (Fuerza la alineación sin romper el resto) */
+.form-group.text-center {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start; /* Alinea el título a la izquierda */
+    gap: 12px;
+    width: 100%;
+    margin-top: -40px;
+    text-align: left !important; /* Corrige el centrado heredado */
+}
+
+/* El texto de la etiqueta "Foto de Perfil del Empleado" */
+.form-group.text-center .form-label {
+    color: #ffffff; /* Blanco para que resalte sobre el fondo oscuro */
+    font-size: 0.95rem;
+    margin: 0;
+}
+
+/* Contenedor interno que obliga a la imagen y al input a ponerse en fila */
+.form-group.text-center .contenedor-preview {
+    display: flex;
+    flex-direction: row; /* Pone la foto al lado del botón */
+    align-items: center; /* Los centra verticalmente entre sí */
+    gap: 20px; /* Separación elegante entre la miniatura y el botón */
+    width: 100%;
+    margin-bottom: 0 !important; /* Quita márgenes viejos */
+}
+
+/* La imagen de vista previa redonda */
+#vistaPrevia {
+    /* Reducimos un poco el tamaño original (de 150px a 75px) para que no se coma la pantalla */
+    width: 75px !important;
+    height: 75px !important;
+    object-fit: cover;
+    border-radius: 50%;
+    border: 2px solid rgba(255, 255, 255, 0.4) !important; /* Borde traslúcido */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+    background-color: rgba(255, 255, 255, 0.1);
+    flex-shrink: 0; /* Evita que la foto se deforme o se encoja */
+}
+
+/* El botón de seleccionar archivo (Input File) estilizado como tus otros campos */
+#fotoInput {
+    background: rgba(255, 255, 255, 0.15) !important;
+    border: 1px solid rgba(255, 255, 255, 0.25) !important;
+    color: #ffffff !important;
+    padding: 10px 14px;
+    border-radius: 10px; /* Esquinas suaves a juego con tu diseño */
+    cursor: pointer;
+    font-size: 0.85rem;
+    max-width: 348px; /* Limita el ancho para que no se estire toscamente */
+    transition: background 0.3s ease, border-color 0.3s ease;
+}
+
+/* Efecto hover sutil al pasar el mouse por encima del botón */
+#fotoInput:hover {
+    background: rgba(255, 255, 255, 0.25) !important;
+    border-color: rgba(255, 255, 255, 0.4) !important;
 }
 
 @media (max-width: 900px) {

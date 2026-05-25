@@ -1,0 +1,169 @@
+@import url(variablestyle.css);
+@import url(colorStyle.css);
+
+.panel {
+    width: min(1180px, 100%);
+    margin: 40px auto;
+    padding: 26px;
+    /* background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px); */
+    color: var(--white);
+    margin-top: -250px;
+}
+
+.panel-header {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: 18px;
+    margin-bottom: 24px;
+}
+
+.panel-header h2 {
+    font-size: 28px;
+    letter-spacing: 0.3px;
+    color: var(--white);
+}
+
+.filtros-fecha {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.input-fecha {
+    min-width: 170px;
+    padding: 11px 14px;
+    border-radius: 14px;
+    border: 1px solid rgba(255, 255, 255, 0.22);
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--white);
+    outline: none;
+    transition: all 0.2s ease;
+}
+
+.input-fecha:focus {
+    border-color: var(--blue);
+    background: rgba(255, 255, 255, 0.16);
+    box-shadow: 0 0 0 3px rgba(29, 148, 239, 0.14);
+}
+
+.btn-secundario {
+    padding: 12px 24px;
+    border-radius: 14px;
+    border: 1px solid var(--blue);
+    background: rgba(29, 148, 239, 0.18);
+    color: var(--white);
+    cursor: pointer;
+    transition: transform 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease;
+    min-width: 130px;
+}
+
+.btn-secundario:hover {
+    background: var(--blue);
+    box-shadow: 0 0 18px rgba(29, 148, 239, 0.28);
+    transform: translateY(-1px);
+}
+
+.tabla-ontime {
+    display: table;
+    width: 100%;
+    border-collapse: collapse;
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(10px);
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    margin-top: 10px;
+}
+
+.tabla-ontime thead {
+    background: rgba(0, 0, 0, 0.2);
+}
+
+.tabla-ontime th,
+.tabla-ontime td {
+    padding: 14px 18px;
+    text-align: left;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    font-size: 0.95rem;
+}
+
+.tabla-ontime th {
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.85rem;
+    letter-spacing: 0.5px;
+    color: var(--border-btn-activo, #00d4ff);
+}
+
+.tabla-ontime tbody tr:hover {
+    background: rgba(255, 255, 255, 0.05);
+    transition: background 0.2s ease;
+}
+
+.pill {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8px 14px;
+    border-radius: 999px;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    color: #fff;
+}
+
+.pill.verde {
+    background: rgba(4, 255, 180, 0.16);
+    color: #d2ffe8;
+    border: 1px solid rgba(4, 255, 180, 0.35);
+}
+
+.pill.amarillo {
+    background: rgba(255, 210, 0, 0.18);
+    color: #fff8c7;
+    border: 1px solid rgba(255, 210, 0, 0.32);
+}
+
+@media (max-width: 900px) {
+    .panel {
+        padding: 20px;
+    }
+
+    .panel-header {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .filtros-fecha {
+        justify-content: space-between;
+        width: 100%;
+    }
+
+    .input-fecha {
+        width: 100%;
+        max-width: 260px;
+    }
+}
+
+@media (max-width: 640px) {
+    .panel {
+        margin: 20px 16px;
+    }
+
+    .panel-header {
+        gap: 14px;
+    }
+
+    .tabla-ontime th,
+    .tabla-ontime td {
+        padding: 14px 10px;
+    }
+}

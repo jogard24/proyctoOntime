@@ -1,0 +1,61 @@
+<div class="panel-inicio">
+    <div class="inicio-header">
+        <h2 id="txt-bienvenida-admin">¡Bienvenido de nuevo! </h2>
+        <p class="inicio-subtitulo">Este es el estado de asistencia y novedades para el día de hoy.</p>
+    </div>
+
+    <div class="contenedor-cards-estadisticas">
+        <div class="card-est card-movimientos">
+            <div class="card-icon">✔</div>
+            <div class="card-info">
+                <h3>Personal activo hoy</h3>
+                <p id="stat-total">0</p>
+            </div>
+        </div>
+        
+        <div class="card-est card-retardos">
+            <div class="card-icon">✘</div>
+            <div class="card-info">
+                <h3>Retardos Hoy</h3>
+                <p id="stat-retardos">0</p>
+            </div>
+        </div>
+        
+        <div class="card-est card-salidas">
+            <div class="card-icon">✔</div>
+            <div class="card-info">
+                <h3>Salidas Procesadas</h3>
+                <p id="stat-salidas">0</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="seccion-novedades-inicio">
+        <div class="novedades-header">
+            <h3>Novedades de Asistencia Recientes</h3>
+            <button id="btn-actualizar-inicio" class="btn-actualizar-on">
+                <span>💫</span> ACTUALIZAR
+            </button>
+        </div>
+        
+        <div class="tabla-contenedor-scroll">
+            <table class="tabla-ontime">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Empleado</th>
+                        <th>Evento</th>
+                        <th>Turno</th>
+                        <th>Fecha y Hora</th>
+                        <th>Novedad / Observación</th>
+                    </tr>
+                </thead>
+                <tbody id="tbody-novedades-inicio">
+                    <tr>
+                        <td colspan="6" class="td-loading">Sincronizando con OnTime Server...</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

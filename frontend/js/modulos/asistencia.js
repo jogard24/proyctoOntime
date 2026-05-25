@@ -4,7 +4,7 @@ export function configurarAsistenciaPinpad() {
     const btnBorrar = document.getElementById('pinpad-borrar');
     const btnConfirmar = document.getElementById('pinpad-confirmar');
     const feedback = document.getElementById('asistencia-feedback');
-    const btnAdminCont = document.getElementById('btnAdminCont'); // 👈 Apuntamos directo a su ID real
+    const btnAdminCont = document.getElementById('btnAdminCont'); //  Apuntamos directo a la ID 
 
     // Guardián: si no encuentra la pantalla o los botones de control, no arranca
     if (!display || !btnBorrar || !btnConfirmar) return;
@@ -52,16 +52,26 @@ export function configurarAsistenciaPinpad() {
             return;
         }
 
-        try {
-            const respuesta = await fetch('http://localhost:8080/proyectoOntime/api/asistencia', {
+       try {
+            const respuesta = await fetch('http://localhost:8080/error/AsistenciaServlet', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/x-www-form-urlencoded',
                 },
-                body: `empleadoId=${encodeURIComponent(cadenaId)}`
+                body: `documento_identidad=${encodeURIComponent(cadenaId)}`
             });
 
-            const resultado = await respuesta.json();
+            // Capturamos el texto crudo primero para diagnosticar en caso de fallos inesperados
+            const textoRespuesta = await respuesta.text();
+            let resultado;
+            
+            try {
+                resultado = JSON.parse(textoRespuesta);
+            } catch (jsonError) {
+                console.error("Texto recibido no es JSON válido:", textoRespuesta);
+                mostrarFeedback("✘ Respuesta del servidor ilegible", "error");
+                return;
+            }
 
             if (respuesta.ok) {
                 mostrarFeedback(` ${resultado.message}`, "exito");

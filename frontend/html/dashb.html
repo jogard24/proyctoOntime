@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="../css/dashb.css" />
     <link rel="stylesheet" href="../css/gestionempleados.css" />
+    <link rel="stylesheet" href="../css/asistenciaTabla.css" />
+    <link rel="stylesheet" href="../css/permisos.css" />
+    <link rel="stylesheet" href="../css/inicioDashboard.css" />
     <title>dashb</title>
   </head>
 
@@ -19,25 +22,16 @@
               <div class="avatar-perfil">
                 <img
                   id="visualizar"
-                  src="../img/perfil.png"
+                  src="../img/logo sinfondo.png"
                   alt="vista-previa"
-                />
-                <input
-                  type="file"
-                  id="subir-foto"
-                  name="foto-perfil"
-                  accept="imagen"
-                  hidden
-                />
-                <label for="subir-foto" class="btn-cambiar-foto"
-                  ><i class="fast-camara"></i>
-                </label>
+                />                
               </div>
-              <button type="submit" class="btn-guardar">Guardar</button>
+       
             </form>
           </div>
           <!-- botones menu lateral -->
           <nav class="menu">
+            <button class="bt-home bt-menu-item" id="btn-home">🏛️ ​ HOME</button>
             <button
               type="button"
               class="bt-menu-item"
@@ -46,7 +40,7 @@
               Gestion empleados
             </button>
             <button type="button" class="bt-menu-item" id="btn-Registro">
-              Registro
+              ​Registro
             </button>
             <button type="button" class="bt-menu-item" id="btn-Asistencia">
               Asistencia
@@ -64,7 +58,7 @@
               Calendario
             </button>
 
-            <button type="button" class="bt-menu-item" id="btn-CerrarSesion">
+            <button type="button" class="bt-menu-item btn-Modificador-cerrar" id="btn-CerrarSesion">
               Cerrar sesión
             </button>
 
@@ -75,15 +69,7 @@
       </section>
       <!-- contenedor dashboard -->
       <div class="contenedor-dash" id="contenedor-dinamico">
-        <!-- card contenedor empleados -->
-        <!-- card contenedor registro -->
-        <div id="vistaRegistro" class="card-registro"></div>
-        <div id="vistaAsistencia" class="seccion-dashboard" style="display: none">
-          <h2 class="card-admin">Reporte asistencia</h2>
-        </div>
-        <section id="vistaAsistencia" class="card-asistencia"></section>
-        <section id="vista-empleados" class="seccion-dashboard" style="display: none">
-          <div class="header-seccion">
+
 
 
 
