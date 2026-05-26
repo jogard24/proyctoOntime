@@ -13,6 +13,8 @@
     display: flex;
     flex-direction: column;
     gap: 24px;
+    animation: fadeIn 0.5s ease;
+
 }
 
 .panel-permisos .panel-header {
