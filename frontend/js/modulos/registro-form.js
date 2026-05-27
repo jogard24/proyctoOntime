@@ -88,6 +88,11 @@ export function configurarRegistro() {
             formData.append('fotoPerfil', archivoFoto);
         }
 
+        // Si hay un contrato temporal agregado desde el modal, lo incluimos como JSON
+        if (window._contratoTemporal) {
+            formData.append('contrato', JSON.stringify(window._contratoTemporal));
+        }
+
         const respuesta = await fetch(url, {
             method: 'POST',
             body: formData
@@ -112,5 +117,16 @@ export function configurarRegistro() {
         relacionContactoInput.value = '';
         inputFoto.value = '';
         vistaPrevia.src = '../img/usuario-defecto.png';
+    }
+
+    // Inicializar módulo de contrato (modal) si existe la vista
+    try {
+        import('./contrato.js').then(mod => {
+            if (mod && mod.configurarContrato) mod.configurarContrato();
+        }).catch(err => {
+            console.warn('No se pudo cargar el módulo de contrato:', err);
+        });
+    } catch (error) {
+        console.warn('Import dinámico de contrato no soportado:', error);
     }
 }

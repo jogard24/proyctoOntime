@@ -16,11 +16,13 @@
             tablaBody.innerHTML = '<tr><td colspan="6" style="text-align:center;">No hay empleados disponibles.</td></tr>';
             return;
         }
+        
         empleados.forEach(emp => {
             const fila = document.createElement('tr');
+            // Mostrando el documento del empleado en lugar del ID interno
             fila.innerHTML = `
-                <td><img src="${emp.fotoPerfilUrl || '../img/avatar-default.png'}" class="avatar-tabla" alt="Foto"></td>
-                <td>${emp.id}</td>
+                <td><img src="${emp.foto || '../img/avatar-default.png'}" class="avatar-tabla" alt="Foto" style="width:40px; height:40px; border-radius:50%;"></td>
+                <td>${emp.documento || emp.id}</td> 
                 <td>${emp.nombre}</td>
                 <td>${emp.cargo}</td>
                 <td>${emp.estado}</td>
@@ -35,25 +37,40 @@
 
     // --- LÓGICA DE DATOS ---
     function cargarEmpleados() {
+        // Asegúrate de que el puerto coincida con tu Tomcat (usualmente 8080)
         fetch('http://localhost:8080/OnTimeBackend/EmpleadoServlet', { method: 'GET' })
             .then(res => res.json())
-            .then(data => { listaEmpleados = data; renderizarTabla(listaEmpleados); })
-            .catch(err => console.error('Error:', err));
+            .then(data => { 
+                listaEmpleados = data; 
+                renderizarTabla(listaEmpleados); 
+            })
+            .catch(err => console.error('Error cargando empleados:', err));
     }
 
-    // --- FUNCIONES DEL MODAL ---
+    // --- FUNCIONES AUXILIARES ---
     function abrirModal(id, nombre, cargo, estado) {
-        document.getElementById('modalEditar').style.display = 'block';
         document.getElementById('editId').value = id;
         document.getElementById('editNombre').value = nombre;
         document.getElementById('editCargo').value = cargo;
-        document.getElementById('editEstado').value = estado.toLowerCase();
+        document.getElementById('editEstado').value = estado;
+        document.getElementById('modalEditar').style.display = 'flex';
     }
 
-    window.cerrarModal = function() {
-        document.getElementById('modalEditar').style.display = 'none';
-    };
+    // --- LÓGICA DE BÚSQUEDA ---
+    function buscarEmpleados(termino) {
+        if (!termino.trim()) {
+            renderizarTabla(listaEmpleados);
+            return;
+        }
+        const filtrados = listaEmpleados.filter(emp => 
+            emp.nombre.toLowerCase().includes(termino.toLowerCase()) ||
+            (emp.documento && emp.documento.toLowerCase().includes(termino.toLowerCase())) ||
+            emp.id.toString().includes(termino)
+        );
+        renderizarTabla(filtrados);
+    }
 
+    // --- LÓGICA DE ACTUALIZACIÓN ---
     window.guardarEdicion = function() {
         const datos = {
             id: document.getElementById('editId').value,
@@ -62,16 +79,32 @@
             estado: document.getElementById('editEstado').value
         };
 
-        // Aquí harás el POST a tu Servlet de edición
-        console.log("Enviando a BD:", datos);
-        
-        // Simulación de éxito
-        window.cerrarModal();
-        alert("Empleado actualizado");
-        cargarEmpleados();
+        // Aquí usamos fetch para enviar los datos al Servlet (método POST o PUT)
+        fetch('http://localhost:8080/OnTimeBackend/EmpleadoServlet', {
+            method: 'POST', // O 'PUT' según como tengas tu Servlet
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(datos)
+        })
+        .then(res => res.json())
+        .then(data => {
+            alert("Empleado actualizado correctamente");
+            window.cerrarModal();
+            cargarEmpleados();
+        })
+        .catch(err => console.error("Error al actualizar:", err));
     };
 
     // --- EVENTOS ---
+    btnBuscar.addEventListener('click', () => {
+        buscarEmpleados(inputBusqueda.value);
+    });
+
+    inputBusqueda.addEventListener('keyup', (e) => {
+        if (e.key === 'Enter') {
+            buscarEmpleados(inputBusqueda.value);
+        }
+    });
+
     tablaBody.addEventListener('click', (e) => {
         const boton = e.target.closest('button');
         if (!boton) return;
@@ -82,17 +115,11 @@
             if (emp) abrirModal(emp.id, emp.nombre, emp.cargo, emp.estado);
         } else if (boton.classList.contains('bt-ejecucion-eliminar')) {
             if (confirm("¿Eliminar empleado?")) {
-                console.log("Eliminando ID:", id);
-                // Aquí iría el fetch con method: 'DELETE'
-                cargarEmpleados();
+                // Aquí el fetch para eliminar
+                fetch(`http://localhost:8080/OnTimeBackend/EmpleadoServlet?id=${id}`, { method: 'DELETE' })
+                .then(() => cargarEmpleados());
             }
         }
-    });
-
-    btnBuscar.addEventListener('click', (e) => {
-        e.preventDefault();
-        const termino = inputBusqueda.value.toLowerCase();
-        renderizarTabla(listaEmpleados.filter(e => e.nombre.toLowerCase().includes(termino)));
     });
 
     cargarEmpleados();

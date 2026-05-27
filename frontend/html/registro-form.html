@@ -55,13 +55,58 @@
                     <input class="label-modificador" type="text" name="relacionContacto" id="relacionContacto" placeholder=" ">
                     <label for="relacionContacto" class="label-flotante">Parentesco</label>
                 </div>
-                <button type="button" class="bt-menu-item" id="btn-guardar-empleado">
-                    Guardar
-                </button>
+                <div class="botones-accion">
+                    <button type="button" class="bt-menu-item" id="btn-add-contrato">
+                        Agregar contrato
+                    </button>
+                    <button type="button" class="bt-menu-item" id="btn-guardar-empleado">
+                        Guardar
+                    </button>
+                </div>
             </div>
         </form>
 
     </section>
 
+</div>
+
+<!-- Modal para agregar contrato (incrustado en el formulario de registro) -->
+<div id="modalContrato" class="modal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.5); align-items:center; justify-content:center;">
+    <div class="modal-contenido" style="background:var(--colorFondobotn); padding:20px; max-width:600px; width:100%; border-radius:6px;">
+        <h3>Agregar contrato</h3>
+        <form id="formContrato">
+            <div class="input-login">
+                <input class="label-modificador" type="text" name="tipoContrato" id="tipoContrato" placeholder=" ">
+                <label for="tipoContrato" class="label-flotante">Tipo de contrato</label>
+            </div>
+            <div class="input-login">
+                <input class="label-modificador" type="text" name="cargoContrato" id="cargoContrato" placeholder=" ">
+                <label for="cargoContrato" class="label-flotante">Cargo</label>
+            </div>
+            <div class="input-login">
+                <input class="label-modificador" type="number" step="0.01" name="salarioBase" id="salarioBase" placeholder=" ">
+                <label for="salarioBase" class="label-flotante">Salario base</label>
+            </div>
+            <div class="input-login">
+                <input class="label-modificador" type="text" name="jornadaContrato" id="jornadaContrato" placeholder=" ">
+                <label for="jornadaContrato" class="label-flotante">Jornada (id o nombre)</label>
+            </div>
+            <div class="input-login">
+                <input class="label-modificador" type="date" name="fechaInicio" id="fechaInicio" placeholder=" ">
+                <label for="fechaInicio" class="label-flotante">Fecha inicio</label>
+            </div>
+            <div class="input-login">
+                <input class="label-modificador" type="date" name="fechaFin" id="fechaFin" placeholder=" ">
+                <label for="fechaFin" class="label-flotante">Fecha fin (opcional)</label>
+            </div>
+            <div class="input-login">
+                <textarea name="observacionContrato" id="observacionContrato" rows="3" placeholder="Observaciones"></textarea>
+            </div>
+            <div style="display:flex; gap:8px; justify-content:flex-end; margin-top:12px;">
+                <button type="button" id="btnCerrarModal" class="bt-menu-item">Cancelar</button>
+                <button type="submit" id="btnGuardarContrato" class="bt-menu-item">Guardar contrato</button>
+            </div>
+        </form>
+    </div>
 </div>
 <link rel="stylesheet" href="../css/registro-form.css">

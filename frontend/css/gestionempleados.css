@@ -99,6 +99,14 @@
     margin-top: 10px;
 }
 
+/* Contenedor con scroll para evitar que la tabla se desborde */
+.tabla-scroll {
+    width: 100%;
+    overflow: auto;
+    max-height: 60vh; /* limita la altura y permite scroll vertical */
+    padding-right: 8px; /* evita que la barra de scroll tape contenido */
+}
+
 .tabla-ontime thead {
     background: rgba(0, 0, 0, 0.2);
 }
@@ -109,6 +117,9 @@
     text-align: left;
     border-bottom: 1px solid rgba(255, 255, 255, 0.05);
     font-size: 0.95rem;
+    white-space: nowrap; /* evita saltos de línea dentro de las celdas */
+    overflow: hidden;    /* para habilitar ellipsis */
+    text-overflow: ellipsis;
 }
 
 .tabla-ontime th {
@@ -130,6 +141,16 @@
     object-fit: cover;
     border-radius: 50%;
     border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+/* Asegura que la tabla no rompa el layout en pantallas pequeñas */
+@media (max-width: 900px) {
+    .tabla-scroll { max-height: 55vh; }
+    .tabla-ontime th, .tabla-ontime td { padding: 10px 12px; font-size: 0.85rem; }
+}
+
+@media (max-width: 700px) {
+    .tabla-ontime { min-width: 700px; } /* fuerza scroll horizontal antes de romper */
 }
 
 .tabla-ontime td:last-child {

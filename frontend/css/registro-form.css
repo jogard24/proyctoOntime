@@ -171,3 +171,73 @@
         font-size: 18px;
     }
 }
+
+/* Estilos para el modal de contratos */
+.modal {
+    display: none; /* se muestra con JS */
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.45);
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    padding: 24px;
+}
+
+.modal-contenido {
+    background: linear-gradient(180deg, rgba(18,24,31,0.98), rgba(12,18,22,0.95));
+    color: var(--white);
+    padding: 22px;
+    max-width: 680px;
+    width: 100%;
+    border-radius: 10px;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.7);
+}
+
+.modal-contenido h3 {
+    margin: 0 0 12px 0;
+    color: var(--black);
+    font-size: 18px;
+}
+
+.modal-contenido .input-login {
+    margin-bottom: 10px;
+}
+
+.modal-contenido input.label-modificador,
+.modal-contenido textarea,
+.modal-contenido input[type="date"],
+.modal-contenido input[type="number"] {
+    width: 100%;
+    padding: 10px 12px;
+    border-radius: 8px;
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    background: rgba(0, 0, 0, 0.02);
+    color: var(--white);
+}
+
+.modal-contenido textarea { 
+    resize: vertical; 
+    color: var(--black);
+}
+
+.modal-contenido .bt-menu-item {
+    background: linear-gradient(180deg, rgba(29,148,239,0.16), rgba(29,148,239,0.08));
+    color: var(--white);
+    border: 1px solid rgba(29,148,239,0.25);
+    padding: 8px 14px;
+    border-radius: 8px;
+    min-width: 120px;
+}
+
+.modal-contenido .bt-menu-item:hover {
+    background: linear-gradient(180deg, rgba(29,148,239,0.26), rgba(29,148,239,0.14));
+}
+
+.modal-contenido .botones-accion,
+.modal-actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 12px; }
+
+@media (max-width: 600px) {
+    .modal-contenido { padding: 16px; }
+    .modal-contenido .bt-menu-item { min-width: 90px; padding: 8px 10px; }
+}

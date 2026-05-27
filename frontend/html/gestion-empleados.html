@@ -5,9 +5,10 @@
   <h2 class="">Gestión de Empleados</h2>
 
   <div class="buscador">
-    <input type="text" placeholder="Buscar por nombre o ID" class="input-busqueda">
+    <input type="text" placeholder="Buscar por nombre o cédula" class="input-busqueda">
     <button class="bt-menu-item" id="btn-buscarEmpleado">Buscar</button>
   </div>
+  <div class="tabla-scroll">
   <table class="tabla-ontime">
     <thead>
       <tr>
@@ -20,7 +21,6 @@
       </tr>
     </thead>
     <tbody id="tabla-empleados-body">
-      <!-- Aquí se llenará dinámicamente con JavaScript -->
       <tr>
 
         <td>
@@ -30,5 +30,6 @@
       </tr>
     </tbody>
   </table>
+  </div>
 </div>
 <script src="../js/modulos/gestionEmpleados.js"></script>
