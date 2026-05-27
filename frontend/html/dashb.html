@@ -78,6 +78,26 @@
 
     </section>
 
+    <div id="modalEditar" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:1000;">
+    <div style="background:white; width:400px; margin:100px auto; padding:20px; border-radius:8px;">
+        <h2>Editar Empleado</h2>
+        <input type="hidden" id="editId">
+        <label>Nombre:</label><br>
+        <input type="text" id="editNombre"><br>
+        <label>Cargo:</label><br>
+        <input type="text" id="editCargo"><br>
+        <label>Estado:</label><br>
+        <select id="editEstado">
+            <option value="activo">Activo</option>
+            <option value="inactivo">Inactivo</option>
+        </select><br><br>
+        
+        <button onclick="guardarEdicion()">Guardar Cambios</button>
+        <button onclick="cerrarModal()">Cancelar</button>
+    </div>
+  </div>
+
     <script type="module" src="../js/main.js"></script>
+
   </body>
 </html>

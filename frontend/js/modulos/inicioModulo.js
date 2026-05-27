@@ -1,4 +1,4 @@
-const API_URL = "http://localhost:8080/error";
+const API_URL = "http://localhost:8080/OnTimeBackend";
 
 export async function configurarInicioDashboard() {
     // 1. Personalizar el texto de bienvenida con el nombre real de la sesión

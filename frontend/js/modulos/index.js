@@ -1,8 +1,0 @@
-export * from './calendario.js';
-export * from './nomina.js';
-export * from './gestionEmpleados.js';
-export * from './registroEmpleados.js';
-export { configurarAsistenciaPinpad } from './asistencia.js';
-export * from './login.js';
-
-export { configurarInicioDashboard } from './inicioModulo.js';

@@ -46,7 +46,7 @@ function inicializarLogin() {
 
         try {
             // Disparamos la petición POST directo al Servlet en Tomcat
-            const respuesta = await fetch('http://localhost:8080/error/login', {
+            const respuesta = await fetch('http://localhost:8080/OnTimeBackend/login', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/x-www-form-urlencoded',

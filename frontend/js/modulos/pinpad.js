@@ -4,10 +4,12 @@ export function configurarAsistenciaPinpad() {
     const btnBorrar = document.getElementById('pinpad-borrar');
     const btnConfirmar = document.getElementById('pinpad-confirmar');
     const feedback = document.getElementById('asistencia-feedback');
-    const btnAdminCont = document.getElementById('btnAdminCont'); //  Apuntamos directo a la ID 
+    const btnAdminCont = document.getElementById('btnAdminCont');
 
-    // Guardián: si no encuentra la pantalla o los botones de control, no arranca
-    if (!display || !btnBorrar || !btnConfirmar) return;
+    if (!display || !btnBorrar || !btnConfirmar) {
+        console.warn('No se pudo inicializar el Pinpad: faltan elementos del DOM.');
+        return;
+    }
 
     let cadenaId = "";
     const MAX_DIGITOS = 12;
@@ -17,6 +19,7 @@ export function configurarAsistenciaPinpad() {
     }
 
     function mostrarFeedback(mensaje, tipo) {
+        if (!feedback) return;
         feedback.textContent = mensaje;
         feedback.className = `feedback-mensaje feedback-${tipo}`;
         setTimeout(() => {
@@ -25,7 +28,6 @@ export function configurarAsistenciaPinpad() {
         }, 4000);
     }
 
-    // Configurar números virtuales (Clics con el mouse)
     botonesNum.forEach(boton => {
         boton.addEventListener('click', (e) => {
             e.preventDefault();
@@ -37,14 +39,12 @@ export function configurarAsistenciaPinpad() {
         });
     });
 
-    // Configurar botón borrar
     btnBorrar.addEventListener('click', (e) => {
         e.preventDefault();
         cadenaId = cadenaId.slice(0, -1);
         actualizarPantalla();
     });
 
-    // Configurar botón OK (Envío de datos al Backend)
     btnConfirmar.addEventListener('click', async (e) => {
         e.preventDefault();
         if (cadenaId.trim() === "") {
@@ -52,43 +52,43 @@ export function configurarAsistenciaPinpad() {
             return;
         }
 
-       try {
-            const respuesta = await fetch('http://localhost:8080/error/AsistenciaServlet', {
+        try {
+            // CORREGIDO: URL apuntando a PinpadServlet y parámetro usuarioId
+            const respuesta = await fetch('http://localhost:8080/OnTimeBackend/PinpadServlet', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/x-www-form-urlencoded',
                 },
-                body: `documento_identidad=${encodeURIComponent(cadenaId)}`
+                body: `usuarioId=${encodeURIComponent(cadenaId)}`
             });
 
-            // Capturamos el texto crudo primero para diagnosticar en caso de fallos inesperados
             const textoRespuesta = await respuesta.text();
             let resultado;
             
             try {
                 resultado = JSON.parse(textoRespuesta);
             } catch (jsonError) {
-                console.error("Texto recibido no es JSON válido:", textoRespuesta);
-                mostrarFeedback("✘ Respuesta del servidor ilegible", "error");
+                console.error("Respuesta no es JSON:", textoRespuesta);
+                mostrarFeedback("Error en la comunicación con el servidor", "error");
                 return;
             }
 
             if (respuesta.ok) {
-                mostrarFeedback(` ${resultado.message}`, "exito");
+                // Asumimos que el JSON trae 'exito' y 'evento' o 'message'
+                mostrarFeedback(resultado.message || `Registro exitoso: ${resultado.evento || 'Completado'}`, "exito");
             } else {
-                mostrarFeedback(` ${resultado.message}`, "error");
+                mostrarFeedback(resultado.message || "Error al registrar", "error");
             }
 
         } catch (error) {
             console.error("Error de conexión:", error);
-            mostrarFeedback(" ✘ Error al conectar con el servidor", "error");
+            mostrarFeedback("Error al conectar con el servidor", "error");
         }
 
         cadenaId = "";
         actualizarPantalla();
     });
 
-    // Redirección limpia al Login de administración
     if (btnAdminCont) {
         btnAdminCont.addEventListener('click', (e) => {
             e.preventDefault();
