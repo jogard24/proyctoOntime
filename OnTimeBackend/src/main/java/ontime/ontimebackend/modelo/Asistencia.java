@@ -1,6 +1,7 @@
 package ontime.ontimebackend.modelo;
 
 public class Asistencia {
+    // Atributos privados: Encapsulamiento para proteger los datos
     private int id;
     private String nombreEmpleado;
     private String fechaHora;
@@ -9,6 +10,8 @@ public class Asistencia {
     private String tipoTurno;
 
     // --- GETTERS Y SETTERS ---
+    // Son los métodos de acceso: permiten que otras clases (como el DAO o el Servlet)
+    // consulten o modifiquen los valores de forma controlada.
 
     public int getId() { return id; }
     public void setId(int id) { this.id = id; } 
