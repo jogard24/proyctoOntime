@@ -61,6 +61,15 @@
     transition: background 0.2s ease;
 }
 
+.tablaNomina-scroll {
+    width: 100%;
+    max-height: 380px;      /* Altura perfecta para que no empuje el dashboard hacia abajo */
+    overflow-y: auto;       /* Scroll vertical si hay muchos registros */
+    overflow-x: auto;       /* Scroll horizontal SOLO si la pantalla se hace muy pequeña */
+    box-sizing: border-box;
+    border-radius: 8px; 
+}
+
 .btn-contnomina {
     display: flex;
     flex-direction: row;

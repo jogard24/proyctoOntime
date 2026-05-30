@@ -94,9 +94,11 @@
 /* Evitar desbordes: truncar texto y permitir scroll en el contenedor */
 .tabla-scroll {
     width: 100%;
-    overflow: auto;
-    max-height: 60vh;
-    padding-right: 8px;
+    max-height: 380px;      /* Altura perfecta para que no empuje el dashboard hacia abajo */
+    overflow-y: auto;       /* Scroll vertical si hay muchos registros */
+    overflow-x: auto;       /* Scroll horizontal SOLO si la pantalla se hace muy pequeña */
+    box-sizing: border-box;
+    border-radius: 8px; 
 }
 
 .tabla-ontime th,
