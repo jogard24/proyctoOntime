@@ -11,6 +11,24 @@
 <body>
 
     <div class="contenedor-login">
+
+        <section class="card-logo">
+            <img class="img-logo" src="../img/logosinfondo.png" alt=".">
+
+            <div class="selector-rol" id="role-selector" >
+                <h3>Selecciona tu perfil</h3>
+                <button class="btn-role bt-admin" >Administrador</button>
+                <button class="btn-role bt-contador" >Contador</button>
+
+                <form id="login-form" style="display: none;">
+                    <input type="text" id="user" placeholder="Usuario">
+                    <input type="password" id="pass" placeholder="Contraseña">
+                </form>
+            </div>
+
+
+        </section>
+
         <section class="card-login">
 
             <div class="input-login">
@@ -26,15 +44,14 @@
             <div class="bt-login">
                 <button id="btn-ingresar" class="bt-empleado bt-menu-item" type="button">INGRESAR</button>
             </div>
-            
-            <a href="recordar contraseña">recordar contraseña</a>
-        </section>
-        <section class="card-logo">
-            <img src="../img/logosinfondo.png" alt=".">
+
+
+
         </section>
 
+
     </div>
-    <script type="module" src="../js/modulos/login.js"></script>
+    <script src="../js/modulos/login.js"></script>
 </body>
 
 </html>

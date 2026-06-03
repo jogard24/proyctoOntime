@@ -1,4 +1,24 @@
-﻿function crearContenedorFeedback() {
+﻿// Variable para capturar el rol seleccionado en la interfaz
+let rolSeleccionado = '';
+
+/**
+ * Función para seleccionar el rol en la interfaz.
+ * Se asigna a window para que sea accesible desde el onclick del HTML.
+ */
+window.selectRole = function(role, element) {
+    rolSeleccionado = role;
+    
+    // UI: Elimina la clase 'active' de todos los botones de rol y la añade al seleccionado
+    document.querySelectorAll('.btn-role').forEach(btn => btn.classList.remove('active'));
+    element.classList.add('active');
+    
+    console.log("Rol seleccionado:", rolSeleccionado);
+};
+
+/**
+ * Crea o recupera el contenedor de mensajes de feedback
+ */
+function crearContenedorFeedback() {
     const contenedorLogin = document.querySelector('.card-login');
     if (!contenedorLogin) return null;
 
@@ -22,8 +42,12 @@ function mostrarFeedback(mensaje, tipo = 'error') {
     feedback.className = `login-feedback login-feedback--${tipo}`;
 }
 
+/**
+ * Inicializador principal del login
+ */
 function inicializarLogin() {
     const inputUsuario = document.querySelector('input[name="nombre"]');
+    // Nota: Asegúrate de que el input de contraseña tenga el nombre correcto o id único
     const inputPassword = document.getElementById('pass') || document.querySelector('input[name="contraseña"]');
     const botonIngresar = document.getElementById('btn-ingresar');
     const enlaceRecordar = document.querySelector('a[href="recordar contraseña"]');
@@ -39,51 +63,57 @@ function inicializarLogin() {
         const usuarioVal = inputUsuario.value.trim();
         const claveVal = inputPassword.value.trim();
 
+        // Validación de rol y campos vacíos
+        if (!rolSeleccionado) {
+            mostrarFeedback('Por favor, selecciona primero tu rol (Admin o Contador).', 'error');
+            return;
+        }
+
         if (usuarioVal === '' || claveVal === '') {
             mostrarFeedback('Por favor completa usuario y contraseña.', 'error');
             return;
         }
 
         try {
-            // Disparamos la petición POST directo al Servlet en Tomcat
+            // Petición al Backend con el rol incluido
             const respuesta = await fetch('http://localhost:8080/OnTimeBackend/login', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/x-www-form-urlencoded',
+                    'X-Requested-With': 'XMLHttpRequest' // Importante para tu AuthFilter
                 },
-                body: `usuario=${encodeURIComponent(usuarioVal)}&clave=${encodeURIComponent(claveVal)}`
+                body: `usuario=${encodeURIComponent(usuarioVal)}&clave=${encodeURIComponent(claveVal)}&rol=${encodeURIComponent(rolSeleccionado)}`
             });
 
             const resultado = await respuesta.json();
 
             if (respuesta.ok) {
-                // Guardamos los datos de la sesión activa de forma segura en el navegador
+                // Guardado de sesión
                 sessionStorage.setItem('usuarioActual', JSON.stringify({
                     nombre: resultado.nombre,
-                    rol: resultado.rol
+                    Rol: resultado.Rol
                 }));
 
-                mostrarFeedback(`${resultado.message} Cargando panel...`, 'exito');
+                mostrarFeedback(`${resultado.message} Redirigiendo...`, 'exito');
 
-                // ENRUTAMIENTO INTELIGENTE SEGÚN EL ROL DE LA BASE DE DATOS
+                // Enrutamiento inteligente según el rol devuelto por Java
                 setTimeout(() => {
-                    if (resultado.rol === 'administrador') {
-                        window.location.href = '../html/dashb.html'; // Tu dashboard principal
-                    } else if (resultado.rol === 'contador') {
-                        window.location.href = '../html/dashboard_contador.html'; // Panel contable si lo creas
+                    if (resultado.Rol === 'administrador') {
+                        window.location.href = '../html/dashb.html';
+                    } else if (resultado.Rol === 'contador') {
+                        window.location.href = '../html/dashb-contador.html';
                     } else {
                         mostrarFeedback('No tienes un panel asignado para este rol.', 'error');
                     }
                 }, 1500);
 
             } else {
-                // Muestra errores de credenciales incorrectas o cuentas inactivas controladas por Java
-                mostrarFeedback(resultado.message, 'error');
+                mostrarFeedback(resultado.message || 'Error en la autenticación', 'error');
             }
 
         } catch (error) {
             console.error('Error al conectar con el Login:', error);
-            mostrarFeedback('✘ Error de comunicación con el servidor principal.', 'error');
+            mostrarFeedback('✘ Error de comunicación con el servidor.', 'error');
         }
     });
 
@@ -95,4 +125,5 @@ function inicializarLogin() {
     }
 }
 
-window.addEventListener('DOMContentLoaded', inicializarLogin);
+// Ejecución al cargar el DOM
+document.addEventListener('DOMContentLoaded', inicializarLogin);

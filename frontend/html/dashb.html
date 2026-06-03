@@ -10,6 +10,20 @@
     <link rel="stylesheet" href="../css/inicioDashboard.css" />
     <title>dashb</title>
   </head>
+  <script>
+    // Verificar si existe sesión
+    const sesion = sessionStorage.getItem('usuarioActual');
+    if (!sesion) {
+        window.location.href = 'login.html'; // Si no hay sesión, al login
+    } else {
+        const usuario = JSON.parse(sesion);
+        // Verificar si tiene el rol correcto para ESTA página específica
+        if (usuario.rol !== 'Administrador') {
+            alert("Acceso denegado");
+            window.location.href = 'login.html';
+        }
+    }
+</script>
 
   <body>
     <section class="dash">
