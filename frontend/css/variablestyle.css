@@ -9,14 +9,16 @@
 /* estilo fondo */
 
 body {
-    background-image: url(../img/fondooficina.avif);
+    background-image: url(../img/fondonatural\ .png);
     background-size: cover;
     background-repeat: no-repeat;
 }
 
+
+
 /* estilos button */
 .bt-menu-item{
-    background-color: var(--bt-menu);
+    background-color: var(--colorFondobotn);
     color: var(--white);
     height: 40px;
     width: 150px;
@@ -24,9 +26,10 @@ body {
     margin-top: 10px;
     text-align: center;
     text-decoration: none;
-    padding: 10px;
+    padding: 7px;
     transition: 0.3s;
     cursor: pointer;
+    -webkit-backdrop-filter: blur(5px);
     backdrop-filter: blur(5px);
     border: 1px solid #183357;
     box-shadow: 0 0 5px 3px var(--blue);
@@ -34,24 +37,32 @@ body {
 }
 
 .bt-menu-item:hover{
-    background-color:var(--bt-hover) ;
+    /* background-color:var(--bt-hover) ; */
     transform: scale(1.1);
     border: 1px solid var(--border-btn-activo);
+    transition: all 0.2s ease;
+    box-shadow: 0 0 8px 5px var(--blue);
 }
 
-
-
-/* .bt-style{
-    height: 40px;
-    width: 125px;
-    background-color: var(--bt-style);
-    color: var(--color-font);
-    border-radius: 10px;
+.btn-Modificador-cerrar{
+    background-color: #ffffff00;
+    color: var(--white);
+    border: 2px solid var(--color-rojo);
+    box-shadow: none;
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
     margin-top: 10px;
-    text-align: center;
-    text-decoration: none;
-    padding: 10px;
-} */
+
+}
+
+.btn-Modificador-cerrar:hover{
+    background-color: var(--color-rojo);
+    transform: scale(1.1);
+    border: 1px solid var(--color-rojo);
+    box-shadow: 0 0 5px 3px var(--color-rojo);
+    
+}
+
 
 .label-flotante {
     position: absolute;
@@ -63,7 +74,7 @@ body {
     z-index: 10;
 }
 
-.labelModificador{
+.label-modificador{
     color: rgb(0, 0, 0);
     background-color: rgba(255, 255, 255, 0.562);
     border-radius: 10px;
@@ -77,19 +88,19 @@ body {
 
 .input-login {
     position: relative;
-    width: 250px; /* Ajusta al ancho que desees */
+    width: 350px; /* Ajusta al ancho que desees */
 }
 
-.labelModificador:focus + .label-flotante,
-.labelModificador:not(:placeholder-shown) + .label-flotante {
+.label-modificador:focus + .label-flotante,
+.label-modificador:not(:placeholder-shown) + .label-flotante {
     transform: translateY(-35px); /* Sube la etiqueta */
     font-size: 14px;
     color: #ffffffde; /* Color blanco para que resalte en tu fondo azul */
     font-weight: bold;
 }
 
-.labelModificador:focus + .label-flotante,
-.labelModificador:not(:placeholder-shown) + .label-flotante {
+.label-modificador:focus + .label-flotante,
+.label-modificador:not(:placeholder-shown) + .label-flotante {
 
     
     font-size: 14px;
@@ -102,3 +113,6 @@ body {
     border-radius: 5px;        /* Opcional: redondea el fondo de la etiqueta */
 }
 
+.titulo-general, h2{
+    font-size: 30px;
+}

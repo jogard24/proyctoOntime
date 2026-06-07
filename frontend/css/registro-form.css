@@ -1,65 +1,243 @@
 @import url(variablestyle.css);
 @import url(colorStyle.css);
 
-.contenedor{
-
-    /* background-color: var(--blue); */
-    gap: 3%;
+.contenedor-formulario-modular {
+    width: 100%;
     display: flex;
     justify-content: center;
     align-items: center;
-    width: 500px;
-    margin: 80px auto;
-    /* box-shadow: 0 0 70px 5px var(--white); */
+    padding: 20px;
+    animation: fadeIn 0.5s ease;
 }
 
-.contenedor-form{
-    width: 500px;
-    height: 600px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 4%;
-    background-color: var(--black-glass);
-    border-radius: 35px;
+/* Asegura que el formulario se adapte al ancho del dashboard */
+.contenedor-form {
+    display: grid;
+    width: 100%;
+    max-width: 980px;
+    margin: 20px auto;
 }
 
+.formulario {
+    display: grid;
+    grid-template-columns: 1.4fr 1fr;
+    gap: 28px;
+    align-items: start;
+    width: 100%;
+}
 
-.formulario{
+.titulo-formulario {
+    grid-column: 1 / -1;
+    width: 100%;
+    margin: 10px auto 20px;
+    color: var(--white);
+    text-align: center;
+}
+
+.datos-principales {
+    display: grid;
+    gap: 18px;
+    grid-column: 1 / 2;
+}
+
+.datos-principales .input-login,
+.datos-principales .bt-menu-item {
+    width: 100%;
+}
+
+.info-emergencia {
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
-    gap:22px;
     align-items: center;
+    gap: 16px;
+    padding: 24px;
+    border-radius: 24px;
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.12);
 }
 
-.titulo-formulario{
-    width: 460px;
-    margin: 10px auto;
+.titulo-info-emergencia {
     color: var(--white);
+    font-size: 20px;
+    font-weight: 700;
+    margin: 0 0 10px;
 }
 
-/* .menu-item{
-    background-color: var(--bt-menu);
-    color: var(--white);
-    height: 40px;
-    width: 150px;
-    border-radius: 10px;
-    margin-top: 10px;
-    text-align: center;
-    text-decoration: none;
-    padding: 10px;
-    transition: 0.3s;
+.input-login {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.label-modificador {
+    width: 80%;
+}
+
+.bt-menu-item {
+    justify-self: flex-end;
+    max-width: 160px;
+}
+
+
+
+/* Contenedor principal de la foto (Fuerza la alineación sin romper el resto) */
+.form-group.text-center {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start; /* Alinea el título a la izquierda */
+    gap: 12px;
+    width: 100%;
+    margin-top: -40px;
+    text-align: left !important; /* Corrige el centrado heredado */
+}
+
+/* El texto de la etiqueta "Foto de Perfil del Empleado" */
+.form-group.text-center .form-label {
+    color: #ffffff; /* Blanco para que resalte sobre el fondo oscuro */
+    font-size: 0.95rem;
+    margin: 0;
+}
+
+/* Contenedor interno que obliga a la imagen y al input a ponerse en fila */
+.form-group.text-center .contenedor-preview {
+    display: flex;
+    flex-direction: row; /* Pone la foto al lado del botón */
+    align-items: center; /* Los centra verticalmente entre sí */
+    gap: 20px; /* Separación elegante entre la miniatura y el botón */
+    width: 100%;
+    margin-bottom: 0 !important; /* Quita márgenes viejos */
+}
+
+/* La imagen de vista previa redonda */
+#vistaPrevia {
+    /* Reducimos un poco el tamaño original (de 150px a 75px) para que no se coma la pantalla */
+    width: 75px !important;
+    height: 75px !important;
+    object-fit: cover;
+    border-radius: 50%;
+    border: 2px solid rgba(255, 255, 255, 0.4) !important; /* Borde traslúcido */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+    background-color: rgba(255, 255, 255, 0.1);
+    flex-shrink: 0; /* Evita que la foto se deforme o se encoja */
+}
+
+/* El botón de seleccionar archivo (Input File) estilizado como tus otros campos */
+#fotoInput {
+    background: rgba(255, 255, 255, 0.15) !important;
+    border: 1px solid rgba(255, 255, 255, 0.25) !important;
+    color: #ffffff !important;
+    padding: 10px 14px;
+    border-radius: 10px; /* Esquinas suaves a juego con tu diseño */
     cursor: pointer;
-    backdrop-filter: blur(2px);
-    border: 1px solid #183357;
-    box-shadow: 0 0 5px 3px var(--blue);
-    transition: 0.3s;
-    border: var(--border-btn);
+    font-size: 0.85rem;
+    max-width: 348px; /* Limita el ancho para que no se estire toscamente */
+    transition: background 0.3s ease, border-color 0.3s ease;
 }
 
-.menu-item:hover{
-    border: var(--border-btn-activo);
-    background: var(--bt-hover) ;
-    transform: scale(1.1);
-} */
+/* Efecto hover sutil al pasar el mouse por encima del botón */
+#fotoInput:hover {
+    background: rgba(255, 255, 255, 0.25) !important;
+    border-color: rgba(255, 255, 255, 0.4) !important;
+}
+
+@media (max-width: 900px) {
+    .formulario {
+        grid-template-columns: 1fr;
+    }
+
+    .titulo-formulario {
+        margin-bottom: 15px;
+    }
+
+    .info-emergencia,
+    .datos-principales {
+        grid-column: 1 / -1;
+    }
+
+    .bt-menu-item {
+        justify-self: center;
+        max-width: 100%;
+    }
+}
+
+@media (max-width: 650px) {
+    .info-emergencia {
+        padding: 18px;
+        gap: 14px;
+    }
+
+    .titulo-info-emergencia {
+        font-size: 18px;
+    }
+}
+
+/* Estilos para el modal de contratos */
+.modal {
+    display: none; /* se muestra con JS */
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.45);
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    padding: 24px;
+}
+
+.modal-contenido {
+    background: linear-gradient(180deg, rgba(18,24,31,0.98), rgba(12,18,22,0.95));
+    color: var(--white);
+    padding: 22px;
+    max-width: 680px;
+    width: 100%;
+    border-radius: 10px;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.7);
+}
+
+.modal-contenido h3 {
+    margin: 0 0 12px 0;
+    color: var(--black);
+    font-size: 18px;
+}
+
+.modal-contenido .input-login {
+    margin-bottom: 10px;
+}
+
+.modal-contenido input.label-modificador,
+.modal-contenido textarea,
+.modal-contenido input[type="date"],
+.modal-contenido input[type="number"] {
+    width: 100%;
+    padding: 10px 12px;
+    border-radius: 8px;
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    background: rgba(0, 0, 0, 0.02);
+    color: var(--white);
+}
+
+.modal-contenido textarea { 
+    resize: vertical; 
+    color: var(--black);
+}
+
+.modal-contenido .bt-menu-item {
+    background: linear-gradient(180deg, rgba(29,148,239,0.16), rgba(29,148,239,0.08));
+    color: var(--white);
+    border: 1px solid rgba(29,148,239,0.25);
+    padding: 8px 14px;
+    border-radius: 8px;
+    min-width: 120px;
+}
+
+.modal-contenido .bt-menu-item:hover {
+    background: linear-gradient(180deg, rgba(29,148,239,0.26), rgba(29,148,239,0.14));
+}
+
+.modal-contenido .botones-accion,
+.modal-actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 12px; }
+
+@media (max-width: 600px) {
+    .modal-contenido { padding: 16px; }
+    .modal-contenido .bt-menu-item { min-width: 90px; padding: 8px 10px; }
+}

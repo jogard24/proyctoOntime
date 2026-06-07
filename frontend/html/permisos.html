@@ -1,0 +1,41 @@
+<div class="permisos">
+  <div class="panel-permisos">
+    <div class="panel-header">
+      <h2>Control de permisos</h2>
+      <button class="btn-menu-item btn-permisos" id="btn-nueva-solicitud">Nueva solicitud</button>
+    </div>
+    <table class="tabla-ontime">
+      <thead>
+        <tr>
+          <th>Empleado</th>
+          <th>Tipo de permiso</th>
+          <th>Fecha de solicitud</th>
+          <th>Desde</th>
+          <th>Hasta</th>
+          <th>Estado</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>John Doe</td>
+          <td>Vacaciones</td>
+          <td>2023-10-01</td>
+          <td>2023-10-05</td>
+          <td>2023-10-10</td>
+          <td><span class="status-pill yellow">Pendiente</span></td>
+          <td>
+            <div class="acciones-flex">
+              <button class="btn-menu-item bt-ejecucion-editar" id="Editar">✔
+              </button>
+              <button class="btn-menu-item bt-ejecucion-eliminar" id="Eliminar">✘
+              </button>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+
+    </table>
+  </div>
+
+</div>

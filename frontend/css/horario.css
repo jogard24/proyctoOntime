@@ -1,0 +1,181 @@
+
+.horario {
+    width: min(1180px, 100%);
+    margin: 40px auto;
+    padding: 26px;
+    color: var(--white);
+    animation: fadeIn 0.5s ease;
+}
+
+.panel-horario {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.panel-header {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: 18px;
+}
+
+.header-actions {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.btn-horario {
+    background: rgba(29, 148, 239, 0.18);
+    border: 1px solid var(--blue, #2196f3);
+    padding: 12px 22px;
+    border-radius: 14px;
+    min-width: 150px;
+    color: var(--white);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-horario:hover {
+    transform: scale(1.03);
+    background: rgba(29, 148, 239, 0.28);
+}
+
+.tabla-ontime {
+    display: table;
+    width: 100%;
+    border-collapse: collapse;
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(10px);
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    margin-top: 10px;
+}
+
+.tabla-ontime thead {
+    background: rgba(0, 0, 0, 0.2);
+}
+
+.tabla-ontime th,
+.tabla-ontime td {
+    padding: 14px 18px;
+    text-align: left;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    font-size: 0.95rem;
+}
+
+.tabla-ontime th {
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.85rem;
+    letter-spacing: 0.5px;
+    color: var(--border-btn-activo, #00d4ff);
+}
+
+.tabla-ontime tbody tr:hover {
+    background: rgba(255, 255, 255, 0.05);
+    transition: background 0.2s ease;
+}
+
+.horario-form {
+    display: grid;
+    gap: 12px;
+    margin-top: 16px;
+}
+
+.horario-form label {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    color: #222;
+    font-weight: 600;
+}
+
+.horario-input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 1rem;
+    background: #fff;
+}
+
+.modal-oculto {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.45);
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modal-dialog {
+    background: #fff;
+    border-radius: 14px;
+    width: min(95vw, 520px);
+    padding: 24px;
+    box-shadow: 0 24px 48px rgba(0, 0, 0, 0.25);
+}
+
+.modal-title {
+    margin-top: 0;
+    font-size: 1.3rem;
+    color: #111;
+}
+
+.form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 22px;
+}
+
+.btn-secondary {
+    padding: 10px 14px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    background: #f5f5f5;
+    color: #333;
+    cursor: pointer;
+}
+
+.btn-primary {
+    padding: 10px 14px;
+    border-radius: 8px;
+    background: #1565c0;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+}
+
+.bt-ejecucion-eliminar {
+    margin-left: 8px;
+    background: #d32f2f;
+    color: #fff;
+    border: none;
+}
+
+.empty-row td {
+    text-align: center;
+}
+
+.bt-ejecucion-eliminar:hover {
+    background: #c62828;
+}
+
+@media (max-width: 640px) {
+    .horario {
+        margin: 20px 12px;
+        padding: 18px;
+    }
+
+    .tabla-ontime th,
+    .tabla-ontime td {
+        padding: 12px 10px;
+    }
+}

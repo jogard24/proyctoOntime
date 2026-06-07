@@ -1,0 +1,58 @@
+<link rel="stylesheet" href="../css/horario.css">
+<div class="horario">
+  <div class="panel-horario">
+    <div class="panel-header">
+      <h2>Configuración de horarios</h2>
+      <div class="header-actions">
+        <button class="btn-menu-item btn-horario" id="btn-nuevo-horario">Nuevo horario</button>
+      </div>
+    </div>
+
+    <table class="tabla-ontime">
+      <thead>
+        <tr>
+          <th>Entrada</th>
+          <th>Salida</th>
+          <th>Turno</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody id="tabla-horario-body">
+        <tr class="empty-row">
+          <td colspan="4">Cargando horarios...</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div id="modalHorario" class="modal-oculto">
+    <div class="modal-dialog">
+      <h3 id="tituloModalHorario" class="modal-title">Editar horario</h3>
+      <input type="hidden" id="horarioId">
+      <div class="horario-form">
+        <label>
+          Hora de entrada
+          <input id="horarioEntrada" type="time" class="horario-input">
+        </label>
+        <label>
+          Hora de salida
+          <input id="horarioSalida" type="time" class="horario-input">
+        </label>
+        <label>
+          Turno
+          <select id="horarioTurno" class="horario-input">
+            <option value="diurno">Diurno</option>
+            <option value="nocturno">Nocturno</option>
+            <option value="dominical">Dominical</option>
+            <option value="festivo">Festivo</option>
+          </select>
+        </label>
+      </div>
+
+      <div class="form-actions">
+        <button id="btn-cancelar-horario" class="btn-menu-item btn-secondary">Cancelar</button>
+        <button id="btn-guardar-horario" class="btn-menu-item btn-primary">Guardar horario</button>
+      </div>
+    </div>
+  </div>
+</div>

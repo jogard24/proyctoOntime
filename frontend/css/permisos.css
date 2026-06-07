@@ -1,0 +1,161 @@
+@import url(variablestyle.css);
+@import url(colorStyle.css);
+
+.permisos {
+    width: min(1180px, 100%);
+    margin: 40px auto;
+    padding: 26px;
+    margin-top: -250px;
+    color: var(--white);
+}
+
+.panel-permisos {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    animation: fadeIn 0.5s ease;
+
+}
+
+.panel-permisos .panel-header {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: 18px;
+}
+
+.panel-permisos h2 {
+    margin: 0;
+    font-size: 28px;
+    letter-spacing: 0.3px;
+    color: var(--white);
+}
+
+.btn-permisos{
+    background: rgba(29, 148, 239, 0.18);
+    border: 1px solid var(--blue);
+    padding: 12px 22px;
+    border-radius: 14px;
+    min-width: 150px;
+    color: var(--white);
+}
+
+.btn-permisos:hover {
+    transform: scale(1.1);
+    border: 1px solid var(--border-btn-activo);
+    transition: all 0.2s ease;
+    box-shadow: 0 0 8px 5px var(--blue);
+    cursor: pointer;
+}
+
+.tabla-ontime {
+    display: table;
+    width: 100%;
+    border-collapse: collapse;
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(10px);
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    margin-top: 10px;
+}
+
+.tabla-ontime thead {
+    background: rgba(0, 0, 0, 0.2);
+}
+
+.tabla-ontime th,
+.tabla-ontime td {
+    padding: 14px 18px;
+    text-align: left;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    font-size: 0.95rem;
+}
+
+.tabla-ontime th {
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.85rem;
+    letter-spacing: 0.5px;
+    color: var(--border-btn-activo, #00d4ff);
+}
+
+.tabla-ontime tbody tr:hover {
+    background: rgba(255, 255, 255, 0.05);
+    transition: background 0.2s ease;
+}
+
+.acciones-flex {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.bt-ejecucion-editar,
+.bt-ejecucion-eliminar {
+    min-width: 75px;
+    height: 40px;
+    width: 75px;
+    padding: 0 14px;
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    color: var(--white);
+    cursor: pointer;
+    transition: transform 0.2s ease, background-color 0.2s ease;
+}
+
+.bt-ejecucion-editar:hover {
+    background: rgba(4, 255, 180, 0.18);
+    transform: translateY(-1px);
+}
+
+.bt-ejecucion-eliminar:hover {
+    background: rgba(255, 76, 76, 0.18);
+    transform: translateY(-1px);
+}
+
+.status-pill {
+    display: inline-flex;
+    padding: 8px 14px;
+    border-radius: 999px;
+    font-size: 13px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.01em;
+}
+
+.status-pill.yellow {
+    color: #fff9d6;
+    background: rgba(255, 210, 0, 0.2);
+    border: 1px solid rgba(255, 210, 0, 0.32);
+}
+
+.status-pill.green {
+    color: #d2ffe8;
+    background: rgba(4, 255, 180, 0.18);
+    border: 1px solid rgba(4, 255, 180, 0.35);
+}
+
+@media (max-width: 900px) {
+    .permisos,
+    .panel-permisos {
+        padding: 22px;
+    }
+
+    .panel-permisos {
+        gap: 16px;
+    }
+}
+
+@media (max-width: 640px) {
+    .permisos {
+        margin: 20px 12px;
+    }
+
+    .tabla-ontime th,
+    .tabla-ontime td {
+        padding: 14px 10px;
+    }
+}
