@@ -3,6 +3,7 @@ package ontime.ontimebackend.modelo;
 public class Usuario {
     private int id;
     private String nombre;
+    private String Rol;
 
     // Constructor vacío: permite instanciar y luego usar los setters
     public Usuario() {}
@@ -12,4 +13,7 @@ public class Usuario {
 
     public String getNombre() { return nombre; }
     public void setNombre(String nombre) { this.nombre = nombre; }
+    
+    public String getRol() { return Rol; }
+    public void setRol(String Rol) { this.Rol = Rol; }
 }

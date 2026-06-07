@@ -67,9 +67,13 @@ function inicializarLogin() {
 
                 // ENRUTAMIENTO INTELIGENTE SEGÚN EL ROL DE LA BASE DE DATOS
                 setTimeout(() => {
-                    if (resultado.rol === 'administrador') {
+
+                    const rolServidor = resultado.rol ? resultado.rol.trim().toLowerCase() : "";
+                    console.log("Rol recibido:", rolServidor); // Esto te dirá exactamente qué llega
+
+                    if (rolServidor === 'administrador') {
                         window.location.href = '../html/dashb.html'; // Tu dashboard principal
-                    } else if (resultado.rol === 'contador') {
+                    } else if (rolServidor === 'contador') {
                         window.location.href = '../html/dashboard_contador.html'; // Panel contable si lo creas
                     } else {
                         mostrarFeedback('No tienes un panel asignado para este rol.', 'error');

@@ -41,8 +41,11 @@ select * from usuario;
 -- 2. Tabla de Roles
 CREATE TABLE roles (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    nombre_rol ENUM('administrador','empleado','contador') UNIQUE NOT NULL
+    Rol ENUM('administrador','empleado','contador') UNIQUE NOT NULL
 );
+
+
+
 
 -- 3. Tabla de Credenciales (Se eliminó la restricción UNIQUE en rol_id para permitir varios contadores/empleados)
 CREATE TABLE credenciales (

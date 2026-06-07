@@ -16,7 +16,13 @@ public class LoginServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        // Configuramos la respuesta como JSON para que el frontend pueda procesarla fácilmente
+
+        // ESTO PERMITE QUE EL FRONTEND HABLE CON EL BACKEND
+        response.setHeader("Access-Control-Allow-Origin", "http://127.0.0.1:5500");
+        response.setHeader("Access-Control-Allow-Methods", "POST, GET, OPTIONS");
+        response.setHeader("Access-Control-Allow-Headers", "Content-Type");
+        response.setHeader("Access-Control-Allow-Credentials", "true");
+// Configuramos la respuesta como JSON para que el frontend pueda procesarla fácilmente
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
 
@@ -30,8 +36,13 @@ public class LoginServlet extends HttpServlet {
         Usuario usuario = usuarioDAO.autenticar(user, pass);
 // Si el DAO retorna un usuario, significa que las credenciales son válidas
         if (usuario != null) {
-            // Enviamos una respuesta JSON positiva
-            response.getWriter().write("{\"exito\": true, \"message\": \"Bienvenido, " + usuario.getNombre() + "\", \"nombre\": \"" + usuario.getNombre() + "\", \"rol\": \"administrador\"}");
+// Usamos el rol real que viene del objeto usuario
+            String rolReal = usuario.getRol();
+            System.out.println("DEBUG: Rol detectado en Java para " + usuario.getNombre() + ": " + usuario.getRol());
+            // Enviamos el rol real en el JSON
+            response.getWriter().write("{\"exito\": true, \"message\": \"Bienvenido, " + usuario.getNombre()
+                    + "\", \"nombre\": \"" + usuario.getNombre()
+                    + "\", \"rol\": \"" + rolReal + "\"}");
         } else {
             // Si el DAO retorna null, las credenciales son inválidas
             // Establecemos el estado HTTP 401 (Unauthorized)
