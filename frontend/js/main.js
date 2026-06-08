@@ -5,6 +5,7 @@ import { configurarGestionEmpleados } from './modulos/gestionEmpleados.js';
 import { configurarRegistro } from './modulos/registro-form.js';
 import { configurarAsistenciaTabla } from './modulos/asistenciaTabla.js';
 import { configurarInicioDashboard } from './modulos/inicioModulo.js';
+import { configurarHorario } from './modulos/horario.js';
 
 // 2. ELEMENTOS CLAVE DEL DOM
 const contenedor = document.getElementById('contenedor-dinamico');
@@ -22,6 +23,7 @@ const rutasApp = {
     'btn-generarNomina':    { html: '../html/nomina.html',           init: configurarNomina },
     'btn-gestionEmpleados': { html: '../html/gestion-empleados.html', init: configurarGestionEmpleados },
     'btn-Asistencia':       { html: '../html/asistenciaTabla.html',   init: configurarAsistenciaTabla },
+    'btn-horario':          { html: '../html/horario.html',          init: configurarHorario }, 
     'btn-Permisos':         { html: '../html/permisos.html',          init: null },
     'btn-Informes':         { html: '../html/informes.html',          init: null }
 };

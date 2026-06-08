@@ -43,7 +43,7 @@ public class VerNovedadesServlet extends HttpServlet {
                 json.append("\"evento\":\"").append(a.getTipoEvento()).append("\",");
                 json.append("\"fecha_hora\":\"").append(a.getFechaHora()).append("\",");
                 json.append("\"observacion\":\"").append(a.getObservacion()).append("\",");
-                json.append("\"turno\":\"").append(a.getTipoTurno()).append("\"");
+                json.append("\"nombre_turno\":\"").append(a.getTipoTurno()).append("\"");
                 json.append("}");
                 if (i < lista.size() - 1) json.append(",");
             }

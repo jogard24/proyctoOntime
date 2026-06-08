@@ -6,12 +6,16 @@ CREATE TABLE usuario (
     id INT AUTO_INCREMENT PRIMARY KEY,
     documento_identidad VARCHAR(30) UNIQUE NOT NULL,
     nombre VARCHAR(100) NOT NULL, 
+    apellido varchar (50) not null,
     direccion VARCHAR(100) NOT NULL,
     estado enum ('activo', 'inactivo') not null,
     tipo_sangre ENUM('a+','a-', 'b+', 'b-', 'o+','o-','ab+','ab-'),
     fotoPerfil_url VARCHAR(255) NOT NULL,
     fecha_registro TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+
+alter table usuario
+add column apellido varchar (50) not null;
 
 ALTER TABLE usuario DROP COLUMN cargo;
 
@@ -101,6 +105,9 @@ INSERT INTO roles (nombre_rol) VALUES ('administrador'), ('empleado'), ('contado
 INSERT INTO jornadaLaboral (id, nombrejornada, hora_entrada, hora_salida)
 VALUES (101, 'Mañana Completa', '08:00:00', '17:00:00'),
        (102, 'Tarde Completa', '14:00:00', '22:00:00');
+       
+
+
 
 -- Carlos (Admin)
 INSERT INTO usuario (id, documento_identidad, nombre,  direccion, fotoPerfil_url, tipo_sangre)

@@ -81,7 +81,7 @@
 
         // Aquí usamos fetch para enviar los datos al Servlet (método POST o PUT)
         fetch('http://localhost:8080/OnTimeBackend/EmpleadoServlet', {
-            method: 'POST', // O 'PUT' según como tengas tu Servlet
+            method: 'POST', // O 'PUT'
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(datos)
         })

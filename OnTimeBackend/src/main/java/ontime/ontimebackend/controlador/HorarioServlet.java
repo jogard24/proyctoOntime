@@ -19,15 +19,10 @@ public class HorarioServlet extends HttpServlet {
     private final HorarioDAO horarioDAO = new HorarioDAO();
     private final Gson gson = new Gson();
 
-    private void configurarCORS(HttpServletResponse response) {
-        response.setHeader("Access-Control-Allow-Origin", "*");
-        response.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
-        response.setHeader("Access-Control-Allow-Headers", "Content-Type");
-    }
+
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        configurarCORS(response);
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
 
@@ -37,7 +32,6 @@ public class HorarioServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        configurarCORS(response);
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
 
@@ -54,7 +48,6 @@ public class HorarioServlet extends HttpServlet {
 
     @Override
     protected void doPut(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        configurarCORS(response);
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
 
@@ -71,7 +64,6 @@ public class HorarioServlet extends HttpServlet {
 
     @Override
     protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        configurarCORS(response);
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
 
@@ -88,7 +80,6 @@ public class HorarioServlet extends HttpServlet {
 
     @Override
     protected void doOptions(HttpServletRequest request, HttpServletResponse response) {
-        configurarCORS(response);
         response.setStatus(HttpServletResponse.SC_OK);
     }
 

@@ -213,7 +213,7 @@
     border-radius: 8px;
     border: 1px solid rgba(0, 0, 0, 0.08);
     background: rgba(0, 0, 0, 0.02);
-    color: var(--white);
+    color: var(--black);
 }
 
 .modal-contenido textarea { 
@@ -222,16 +222,20 @@
 }
 
 .modal-contenido .bt-menu-item {
-    background: linear-gradient(180deg, rgba(29,148,239,0.16), rgba(29,148,239,0.08));
+    background: var(--blue);
     color: var(--white);
-    border: 1px solid rgba(29,148,239,0.25);
+    border: 1px solid rgba(0, 145, 255, 0.25);
     padding: 8px 14px;
     border-radius: 8px;
     min-width: 120px;
+    transform: translateY(0);
+    color: var(--black);
 }
 
 .modal-contenido .bt-menu-item:hover {
-    background: linear-gradient(180deg, rgba(29,148,239,0.26), rgba(29,148,239,0.14));
+    background: var(--blue);
+    color: var(--black);
+    
 }
 
 .modal-contenido .botones-accion,

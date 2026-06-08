@@ -11,6 +11,7 @@ export function configurarRegistro() {
     const nombreContactoInput = document.getElementById('nombreContacto');
     const celularContactoInput = document.getElementById('celularContacto');
     const relacionContactoInput = document.getElementById('relacionContacto');
+    const documentoInput = document.getElementById('documento_identidad'); // Asegúrate de tener este input en tu HTML
 
     if (!btnGuardar || !inputFoto || !vistaPrevia) {
         console.warn('No se encontró el formulario de registro o sus elementos principales.');
@@ -37,13 +38,14 @@ export function configurarRegistro() {
         const datosEmpleado = {
             nombre: nombreInput?.value.trim() || '',
             apellido: apellidoInput?.value.trim() || '',
+            documento_identidad: documentoInput?.value.trim() || '',
             email: emailInput?.value.trim() || '',
             celular: celularInput?.value.trim() || '',
             direccion: direccionInput?.value.trim() || '',
             tipoSangre: tipoSangreInput?.value.trim() || '',
             nombreContacto: nombreContactoInput?.value.trim() || '',
             celularContacto: celularContactoInput?.value.trim() || '',
-            relacionContacto: relacionContactoInput?.value.trim() || ''
+            relacionContacto: relacionContactoInput?.value.trim() || '',
         };
 
         const errores = validarDatos(datosEmpleado);
@@ -66,6 +68,7 @@ export function configurarRegistro() {
         const errores = [];
         if (!datos.nombre) errores.push('Nombre es obligatorio.');
         if (!datos.apellido) errores.push('Apellido es obligatorio.');
+        if (!datos.documento_identidad) errores.push('Documento de identidad es obligatorio.');
         if (!datos.email) errores.push('Email es obligatorio.');
         if (!datos.celular) errores.push('Celular es obligatorio.');
         if (!datos.direccion) errores.push('Dirección es obligatoria.');
@@ -77,7 +80,7 @@ export function configurarRegistro() {
     }
 
     async function enviarEmpleado(datos, archivoFoto) {
-        const url = 'http://localhost:8080/OnTimeBackend/EmpleadoServlet';
+        const url = 'http://localhost:8080/OnTimeBackend/RegistroServlet';
         const formData = new FormData();
 
         Object.keys(datos).forEach((key) => {
@@ -88,10 +91,16 @@ export function configurarRegistro() {
             formData.append('fotoPerfil', archivoFoto);
         }
 
-        // Si hay un contrato temporal agregado desde el modal, lo incluimos como JSON
         if (window._contratoTemporal) {
-            formData.append('contrato', JSON.stringify(window._contratoTemporal));
+            // En lugar de enviarlo como JSON string, lo "aplanamos" directamente en el FormData
+            Object.keys(window._contratoTemporal).forEach((key) => {
+                formData.append(key, window._contratoTemporal[key]);
+            });
+        } else {
+            //en caso de no llenar el modal 
+            console.warn("No se detectó ningún contrato temporal.");
         }
+
 
         const respuesta = await fetch(url, {
             method: 'POST',

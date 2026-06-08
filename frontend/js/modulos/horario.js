@@ -47,6 +47,7 @@ export function configurarHorario() {
         items.forEach(horario => {
             const fila = document.createElement('tr');
             fila.innerHTML = `
+                <td>${horario.id || '-'}</td>
                 <td>${horario.entrada || '-'}</td>
                 <td>${horario.salida || '-'}</td>
                 <td>${horario.turno || '-'}</td>
@@ -73,6 +74,7 @@ export function configurarHorario() {
 
             await cargarHorarios();
             alert('Horario eliminado correctamente.');
+
         } catch (error) {
             console.error('Error eliminando horario:', error);
             alert('No se pudo eliminar el horario.');
@@ -92,13 +94,42 @@ export function configurarHorario() {
         modal.style.display = 'none';
     }
 
+    function crearContenedorFeedback() {
+        const contenedorLogin = document.querySelector('.card-login');
+        if (!contenedorLogin) return null;
+
+        let feedback = document.getElementById('login-feedback');
+        if (!feedback) {
+            feedback = document.createElement('p');
+            feedback.id = 'login-feedback';
+            feedback.className = 'login-feedback';
+            contenedorLogin.appendChild(feedback);
+        }
+        return feedback;
+    }
+    function mostrarFeedback(mensaje, tipo = 'error') {
+        const feedback = crearContenedorFeedback();
+        if (!feedback) {
+            alert(mensaje);
+            return;
+        }
+        feedback.textContent = mensaje;
+        feedback.className = `login-feedback login-feedback--${tipo}`;
+    }
+
     async function guardarHorario() {
+
         const id = inputId.value;
         const datos = {
             entrada: inputEntrada.value,
             salida: inputSalida.value,
             turno: selectTurno.value
         };
+
+        if (inputEntrada.value === '' || inputSalida.value === '') {
+            mostrarFeedback('Por favor completa todos los campos.', 'error');
+            return;
+        }
 
         const metodo = id ? 'PUT' : 'POST';
         if (id) datos.id = id;

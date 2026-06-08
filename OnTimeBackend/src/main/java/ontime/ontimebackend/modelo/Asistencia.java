@@ -7,7 +7,7 @@ public class Asistencia {
     private String fechaHora;
     private String tipoEvento;
     private String observacion;
-    private String tipoTurno;
+    private String nombre_turno;
 
     // --- GETTERS Y SETTERS ---
     // Son los métodos de acceso: permiten que otras clases (como el DAO o el Servlet)
@@ -28,6 +28,8 @@ public class Asistencia {
     public String getObservacion() { return observacion; }
     public void setObservacion(String observacion) { this.observacion = observacion; }
 
-    public String getTipoTurno() { return tipoTurno; }
-    public void setTipoTurno(String tipoTurno) { this.tipoTurno = tipoTurno; }
+    public String getTipoTurno() { return nombre_turno; }
+    public void setTipoTurno(String nombre_turno) { this.nombre_turno = nombre_turno; }
+    
+
 }

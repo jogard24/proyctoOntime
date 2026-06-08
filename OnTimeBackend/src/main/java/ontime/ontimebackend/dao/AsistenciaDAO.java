@@ -78,6 +78,7 @@ public class AsistenciaDAO {
         return "Usuario";
     }
 // Determina si el empleado debe marcar entrada o salida según su último registro
+
     public String obtenerUltimoTipoEvento(int usuarioId) {
         String sql = "SELECT tipo_evento FROM asistencia WHERE usuario_id = ? ORDER BY fecha_hora DESC LIMIT 1";
         // ... (lógica de consulta)
@@ -94,6 +95,7 @@ public class AsistenciaDAO {
         return "salida";// Por defecto, si nunca ha marcado, asumimos que su próximo evento es entrada
     }
 // Inserta un nuevo registro en la tabla asistencia
+
     public boolean registrarAsistencia(int usuarioId, String tipoEvento, String observacion, String tipoTurno, int jornadaId) {
         String sql = "INSERT INTO asistencia (usuario_id, tipo_evento, observacion, tipo_turno, jornada_id, fecha_hora) VALUES (?, ?, ?, ?, ?, NOW())";
         try (Connection con = Conexion.obtenerConexion(); PreparedStatement ps = con.prepareStatement(sql)) {
@@ -109,6 +111,7 @@ public class AsistenciaDAO {
         }
     }
 // Trae la hora de entrada de la jornada asignada al usuario
+
     public LocalTime obtenerHoraEntrada(int usuarioId) {
         String sql = "SELECT j.hora_entrada FROM jornadaLaboral j "
                 + "JOIN contrato c ON j.id = c.jornada_id "
@@ -128,29 +131,35 @@ public class AsistenciaDAO {
     }
 
     public List<Asistencia> listarNovedadesRecientes() {
-    List<Asistencia> lista = new ArrayList<>();
-    // Usamos el SQL corregido aquí
-    String sql = "SELECT a.id, u.nombre, a.tipo_evento, a.fecha_hora, a.observacion, a.tipo_turno "
-               + "FROM asistencia a "
-               + "INNER JOIN usuario u ON a.usuario_id = u.id "
-               + "ORDER BY a.fecha_hora DESC LIMIT 10"; // LIMIT 10 para que no cargue todo el historial
+        List<Asistencia> lista = new ArrayList<>();
+        // Usamos el SQL corregido aquí
+//    String sql = "SELECT a.id, u.nombre, a.tipo_evento, a.fecha_hora, a.observacion, a.tipo_turno "
+//               + "FROM asistencia a "
+//               + "INNER JOIN usuario u ON a.usuario_id = u.id "
+//               + "ORDER BY a.fecha_hora DESC LIMIT 10"; // LIMIT 10 para que no cargue todo el historial
 
-    try (Connection con = Conexion.obtenerConexion();
-         PreparedStatement ps = con.prepareStatement(sql);
-         ResultSet rs = ps.executeQuery()) {
-        
-        while (rs.next()) {
-            Asistencia asis = new Asistencia();
-            asis.setId(rs.getInt("id"));
-            asis.setNombreEmpleado(rs.getString("nombre"));
-            asis.setTipoEvento(rs.getString("tipo_evento"));
-            asis.setFechaHora(rs.getTimestamp("fecha_hora").toString());
-            asis.setObservacion(rs.getString("observacion"));
-            asis.setTipoTurno(rs.getString("tipo_turno"));
-            lista.add(asis);
+        String sql = "SELECT a.id, u.nombre, a.tipo_evento, a.fecha_hora, a.observacion, j.nombrejornada AS nombre_turno "
+                + "FROM asistencia a "
+                + "INNER JOIN usuario u ON a.usuario_id = u.id "
+                + "LEFT JOIN jornadaLaboral j ON a.jornada_id = j.id "
+                + "ORDER BY a.fecha_hora DESC LIMIT 10";
+
+        try (Connection con = Conexion.obtenerConexion(); PreparedStatement ps = con.prepareStatement(sql); ResultSet rs = ps.executeQuery()) {
+
+            while (rs.next()) {
+                Asistencia asis = new Asistencia();
+                asis.setId(rs.getInt("id"));
+                asis.setNombreEmpleado(rs.getString("nombre"));
+                asis.setTipoEvento(rs.getString("tipo_evento"));
+                asis.setFechaHora(rs.getTimestamp("fecha_hora").toString());
+                asis.setObservacion(rs.getString("observacion"));
+                asis.setTipoTurno(rs.getString("nombre_turno"));
+                lista.add(asis);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
-    } catch (SQLException e) { e.printStackTrace(); }
-    return lista;
-}
-    
+        return lista;
+    }
+
 }

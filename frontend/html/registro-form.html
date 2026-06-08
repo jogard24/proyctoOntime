@@ -1,37 +1,42 @@
 <div id="vistaRegistro" class="contenedor-formulario-modular">
     <section class="contenedor-form">
-        <form class="formulario">
+        <form class="formulario" enctype="multipart/form-data">
             <h1 class="titulo-formulario titulo-general">FORMULARIO DE REGISTRO</h1>
-            
+            <input type="hidden" name="estado" value="activo">
             <div class="form-group mb-3 text-center">
-            <label for="fotoInput" class="form-label d-block text-start fw-bold"></label>
-            
-            <div class="contenedor-preview mb-2">
-                <img id="vistaPrevia" src="img/usuario-defecto.png" alt="Vista previa" >
-            </div>
-            
-            <input type="file" id="fotoInput" name="fotoPerfil" accept="image/png, image/jpeg, image/jpg" class="form-control">
+                <label for="fotoInput" class="form-label d-block text-start fw-bold"></label>
+
+                <div class="contenedor-preview mb-2">
+                    <img id="vistaPrevia" src="img/usuario-defecto.png" alt="Vista previa">
+                </div>
+
+                <input type="file" id="fotoInput" name="fotoPerfil" accept="image/png, image/jpeg, image/jpg"
+                    class="form-control">
             </div>
 
             <div class="datos-principales">
                 <div class="input-login">
-                    <input class="label-modificador" type="text" name="Nombre" id="nombre" placeholder=" ">
+                    <input class="label-modificador" type="text" name="nombre" id="nombre" placeholder=" " required>
                     <label for="nombre" class="label-flotante">Nombre</label>
                 </div>
                 <div class="input-login">
-                    <input class="label-modificador" type="text" name="Apellido" id="apellido" placeholder=" ">
+                    <input class="label-modificador" type="text" name="apellido" id="apellido" placeholder=" ">
                     <label for="apellido" class="label-flotante">Apellido</label>
                 </div>
                 <div class="input-login">
-                    <input class="label-modificador" type="text" name="Email" id="email" placeholder=" ">
+                    <input class="label-modificador" type="text" name="documento_identidad" id="documento_identidad" placeholder=" ">
+                    <label for="documento_identidad" class="label-flotante">Cédula</label>
+                </div>
+                <div class="input-login">
+                    <input class="label-modificador" type="text" name="email" id="email" placeholder=" ">
                     <label for="email" class="label-flotante">Email</label>
                 </div>
                 <div class="input-login">
-                    <input class="label-modificador" type="number" name="Celular" id="celular" placeholder=" ">
+                    <input class="label-modificador" type="number" name="celular" id="celular" placeholder=" ">
                     <label for="celular" class="label-flotante">Celular</label>
                 </div>
                 <div class="input-login">
-                    <input class="label-modificador" type="text" name="Direccion" id="direccion" placeholder=" ">
+                    <input class="label-modificador" type="text" name="direccion" id="direccion" placeholder=" ">
                     <label for="direccion" class="label-flotante">Direccion</label>
                 </div>
                 <div class="input-login">
@@ -40,19 +45,22 @@
                 </div>
 
             </div>
-            
+
             <div class="info-emergencia">
                 <h2 class="titulo-info-emergencia">Información de emergencia</h2>
                 <div class="input-login">
-                    <input class="label-modificador" type="text" name="nombreContacto" id="nombreContacto" placeholder=" ">
+                    <input class="label-modificador" type="text" name="nombreContacto" id="nombreContacto"
+                        placeholder=" ">
                     <label for="nombreContacto" class="label-flotante">Nombre del contacto</label>
                 </div>
                 <div class="input-login">
-                    <input class="label-modificador" type="number" name="celularContacto" id="celularContacto" placeholder=" ">
+                    <input class="label-modificador" type="number" name="celularContacto" id="celularContacto"
+                        placeholder=" ">
                     <label for="celularContacto" class="label-flotante">Celular del contacto</label>
                 </div>
                 <div class="input-login">
-                    <input class="label-modificador" type="text" name="relacionContacto" id="relacionContacto" placeholder=" ">
+                    <input class="label-modificador" type="text" name="relacionContacto" id="relacionContacto"
+                        placeholder=" ">
                     <label for="relacionContacto" class="label-flotante">Parentesco</label>
                 </div>
                 <div class="botones-accion">
@@ -71,36 +79,44 @@
 </div>
 
 <!-- Modal para agregar contrato (incrustado en el formulario de registro) -->
-<div id="modalContrato" class="modal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.5); align-items:center; justify-content:center;">
-    <div class="modal-contenido" style="background:var(--colorFondobotn); padding:20px; max-width:600px; width:100%; border-radius:6px;">
+<div id="modalContrato" class="modal"
+    style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.5); align-items:center; justify-content:center;">
+    <div class="modal-contenido"
+        style="background:var(--white); padding:20px; max-width:600px; width:100%; border-radius:6px;">
         <h3>Agregar contrato</h3>
         <form id="formContrato">
             <div class="input-login">
-                <input class="label-modificador" type="text" name="tipoContrato" id="tipoContrato" placeholder=" ">
+                <input class="label-modificador" type="text" name="tipoContrato" id="tipoContrato" placeholder=" "
+                    required>
                 <label for="tipoContrato" class="label-flotante">Tipo de contrato</label>
             </div>
             <div class="input-login">
-                <input class="label-modificador" type="text" name="cargoContrato" id="cargoContrato" placeholder=" ">
+                <input class="label-modificador" type="text" name="cargoContrato" id="cargoContrato" placeholder=" "
+                    required>
                 <label for="cargoContrato" class="label-flotante">Cargo</label>
             </div>
             <div class="input-login">
-                <input class="label-modificador" type="number" step="0.01" name="salarioBase" id="salarioBase" placeholder=" ">
+                <input class="label-modificador" type="number" step="0.01" name="salarioBase" id="salarioBase"
+                    placeholder=" " required>
                 <label for="salarioBase" class="label-flotante">Salario base</label>
             </div>
             <div class="input-login">
-                <input class="label-modificador" type="text" name="jornadaContrato" id="jornadaContrato" placeholder=" ">
-                <label for="jornadaContrato" class="label-flotante">Jornada (id o nombre)</label>
+                <input class="label-modificador" type="text" name="jornadaContrato" id="jornadaContrato" placeholder=" "
+                    required>
+                <label for="jornadaContrato" class="label-flotante">id jornada</label>
             </div>
             <div class="input-login">
-                <input class="label-modificador" type="date" name="fechaInicio" id="fechaInicio" placeholder=" ">
+                <input class="label-modificador" type="date" name="fechaInicio" id="fechaInicio" placeholder=" "
+                    required>
                 <label for="fechaInicio" class="label-flotante">Fecha inicio</label>
             </div>
             <div class="input-login">
-                <input class="label-modificador" type="date" name="fechaFin" id="fechaFin" placeholder=" ">
-                <label for="fechaFin" class="label-flotante">Fecha fin (opcional)</label>
+                <input class="label-modificador" type="date" name="fechaFin" id="fechaFin" placeholder=" " required>
+                <label for="fechaFin" class="label-flotante">Fecha fin</label>
             </div>
             <div class="input-login">
-                <textarea name="observacionContrato" id="observacionContrato" rows="3" placeholder="Observaciones"></textarea>
+                <textarea name="observacionContrato" id="observacionContrato" rows="3"
+                    placeholder="Observaciones (opcional)"></textarea>
             </div>
             <div style="display:flex; gap:8px; justify-content:flex-end; margin-top:12px;">
                 <button type="button" id="btnCerrarModal" class="bt-menu-item">Cancelar</button>

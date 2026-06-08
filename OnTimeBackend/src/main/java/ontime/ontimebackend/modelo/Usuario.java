@@ -1,5 +1,5 @@
 package ontime.ontimebackend.modelo;
-
+//representar las credenciales de acceso al sistema (datos de inicio de sesión, rol, estado de la cuenta
 public class Usuario {
     private int id;
     private String nombre;
@@ -16,4 +16,6 @@ public class Usuario {
     
     public String getRol() { return Rol; }
     public void setRol(String Rol) { this.Rol = Rol; }
+
+
 }

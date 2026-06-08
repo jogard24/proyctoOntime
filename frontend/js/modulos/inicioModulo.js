@@ -47,7 +47,7 @@ async function consultarNovedadesInicio() {
         registros.forEach(reg => {
             // Si el evento es una entrada, lo sumamos al Set de empleados activos
             if (reg.evento && reg.evento.toLowerCase() === "entrada") {
-                empleadosActivos.add(reg.empleado); 
+                empleadosActivos.add(reg.empleado);
             }
             // Contadores dinámicos para las otras tarjetas
             if (reg.observacion && reg.observacion.toLowerCase().includes("retardo")) {
@@ -58,7 +58,7 @@ async function consultarNovedadesInicio() {
             }
 
             const fila = document.createElement("tr");
-            
+
             // Si tiene retardo, le aplicamos un color de fondo sutil de alerta
             if (reg.observacion && reg.observacion.toLowerCase().includes("retardo")) {
                 fila.style.backgroundColor = "rgba(255, 77, 77, 0.08)";
@@ -75,9 +75,9 @@ async function consultarNovedadesInicio() {
                         ${reg.evento.toUpperCase()}
                     </span>
                 </td>
-                <td>${reg.turno}</td>
+                <td>${reg.nombre_turno}</td>
                 <td>${reg.fecha_hora}</td>
-                <td style="font-weight: ${reg.observacion.includes('Retardo') ? '500' : 'normal'}; 
+                <td style="font-weight: ${reg.observacion.includes('Retardo') ? '500' : 'normal'};
                            color: ${reg.observacion.includes('Retardo') ? '#ff4d4d' : '#ffffff'}">
                     ${reg.observacion}
                 </td>
@@ -91,7 +91,7 @@ async function consultarNovedadesInicio() {
         const txtSalidas = document.getElementById("stat-salidas");
 
         // .size nos da el conteo final de elementos únicos dentro del Set
-        if (txtTotal) txtTotal.textContent = empleadosActivos.size; 
+        if (txtTotal) txtTotal.textContent = empleadosActivos.size;
         if (txtRetardos) txtRetardos.textContent = totalRetardos;
         if (txtSalidas) txtSalidas.textContent = totalSalidas;
 
