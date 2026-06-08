@@ -26,7 +26,6 @@ function inicializarLogin() {
     const inputUsuario = document.querySelector('input[name="nombre"]');
     const inputPassword = document.getElementById('pass') || document.querySelector('input[name="contraseña"]');
     const botonIngresar = document.getElementById('btn-ingresar');
-    const enlaceRecordar = document.querySelector('a[href="recordar contraseña"]');
 
     if (!inputUsuario || !inputPassword || !botonIngresar) {
         console.warn('No se pudieron inicializar los elementos del login.');
@@ -45,8 +44,8 @@ function inicializarLogin() {
         }
 
         try {
-            // Disparamos la petición POST directo al Servlet en Tomcat
-            const respuesta = await fetch('http://localhost:8080/OnTimeBackend/login', {
+            // Ajuste 1: URL sincronizada con el estándar de nombres del Backend (LoginServlet)
+            const respuesta = await fetch('http://localhost:8080/OnTimeBackend/LoginServlet', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/x-www-form-urlencoded',
@@ -57,32 +56,30 @@ function inicializarLogin() {
             const resultado = await respuesta.json();
 
             if (respuesta.ok) {
-                // Guardamos los datos de la sesión activa de forma segura en el navegador
+                // Guarda los datos en sessionStorage (Alimenta con éxito tu saludo en el Home)
                 sessionStorage.setItem('usuarioActual', JSON.stringify({
-                    nombre: resultado.nombre,
+                    nombre: resultado.nombre || usuarioVal,
                     rol: resultado.rol
                 }));
 
-                mostrarFeedback(`${resultado.message} Cargando panel...`, 'exito');
+                mostrarFeedback(`${resultado.message || 'Acceso concedido.'} Cargando panel...`, 'exito');
 
-                // ENRUTAMIENTO INTELIGENTE SEGÚN EL ROL DE LA BASE DE DATOS
+                // ENRUTAMIENTO CONTROLADO (RF04 y RF05)
                 setTimeout(() => {
-
                     const rolServidor = resultado.rol ? resultado.rol.trim().toLowerCase() : "";
-                    console.log("Rol recibido:", rolServidor); // Esto te dirá exactamente qué llega
+                    console.log("Rol recibido:", rolServidor);
 
                     if (rolServidor === 'administrador') {
-                        window.location.href = '../html/dashb.html'; // Tu dashboard principal
+                        window.location.href = '../html/dashb.html'; // Panel del Administrador
                     } else if (rolServidor === 'contador') {
-                        window.location.href = '../html/dashboard_contador.html'; // Panel contable si lo creas
+                        window.location.href = '../html/dashboard_contador.html'; // Panel del Contador
                     } else {
-                        mostrarFeedback('No tienes un panel asignado para este rol.', 'error');
+                        mostrarFeedback('Acceso denegado: El rol no cuenta con privilegios de Dashboard.', 'error');
                     }
                 }, 1500);
 
             } else {
-                // Muestra errores de credenciales incorrectas o cuentas inactivas controladas por Java
-                mostrarFeedback(resultado.message, 'error');
+                mostrarFeedback(resultado.message || 'Usuario o contraseña incorrectos.', 'error');
             }
 
         } catch (error) {
@@ -90,13 +87,7 @@ function inicializarLogin() {
             mostrarFeedback('✘ Error de comunicación con el servidor principal.', 'error');
         }
     });
-
-    if (enlaceRecordar) {
-        enlaceRecordar.addEventListener('click', (event) => {
-            event.preventDefault();
-            mostrarFeedback('Contacta al administrador para restablecer tu contraseña.', 'info');
-        });
-    }
 }
 
 window.addEventListener('DOMContentLoaded', inicializarLogin);
+

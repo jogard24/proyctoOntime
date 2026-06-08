@@ -30,20 +30,22 @@ export function configurarContrato() {
     formContrato.addEventListener('submit', (e) => {
         e.preventDefault();
 
+        // CORRECCIÓN CRÍTICA: Nombres alineados al 100% con registro-form.js y el Servlet
         const contrato = {
             tipoContrato: document.getElementById('tipoContrato')?.value.trim() || '',
-            cargo: document.getElementById('cargoContrato')?.value.trim() || '',
+            cargoContrato: document.getElementById('cargoContrato')?.value.trim() || '',
             salarioBase: parseFloat(document.getElementById('salarioBase')?.value) || 0,
-            jornada: document.getElementById('jornadaContrato')?.value.trim() || '',
+            jornadaContrato: document.getElementById('jornadaContrato')?.value.trim() || '',
             fechaInicio: document.getElementById('fechaInicio')?.value || '',
             fechaFin: document.getElementById('fechaFin')?.value || '',
             observacion: document.getElementById('observacionContrato')?.value.trim() || ''
         };
 
-        // Guardamos temporalmente el contrato para enviarlo junto al empleado
+        // Guardamos temporalmente el contrato en la ventana global para enviarlo junto al empleado
         window._contratoTemporal = contrato;
 
-        alert('Contrato guardado temporalmente. Se añadirá al guardar el empleado.');
+        alert('Contrato pre-guardado con éxito. Recuerde dar clic en "Guardar" al final del formulario principal.');
         cerrarModal();
     });
 }
+

@@ -1,131 +1,73 @@
 package ontime.ontimebackend.modelo;
 
-//contiene al Usuario y representar 
-//la información personal y laboral (nombre completo, documento, dirección, cargo, contrato).
 public class Empleado {
 
-    private String id;
+    private int id; // Se cambió a int para coincidir con la llave primaria de Ontime3BD
+    private String documento;
     private String nombre;
     private String apellido;
-    private String documento;
     private String direccion;
-
-    private String cargo;
     private String estado;
-    private String fotoPerfil_url;
-    private String telefono_celular;
     private String tipoSangre;
+    private String foto;
+    private String fechaRegistro;
 
+    // Datos de tablas asociadas (Para evitar redundancia de archivos en un entorno académico)
+    private String email;
     private String telefonoCelular;
-    private String Email;
     private String contactoEmergenciaNombre;
     private String contactoEmergenciaTelefono;
     private String contactoEmergenciaParentesco;
+    
+    // Campo analítico útil para el listado general de gestión
+    private String cargo;
 
-    // Constructor vacío: permite instanciar y luego usar los setters
     public Empleado() {
     }
 
-    // Constructor con parámetros
-    public Empleado(String id, String nombre, String apellido,String documento,
-            String direccion, String cargo, String estado, String fotoPerfil_url,
-            String contactoEmergenciaNombre, String contactoEmergenciaParentesco, String contactoEmergenciaTelefono ) {
-        this.id = id;
-        this.nombre = nombre;
-        this.apellido = apellido;
-        this.documento = documento;
-        this.direccion = direccion;
-        this.cargo = cargo;
-        this.estado = estado;
-        this.fotoPerfil_url = fotoPerfil_url;
-        this.contactoEmergenciaNombre = contactoEmergenciaNombre;
-        this.contactoEmergenciaParentesco = contactoEmergenciaParentesco;
-        this.contactoEmergenciaTelefono = contactoEmergenciaTelefono;
-    }
+    // --- Métodos Getters y Setters ---
+    public int getId() { return id; }
+    public void setId(int id) { this.id = id; }
 
-    // Métodos Getters y Setters
-    public String getId() 
-    {return id;}
+    public String getDocumento() { return documento; }
+    public void setDocumento(String documento) { this.documento = documento; }
 
-    public void setId(String id) 
-    {this.id = id;}
+    public String getNombre() { return nombre; }
+    public void setNombre(String nombre) { this.nombre = nombre; }
 
-    public String getNombre() 
-    {return nombre;}
+    public String getApellido() { return apellido; }
+    public void setApellido(String apellido) { this.apellido = apellido; }
 
-    public void setNombre(String nombre) 
-    {this.nombre = nombre;}
-    
-    public String getApellido() 
-    {return apellido;}
+    public String getDireccion() { return direccion; }
+    public void setDireccion(String direccion) { this.direccion = direccion; }
 
-    public void setApellido(String apellido) 
-    {this.apellido = apellido;}
+    public String getEstado() { return estado; }
+    public void setEstado(String estado) { this.estado = estado; }
 
-    public String getDocumento() 
-    {return documento;}
+    public String getTipoSangre() { return tipoSangre; }
+    public void setTipoSangre(String tipoSangre) { this.tipoSangre = tipoSangre; }
 
-    public void setDocumento(String documento) 
-    {this.documento = documento;}
-    
-    public String getTipoSangre()
-    {return tipoSangre;}
-    
-    public void setTipoSangre (String tipoSangre)
-    {this.tipoSangre = tipoSangre;}
-    
-    public String getEmail()
-    {return Email;}
-    
-    public void setEmail(String Email)
-    {this.Email = Email;}
-    
-    public String getDireccion()
-    {return direccion;}
-    
-    public void setDireccion(String direccion)
-    {this.direccion = direccion;}
+    public String getFoto() { return foto; }
+    public void setFoto(String foto) { this.foto = foto; }
 
-    public String getCargo() 
-    {return cargo;}
+    public String getFechaRegistro() { return fechaRegistro; }
+    public void setFechaRegistro(String fechaRegistro) { this.fechaRegistro = fechaRegistro; }
 
-    public void setCargo(String cargo) 
-    {this.cargo = cargo;}
+    public String getEmail() { return email; }
+    public void setEmail(String email) { this.email = email; }
 
-    public String getEstado() 
-    {return estado;}
+    public String getTelefonoCelular() { return telefonoCelular; }
+    public void setTelefonoCelular(String telefonoCelular) { this.telefonoCelular = telefonoCelular; }
 
-    public void setEstado(String estado) 
-    {this.estado = estado;}
+    public String getContactoEmergenciaNombre() { return contactoEmergenciaNombre; }
+    public void setContactoEmergenciaNombre(String contactoEmergenciaNombre) { this.contactoEmergenciaNombre = contactoEmergenciaNombre; }
 
-    public String getFoto() 
-    {return fotoPerfil_url;}
+    public String getContactoEmergenciaTelefono() { return contactoEmergenciaTelefono; }
+    public void setContactoEmergenciaTelefono(String contactoEmergenciaTelefono) { this.contactoEmergenciaTelefono = contactoEmergenciaTelefono; }
 
-    public void setFoto(String fotoPerfil_url) 
-    {this.fotoPerfil_url = fotoPerfil_url;}
+    public String getContactoEmergenciaParentesco() { return contactoEmergenciaParentesco; }
+    public void setContactoEmergenciaParentesco(String contactoEmergenciaParentesco) { this.contactoEmergenciaParentesco = contactoEmergenciaParentesco; }
 
-    public String getTelefonoCelular() 
-    {return telefonoCelular;}
-
-    public void setTelefonoCelular(String telefonoCelular) 
-    {this.telefonoCelular = telefonoCelular;}
-
-
-    public String getContactoEmergenciaNombre() 
-    {return contactoEmergenciaNombre;}
-
-    public void setContactoEmergenciaNombre(String contactoEmergenciaNombre) 
-    {this.contactoEmergenciaNombre = contactoEmergenciaNombre;}
-
-    public String getContactoEmergenciaTelefono() 
-    {return contactoEmergenciaTelefono;}
-
-    public void setContactoEmergenciaTelefono(String contactoEmergenciaTelefono) 
-    {this.contactoEmergenciaTelefono = contactoEmergenciaTelefono;}
-    
-    public String getContactoEmergenciaParentesco() 
-    { return contactoEmergenciaParentesco; }
-    
-    public void setContactoEmergenciaParentesco(String par) 
-    { this.contactoEmergenciaParentesco = par; }
+    public String getCargo() { return cargo; }
+    public void setCargo(String cargo) { this.cargo = cargo; }
 }

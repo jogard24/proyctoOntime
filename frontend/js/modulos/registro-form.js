@@ -80,9 +80,11 @@ export function configurarRegistro() {
     }
 
     async function enviarEmpleado(datos, archivoFoto) {
-        const url = 'http://localhost:8080/OnTimeBackend/RegistroServlet';
+        // 1. Ajuste de la URL para que coincida con el Servlet descriptivo
+        const url = 'http://localhost:8080/OnTimeBackend/FormularioRegistroServlet';
         const formData = new FormData();
 
+        // Agregar los datos del empleado al FormData
         Object.keys(datos).forEach((key) => {
             formData.append(key, datos[key]);
         });
@@ -91,16 +93,16 @@ export function configurarRegistro() {
             formData.append('fotoPerfil', archivoFoto);
         }
 
+        //  Validación y Desempaquetado seguro del Contrato (Cumple RF26)
         if (window._contratoTemporal) {
-            // En lugar de enviarlo como JSON string, lo "aplanamos" directamente en el FormData
             Object.keys(window._contratoTemporal).forEach((key) => {
                 formData.append(key, window._contratoTemporal[key]);
             });
         } else {
-            //en caso de no llenar el modal 
-            console.warn("No se detectó ningún contrato temporal.");
+            // Bloqueamos el envío si no hay contrato adjunto en memoria
+            alert("Error: Debe hacer clic en 'Agregar contrato' y rellenar los datos laborales antes de guardar al empleado.");
+            throw new Error("Contrato laboral omitido.");
         }
-
 
         const respuesta = await fetch(url, {
             method: 'POST',
@@ -108,11 +110,14 @@ export function configurarRegistro() {
         });
 
         if (!respuesta.ok) {
-            throw new Error('Error al guardar el empleado en el backend.');
+            const textoError = await respuesta.text();
+            throw new Error(`Error al guardar el empleado en el backend: ${textoError}`);
         }
 
-        return respuesta.json();
+        // Retornamos el texto plano de forma segura para evitar fallas de parseo en la respuesta
+        return await respuesta.text();
     }
+
 
     function limpiarFormulario() {
         nombreInput.value = '';

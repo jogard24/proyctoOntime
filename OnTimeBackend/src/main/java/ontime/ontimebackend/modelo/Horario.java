@@ -1,43 +1,33 @@
 package ontime.ontimebackend.modelo;
 
 public class Horario {
+    
     private int id;
-    private String entrada;
-    private String salida;
-    private String turno;
+    private String nombrejornada;
+    private String horaEntrada; // Usamos String para mapear limpiamente el TIME de MySQL hacia el Frontend
+    private String horaSalida;
 
     public Horario() {
     }
 
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
+    public Horario(int id, String nombrejornada, String horaEntrada, String horaSalida) {
         this.id = id;
+        this.nombrejornada = nombrejornada;
+        this.horaEntrada = horaEntrada;
+        this.horaSalida = horaSalida;
     }
 
-    public String getEntrada() {
-        return entrada;
-    }
+    // --- Métodos Getters y Setters ---
+    public int getId() { return id; }
+    public void setId(int id) { this.id = id; }
 
-    public void setEntrada(String entrada) {
-        this.entrada = entrada;
-    }
+    public String getNombrejornada() { return nombrejornada; }
+    public void setNombrejornada(String nombrejornada) { this.nombrejornada = nombrejornada; }
 
-    public String getSalida() {
-        return salida;
-    }
+    public String getHoraEntrada() { return horaEntrada; }
+    public void setHoraEntrada(String horaEntrada) { this.horaEntrada = horaEntrada; }
 
-    public void setSalida(String salida) {
-        this.salida = salida;
-    }
-
-    public String getTurno() {
-        return turno;
-    }
-
-    public void setTurno(String turno) {
-        this.turno = turno;
-    }
+    public String getHoraSalida() { return horaSalida; }
+    public void setHoraSalida(String horaSalida) { this.horaSalida = horaSalida; }
 }
+

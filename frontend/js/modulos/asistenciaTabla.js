@@ -2,6 +2,7 @@ export function configurarAsistenciaTabla() {
     const tablaBody = document.getElementById('tabla-asistencia-body');
     const fechaDesde = document.getElementById('filtro-fecha-desde');
     const fechaHasta = document.getElementById('filtro-fecha-hasta');
+    const filtroEmpleado = document.getElementById('filtro-empleado'); // Captura el nuevo buscador (RF15)
     const btnFiltrar = document.getElementById('btn-filtrar-asistencia');
 
     if (!tablaBody || !fechaDesde || !fechaHasta || !btnFiltrar) {
@@ -34,32 +35,33 @@ export function configurarAsistenciaTabla() {
             renderizarTabla(listaAsistencias);
         } catch (error) {
             console.error('Error cargando el reporte:', error);
+            // Se actualizó a 6 columnas para que coincida con el nuevo HTML
             tablaBody.innerHTML = `<tr><td colspan="6" style="text-align:center; color:red;">Error al cargar datos.</td></tr>`;
         }
     }
-
-
 
     function renderizarTabla(asistencias) {
         tablaBody.innerHTML = '';
 
         if (asistencias.length === 0) {
-            tablaBody.innerHTML = `<tr><td colspan="6" style="text-align:center;">No hay registros.</td></tr>`;
+            tablaBody.innerHTML = `<tr><td colspan="6" style="text-align:center;">No hay registros coincidentes.</td></tr>`;
             return;
         }
 
         asistencias.forEach(reg => {
-            // Separamos fecha y hora del string "YYYY-MM-DD HH:MM:SS"
-            const [fecha, horaCompleta] = reg.fechaHora ? reg.fechaHora.split(' ') : ['', ''];
-
             const fila = document.createElement('tr');
+            
+            // Evaluamos la clase del badge para Entrada o Salida de forma estética
+            const badgeClase = reg.tipoEvento === 'entrada' ? 'verde' : 'azul';
+
+            // Inyectamos las 6 columnas exactas alineadas con la nueva BD Ontime3BD
             fila.innerHTML = `
-                <td>${reg.nombreEmpleado}</td>
-                <td>${fecha}</td>
-                <td>${reg.tipoEvento === 'entrada' ? horaCompleta : '-'}</td>
-                <td>${reg.tipoEvento === 'salida' ? horaCompleta : '-'}</td>
-                <td>${reg.observacion || '-'}</td>
-                <td><span class="pill ${claseEstado(reg.tipoEvento)}">${reg.tipoEvento}</span></td>
+                <td><strong>${reg.documentoIdentidad || 'N/A'}</strong></td>
+                <td>${reg.nombreEmpleado || 'Desconocido'}</td>
+                <td>${reg.fechaHora || '-'}</td>
+                <td><span class="pill ${badgeClase}">${reg.tipoEvento.toUpperCase()}</span></td>
+                <td>${reg.nombreJornada || 'General'}</td>
+                <td>${reg.observacion || 'Ninguna'}</td>
             `;
             tablaBody.appendChild(fila);
         });
@@ -68,18 +70,31 @@ export function configurarAsistenciaTabla() {
     function filtrarTabla() {
         const desde = fechaDesde.value;
         const hasta = fechaHasta.value;
+        const buscador = filtroEmpleado?.value.toLowerCase().trim() || '';
+
+        // --- REGLA DE NEGOCIO CRÍTICA (Cumple RF16 y RNF06) ---
+        if (desde && hasta && desde > hasta) {
+            alert("Operación inválida: La 'Fecha Desde' no puede ser mayor o posterior a la 'Fecha Hasta'. Por favor, corrige las fechas.");
+            return;
+        }
 
         const resultados = listaAsistencias.filter(reg => {
-            const fechaRegistro = reg.fechaHora.split(' ')[0];
+            // 1. Filtrar por rango de fechas
+            const fechaRegistro = reg.fechaHora ? reg.fechaHora.split(' ')[0] : '';
             if (desde && fechaRegistro < desde) return false;
             if (hasta && fechaRegistro > hasta) return false;
+
+            // 2. Filtrar por buscador de empleado (Cédula o Nombre) (RF15)
+            if (buscador) {
+                const nombre = reg.nombreEmpleado ? reg.nombreEmpleado.toLowerCase() : '';
+                const cedula = reg.documentoIdentidad ? reg.documentoIdentidad.toLowerCase() : '';
+                if (!nombre.includes(buscador) && !cedula.includes(buscador)) {
+                    return false;
+                }
+            }
             return true;
         });
 
         renderizarTabla(resultados);
-    }
-
-    function claseEstado(tipo) {
-        return tipo === 'entrada' ? 'verde' : 'amarillo';
     }
 }

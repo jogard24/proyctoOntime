@@ -1,79 +1,43 @@
 package ontime.ontimebackend.modelo;
 
 public class PermisoLaboral {
+    
     private int id;
-    private int permisoId;
+    private int usuarioId;
     private String tipoPermiso;
-    private String fechaSolicitud;
-    private String desde;
-    private String hasta;
+    private String fechaAsignacion;
+    private String fechaInicio; // Usamos String para pasar las fechas limpias al Frontend
+    private String fechaFin;
     private String estado;
-    private boolean aprobado;
+    
+    // Campo analítico para pintar el nombre en la tabla de reportes sin dar vueltas
+    private String nombreEmpleado;
 
     public PermisoLaboral() {
     }
 
-    public int getId() {
-        return id;
-    }
+    // --- Métodos Getters y Setters ---
+    public int getId() { return id; }
+    public void setId(int id) { this.id = id; }
 
-    public void setId(int id) {
-        this.id = id;
-    }
+    public int getUsuarioId() { return usuarioId; }
+    public void setUsuarioId(int usuarioId) { this.usuarioId = usuarioId; }
 
-    public int getPermisoId() {
-        return permisoId;
-    }
+    public String getTipoPermiso() { return tipoPermiso; }
+    public void setTipoPermiso(String tipoPermiso) { this.tipoPermiso = tipoPermiso; }
 
-    public void setPermisoId(int permisoId) {
-        this.permisoId = permisoId;
-    }
+    public String getFechaAsignacion() { return fechaAsignacion; }
+    public void setFechaAsignacion(String fechaAsignacion) { this.fechaAsignacion = fechaAsignacion; }
 
-    public String getTipoPermiso() {
-        return tipoPermiso;
-    }
+    public String getFechaInicio() { return fechaInicio; }
+    public void setFechaInicio(String fechaInicio) { this.fechaInicio = fechaInicio; }
 
-    public void setTipoPermiso(String tipoPermiso) {
-        this.tipoPermiso = tipoPermiso;
-    }
+    public String getFechaFin() { return fechaFin; }
+    public void setFechaFin(String fechaFin) { this.fechaFin = fechaFin; }
 
-    public String getFechaSolicitud() {
-        return fechaSolicitud;
-    }
+    public String getEstado() { return estado; }
+    public void setEstado(String estado) { this.estado = estado; }
 
-    public void setFechaSolicitud(String fechaSolicitud) {
-        this.fechaSolicitud = fechaSolicitud;
-    }
-
-    public String getDesde() {
-        return desde;
-    }
-
-    public void setDesde(String desde) {
-        this.desde = desde;
-    }
-
-    public String getHasta() {
-        return hasta;
-    }
-
-    public void setHasta(String hasta) {
-        this.hasta = hasta;
-    }
-
-    public String getEstado() {
-        return estado;
-    }
-
-    public void setEstado(String estado) {
-        this.estado = estado;
-    }
-
-    public boolean isAprobado() {
-        return aprobado;
-    }
-
-    public void setAprobado(boolean aprobado) {
-        this.aprobado = aprobado;
-    }
+    public String getNombreEmpleado() { return nombreEmpleado; }
+    public void setNombreEmpleado(String nombreEmpleado) { this.nombreEmpleado = nombreEmpleado; }
 }

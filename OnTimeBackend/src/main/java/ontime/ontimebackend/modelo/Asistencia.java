@@ -1,20 +1,30 @@
 package ontime.ontimebackend.modelo;
 
 public class Asistencia {
-    // Atributos privados: Encapsulamiento para proteger los datos
+    
     private int id;
+    private int usuarioId; // Mapea la llave foránea física de la tabla asistencia
+    private String documentoIdentidad; // Útil para pintar la cédula en los reportes (RF15)
     private String nombreEmpleado;
     private String fechaHora;
     private String tipoEvento;
     private String observacion;
-    private String nombre_turno;
+    private int jornadaId;
+    private String nombreJornada; // Mapea el campo 'nombrejornada' de tu tabla jornadaLaboral
+
+    // Constructor vacío obligatorio
+    public Asistencia() {
+    }
 
     // --- GETTERS Y SETTERS ---
-    // Son los métodos de acceso: permiten que otras clases (como el DAO o el Servlet)
-    // consulten o modifiquen los valores de forma controlada.
-
     public int getId() { return id; }
     public void setId(int id) { this.id = id; } 
+
+    public int getUsuarioId() { return usuarioId; }
+    public void setUsuarioId(int usuarioId) { this.usuarioId = usuarioId; }
+
+    public String getDocumentoIdentidad() { return documentoIdentidad; }
+    public void setDocumentoIdentidad(String documentoIdentidad) { this.documentoIdentidad = documentoIdentidad; }
 
     public String getNombreEmpleado() { return nombreEmpleado; }
     public void setNombreEmpleado(String nombreEmpleado) { this.nombreEmpleado = nombreEmpleado; }
@@ -28,8 +38,9 @@ public class Asistencia {
     public String getObservacion() { return observacion; }
     public void setObservacion(String observacion) { this.observacion = observacion; }
 
-    public String getTipoTurno() { return nombre_turno; }
-    public void setTipoTurno(String nombre_turno) { this.nombre_turno = nombre_turno; }
-    
+    public int getJornadaId() { return jornadaId; }
+    public void setJornadaId(int jornadaId) { this.jornadaId = jornadaId; }
 
+    public String getNombreJornada() { return nombreJornada; }
+    public void setNombreJornada(String nombreJornada) { this.nombreJornada = nombreJornada; }
 }

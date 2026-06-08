@@ -48,18 +48,22 @@ export function configurarAsistenciaPinpad() {
     btnConfirmar.addEventListener('click', async (e) => {
         e.preventDefault();
         if (cadenaId.trim() === "") {
-            mostrarFeedback(" Por favor ingresa tu identificación", "error");
+            mostrarFeedback("❌ Por favor ingresa tu identificación", "error");
             return;
         }
 
         try {
-            // CORREGIDO: URL apuntando a PinpadServlet y parámetro usuarioId
+            // Ajuste de variables: se añade el parámetro de acción compatible con request.getParameter
+            const params = new URLSearchParams();
+            params.append('accion', 'registrarAsistencia');
+            params.append('documento', cadenaId); // Enviamos el documento/cédula digitada
+
             const respuesta = await fetch('http://localhost:8080/OnTimeBackend/PinpadServlet', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/x-www-form-urlencoded',
                 },
-                body: `usuarioId=${encodeURIComponent(cadenaId)}`
+                body: params.toString()
             });
 
             const textoRespuesta = await respuesta.text();
@@ -69,20 +73,20 @@ export function configurarAsistenciaPinpad() {
                 resultado = JSON.parse(textoRespuesta);
             } catch (jsonError) {
                 console.error("Respuesta no es JSON:", textoRespuesta);
-                mostrarFeedback("Error en la comunicación con el servidor", "error");
+                mostrarFeedback("❌ Error en la comunicación con el servidor OnTime", "error");
                 return;
             }
 
             if (respuesta.ok) {
-                // Asumimos que el JSON trae 'exito' y 'evento' o 'message'
-                mostrarFeedback(resultado.message || `Registro exitoso: ${resultado.evento || 'Completado'}`, "exito");
+                // El backend procesará de forma automática si es Entrada o Salida según el histórico diario
+                mostrarFeedback(resultado.message || `¡Registro exitoso! Evento: ${resultado.evento}`, "exito");
             } else {
-                mostrarFeedback(resultado.message || "Error al registrar", "error");
+                mostrarFeedback(resultado.message || "❌ No se pudo completar el registro de marca.", "error");
             }
 
         } catch (error) {
             console.error("Error de conexión:", error);
-            mostrarFeedback("Error al conectar con el servidor", "error");
+            mostrarFeedback("❌ Error al conectar con el servidor principal.", "error");
         }
 
         cadenaId = "";

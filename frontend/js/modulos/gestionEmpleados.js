@@ -5,6 +5,7 @@
     const inputBusqueda = document.querySelector('.input-busqueda');
     const btnBuscar = document.getElementById('btn-buscarEmpleado');
 
+
     if (!tablaBody || !inputBusqueda || !btnBuscar) return;
 
     let listaEmpleados = [];
@@ -16,7 +17,7 @@
             tablaBody.innerHTML = '<tr><td colspan="6" style="text-align:center;">No hay empleados disponibles.</td></tr>';
             return;
         }
-        
+
         empleados.forEach(emp => {
             const fila = document.createElement('tr');
             // Mostrando el documento del empleado en lugar del ID interno
@@ -40,9 +41,9 @@
         // Asegúrate de que el puerto coincida con tu Tomcat (usualmente 8080)
         fetch('http://localhost:8080/OnTimeBackend/EmpleadoServlet', { method: 'GET' })
             .then(res => res.json())
-            .then(data => { 
-                listaEmpleados = data; 
-                renderizarTabla(listaEmpleados); 
+            .then(data => {
+                listaEmpleados = data;
+                renderizarTabla(listaEmpleados);
             })
             .catch(err => console.error('Error cargando empleados:', err));
     }
@@ -62,7 +63,7 @@
             renderizarTabla(listaEmpleados);
             return;
         }
-        const filtrados = listaEmpleados.filter(emp => 
+        const filtrados = listaEmpleados.filter(emp =>
             emp.nombre.toLowerCase().includes(termino.toLowerCase()) ||
             (emp.documento && emp.documento.toLowerCase().includes(termino.toLowerCase())) ||
             emp.id.toString().includes(termino)
@@ -71,7 +72,7 @@
     }
 
     // --- LÓGICA DE ACTUALIZACIÓN ---
-    window.guardarEdicion = function() {
+    window.guardarEdicion = function () {
         const datos = {
             id: document.getElementById('editId').value,
             nombre: document.getElementById('editNombre').value,
@@ -85,13 +86,13 @@
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(datos)
         })
-        .then(res => res.json())
-        .then(data => {
-            alert("Empleado actualizado correctamente");
-            window.cerrarModal();
-            cargarEmpleados();
-        })
-        .catch(err => console.error("Error al actualizar:", err));
+            .then(res => res.json())
+            .then(data => {
+                alert("Empleado actualizado correctamente");
+                window.cerrarModal();
+                cargarEmpleados();
+            })
+            .catch(err => console.error("Error al actualizar:", err));
     };
 
     // --- EVENTOS ---
@@ -109,7 +110,7 @@
         const boton = e.target.closest('button');
         if (!boton) return;
         const id = boton.dataset.id;
-        
+
         if (boton.classList.contains('bt-ejecucion-editar')) {
             const emp = listaEmpleados.find(e => String(e.id) === String(id));
             if (emp) abrirModal(emp.id, emp.nombre, emp.cargo, emp.estado);
@@ -117,8 +118,31 @@
             if (confirm("¿Eliminar empleado?")) {
                 // Aquí el fetch para eliminar
                 fetch(`http://localhost:8080/OnTimeBackend/EmpleadoServlet?id=${id}`, { method: 'DELETE' })
-                .then(() => cargarEmpleados());
+                    .then(() => cargarEmpleados());
             }
+        }
+
+        const modalEditar = document.getElementById('modalEditar');
+        const btnCancelarEdicion = document.getElementById('btn-cancelar-edicion');
+        const btnGuardarEdicion = document.getElementById('btn-guardar-edicion');
+
+        // Función modular interna para cerrar la ventana
+        window.cerrarModal = function () {
+            if (modalEditar) modalEditar.style.display = 'none';
+        };
+
+        if (btnCancelarEdicion) {
+            btnCancelarEdicion.addEventListener('click', (e) => {
+                e.preventDefault();
+                window.cerrarModal();
+            });
+        }
+
+        if (btnGuardarEdicion) {
+            btnGuardarEdicion.addEventListener('click', (e) => {
+                e.preventDefault();
+                window.guardarEdicion(); // Dispara la persistencia real hacia el Servlet de Java que corregimos antes
+            });
         }
     });
 

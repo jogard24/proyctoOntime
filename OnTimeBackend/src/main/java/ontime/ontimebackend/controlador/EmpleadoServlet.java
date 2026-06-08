@@ -9,31 +9,27 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.Part;
 import ontime.ontimebackend.modelo.Empleado;
-import ontime.ontimebackend.modelo.Contrato; 
 import ontime.ontimebackend.dao.EmpleadoDAO;
 
 @WebServlet(name = "EmpleadoServlet", urlPatterns = {"/EmpleadoServlet"})
-@MultipartConfig // Esto es suficiente para manejar archivos sin romper el flujo
+@MultipartConfig
 public class EmpleadoServlet extends HttpServlet {
 
     private final EmpleadoDAO empleadoDAO = new EmpleadoDAO();
 
-    private void configurarCORS(HttpServletResponse response) {
-        response.setHeader("Access-Control-Allow-Origin", "*");
-        response.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
-        response.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
-    }
+
 
     private String escaparJson(String valor) {
         return (valor == null) ? "" : valor.replace("\"", "\\\"").replace("\n", "\\n").replace("\r", "\\r");
     }
 
+    /**
+     * Alimenta la grilla general del módulo de Gestión (Sincronizado con gestionEmpleados.js).
+     */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        configurarCORS(response);
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
         PrintWriter out = response.getWriter();
@@ -41,57 +37,89 @@ public class EmpleadoServlet extends HttpServlet {
         try {
             List<Empleado> empleados = empleadoDAO.listarTodos();
             StringBuilder json = new StringBuilder("[");
+            
             for (int i = 0; i < empleados.size(); i++) {
                 Empleado emp = empleados.get(i);
                 json.append("{");
-                json.append("\"id\":\"").append(escaparJson(emp.getId())).append("\",");
+                
+                // Ajuste 2: Inyección de ID como tipo numérico nativo JSON
+                json.append("\"id\":").append(emp.getId()).append(",");
+                
+                // Ajuste 1: Suministro de propiedades analíticas obligatorias requeridas por el Frontend
+                json.append("\"documento\":\"").append(escaparJson(emp.getDocumento())).append("\",");
                 json.append("\"nombre\":\"").append(escaparJson(emp.getNombre())).append("\",");
+                json.append("\"cargo\":\"").append(escaparJson(emp.getCargo())).append("\",");
+                json.append("\"estado\":\"").append(escaparJson(emp.getEstado())).append("\",");
                 json.append("\"fotoPerfilUrl\":\"").append(escaparJson(emp.getFoto())).append("\"");
+                
                 json.append("}");
                 if (i < empleados.size() - 1) json.append(",");
             }
             json.append("]");
             out.print(json.toString());
+            
         } catch (Exception e) {
-            response.setStatus(500);
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             out.print("{\"status\":\"error\",\"message\":\"" + escaparJson(e.getMessage()) + "\"}");
         }
     }
 
+    /**
+     * Procesa de forma unificada las acciones del modal de actualización y los clics de borrado lógico (RF23 y RF25).
+     */
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) 
             throws ServletException, IOException {
 
         request.setCharacterEncoding("UTF-8");
-        configurarCORS(response);
-        response.setContentType("application/json");
+        response.setContentType("application/json;charset=UTF-8");
+
+        // Ajuste 3: Captura de los parámetros planos de URLSearchParams de tu javascript
+        String accion = request.getParameter("accion");
+        String idStr = request.getParameter("id");
+
+        if (accion == null || idStr == null) {
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            response.getWriter().print("{\"status\":\"error\",\"message\":\"Parámetros de control faltantes.\"}");
+            return;
+        }
+
+        int id = Integer.parseInt(idStr.trim());
+        boolean exito = false;
 
         try {
-            // 1. Obtener parámetros de texto de forma segura
-            String nombre = request.getParameter("nombre");
-            String apellido = request.getParameter("apellido");
-            String documento = request.getParameter("documento_identidad");
-            
-            // 2. Procesar el archivo (si viene)
-            Part filePart = request.getPart("fotoPerfil");
-            String nombreArchivo = (filePart != null) ? filePart.getSubmittedFileName() : null;
+            if ("inactivar".equals(accion)) {
+                // Ejecuta el UPDATE lógico modular que creamos en tu EmpleadoDAO
+                exito = empleadoDAO.inactivarEmpleado(id);
+            } 
+            else if ("actualizar".equals(accion)) {
+                // Construye el objeto Empleado básico con los campos editados en el modal
+                Empleado emp = new Empleado();
+                emp.setId(id);
+                emp.setNombre(request.getParameter("nombre"));
+                emp.setEstado(request.getParameter("estado"));
+                
+                exito = empleadoDAO.actualizarEmpleado(emp);
+            }
 
-            // 3. Mapear al objeto (ejemplo de registro)
-            Empleado emp = new Empleado();
-            emp.setNombre(nombre);
-            emp.setApellido(apellido);
-            emp.setDocumento(documento);
-            // ... setea los demás campos ...
-
-            // 4. Delegar al DAO
-            // boolean exito = empleadoDAO.registrarEmpleadoCompleto(emp, objetoContrato);
-            
-            response.getWriter().print("{\"status\":\"success\"}");
+            if (exito) {
+                response.getWriter().print("{\"status\":\"success\",\"message\":\"Operación completada con éxito.\"}");
+            } else {
+                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                response.getWriter().print("{\"status\":\"error\",\"message\":\"La base de datos rechazó la modificación.\"}");
+            }
 
         } catch (Exception e) {
             e.printStackTrace();
-            response.setStatus(500);
-            response.getWriter().print("{\"status\":\"error\", \"message\":\"" + e.getMessage() + "\"}");
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            response.getWriter().print("{\"status\":\"error\",\"message\":\"" + escaparJson(e.getMessage()) + "\"}");
         }
     }
+
+    @Override
+    protected void doOptions(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        response.setStatus(HttpServletResponse.SC_OK);
+    }
 }
+

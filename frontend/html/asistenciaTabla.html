@@ -1,47 +1,59 @@
-
-
-      <div class="panel">
-          <div class="panel-header  animar-entrada">
-            <h2>Reporte de asistencia</h2>
-            <div class="filtros-fecha">
-              <input type="date" class="input-fecha" id="filtro-fecha-desde" />
-              <span>—</span>
-              <input type="date" class="input-fecha" id="filtro-fecha-hasta" />
-              <button class="btn-secundario" id="btn-filtrar-asistencia">Filtrar</button>
-            </div>
-          </div>
-          <div class="tabla-scroll">
-          <table class="tabla-ontime">
+<div class="panel">
+    <div class="panel-header animar-entrada">
+        <h2>Reporte de asistencia</h2>
+        
+        <!-- Ajuste 1: Contenedor de filtros ampliado para cumplir con el RF15 -->
+        <div class="filtros-fecha" style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+            <input type="text" class="input-general" id="filtro-empleado" placeholder="Buscar por Cédula o Nombre..." style="padding: 6px 12px; border: 1px solid #ccc; border-radius: 4px; min-width: 200px;" />
+            <input type="date" class="input-fecha" id="filtro-fecha-desde" />
+            <span>—</span>
+            <input type="date" class="input-fecha" id="filtro-fecha-hasta" />
+            <button class="btn-secundario" id="btn-filtrar-asistencia">Filtrar</button>
+        </div>
+    </div>
+    
+    <div class="tabla-scroll">
+        <table class="tabla-ontime">
             <thead>
-              <tr>
-                <th>Empleado</th>
-                <th>Fecha</th>
-                <th>Entrada</th>
-                <th>Salida</th>
-                <th>Observacion</th>
-                <th>Estado</th>
-              </tr>
+                <tr>
+                    <!-- Ajuste 2: Columnas alineadas uno a uno con los campos de la tabla 'asistencia' en Ontime3BD -->
+                    <th>Cédula</th>
+                    <th>Empleado</th>
+                    <th>Fecha / Hora</th>
+                    <th>Evento</th>
+                    <th>Jornada Horaria</th>
+                    <th>Observación / Estado</th>
+                </tr>
             </thead>
             <tbody id="tabla-asistencia-body">
-              <tr>
-                <td>Camilo Pérez</td>
-                <td>2025-05-15</td>
-                <td>07:58</td>
-                <td>17:02</td>
-                <td>9h 04m</td>
-                <td><span class="pill verde">Puntual</span></td>
-              </tr>
-              <tr>
-                <td>Laura Gómez</td>
-                <td>2025-05-15</td>
-                <td>08:23</td>
-                <td>17:00</td>
-                <td>8h 37m</td>
-                <td><span class="pill amarillo">Retardo</span></td>
-              </tr>
+                <!-- Registros de prueba académicos simulando el nuevo diseño -->
+                <tr>
+                    <td>109876543</td>
+                    <td>Camilo Pérez</td>
+                    <td>2026-06-08 07:58:22</td>
+                    <td><span class="pill verde">Entrada</span></td>
+                    <td>Mañana (08:00 - 17:00)</td>
+                    <td>Puntual</td>
+                </tr>
+                <tr>
+                    <td>109876543</td>
+                    <td>Camilo Pérez</td>
+                    <td>2026-06-08 17:02:10</td>
+                    <td><span class="pill azul">Salida</span></td>
+                    <td>Mañana (08:00 - 17:00)</td>
+                    <td>Cumplido</td>
+                </tr>
+                <tr>
+                    <td>135246789</td>
+                    <td>Laura Gómez</td>
+                    <td>2026-06-08 08:23:15</td>
+                    <td><span class="pill entrada">Entrada</span></td>
+                    <td>Mañana (08:00 - 17:00)</td>
+                    <td><span class="pill amarillo">Retardo (23 min)</span></td>
+                </tr>
             </tbody>
-          </table>
-          </div>
-        </div>
-      </section>
+        </table>
+    </div>
+</div>
+
       <script type="module" src="../js/modulos/asistenciaTabla.js"></script>

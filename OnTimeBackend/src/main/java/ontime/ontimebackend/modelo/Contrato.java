@@ -3,7 +3,7 @@ package ontime.ontimebackend.modelo;
 import java.math.BigDecimal;
 
 public class Contrato {
-
+    
     private int id;
     private int usuarioId;
     private String tipoContrato;
@@ -11,10 +11,20 @@ public class Contrato {
     private BigDecimal salarioBase;
     private int jornadaId;
 
+    // Constructor vacío obligatorio para instanciar en los Servlets/DAOs
     public Contrato() {
     }
 
-    // Getters y Setters
+    // Constructor con parámetros para desarrollo rápido
+    public Contrato(int usuarioId, String tipoContrato, String cargo, BigDecimal salarioBase, int jornadaId) {
+        this.usuarioId = usuarioId;
+        this.tipoContrato = tipoContrato;
+        this.cargo = cargo;
+        this.salarioBase = salarioBase;
+        this.jornadaId = jornadaId;
+    }
+
+    // --- Métodos Getters y Setters ---
     public int getId() {
         return id;
     }
@@ -63,3 +73,4 @@ public class Contrato {
         this.jornadaId = jornadaId;
     }
 }
+

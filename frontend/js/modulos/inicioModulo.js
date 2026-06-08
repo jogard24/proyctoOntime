@@ -1,13 +1,17 @@
 const API_URL = "http://localhost:8080/OnTimeBackend";
 
 export async function configurarInicioDashboard() {
-    // 1. Personalizar el texto de bienvenida con el nombre real de la sesión
+    // 1. Personalizar el texto de bienvenida con el nombre real de la sesión (¡Excelente!)
     const sesionStr = sessionStorage.getItem("usuarioActual");
     if (sesionStr) {
-        const usuario = JSON.parse(sesionStr);
-        const txtBienvenida = document.getElementById("txt-bienvenida-admin");
-        if (txtBienvenida) {
-            txtBienvenida.textContent = `¡Bienvenido ${usuario.nombre}!`;
+        try {
+            const usuario = JSON.parse(sesionStr);
+            const txtBienvenida = document.getElementById("txt-bienvenida-admin");
+            if (txtBienvenida && usuario.nombre) {
+                txtBienvenida.textContent = `¡Bienvenido ${usuario.nombre}!`;
+            }
+        } catch (e) {
+            console.warn("No se pudo parsear el usuario de la sesión.");
         }
     }
 
@@ -17,7 +21,10 @@ export async function configurarInicioDashboard() {
     // 3. Asignar el botón de actualizar manual de la sección de inicio
     const btnActualizar = document.getElementById("btn-actualizar-inicio");
     if (btnActualizar) {
-        btnActualizar.addEventListener("click", consultarNovedadesInicio);
+        btnActualizar.addEventListener("click", (e) => {
+            e.preventDefault();
+            consultarNovedadesInicio();
+        });
     }
 }
 
@@ -26,18 +33,24 @@ async function consultarNovedadesInicio() {
     if (!tbody) return;
 
     try {
-        const respuesta = await fetch(`${API_URL}/novedades`);
+        // Apuntamos al Servlet modular que procesa el listado general del día
+        const respuesta = await fetch(`${API_URL}/AsistenciaServlet?vista=novedadesHome`);
+
         if (!respuesta.ok) throw new Error("Error en la respuesta del servidor.");
 
         const registros = await respuesta.json();
 
         if (registros.length === 0) {
             tbody.innerHTML = `<tr><td colspan="6" style="text-align: center; padding: 20px;">No hay movimientos registrados el día de hoy.</td></tr>`;
+            
+            // Si no hay marcas, dejamos las tarjetas en cero
+            document.getElementById("stat-total").textContent = "0";
+            document.getElementById("stat-retardos").textContent = "0";
+            document.getElementById("stat-salidas").textContent = "0";
             return;
         }
 
-        // --- AQUÍ ESTÁ EL CAMBIO CLAVE PARA EL PERSONAL ACTIVO ---
-        // Usamos un Set para almacenar los nombres únicos de quienes marcaron entrada
+        // Tu lógica analítica estrella (¡No la pierdas!)
         let empleadosActivos = new Set();
         let totalRetardos = 0;
         let totalSalidas = 0;
@@ -45,52 +58,56 @@ async function consultarNovedadesInicio() {
         tbody.innerHTML = "";
 
         registros.forEach(reg => {
-            // Si el evento es una entrada, lo sumamos al Set de empleados activos
-            if (reg.evento && reg.evento.toLowerCase() === "entrada") {
-                empleadosActivos.add(reg.empleado);
+            const tipoEvento = reg.tipoEvento ? reg.tipoEvento.toLowerCase() : '';
+            const observacion = reg.observacion ? reg.observacion.toLowerCase() : '';
+            const nombreEmp = reg.nombreEmpleado || 'Desconocido';
+
+            // Si el evento es una entrada, lo sumamos al Set único (RF09)
+            if (tipoEvento === "entrada") {
+                empleadosActivos.add(nombreEmp);
             }
-            // Contadores dinámicos para las otras tarjetas
-            if (reg.observacion && reg.observacion.toLowerCase().includes("retardo")) {
+            // Conteo de retardos
+            if (observacion.includes("retardo")) {
                 totalRetardos++;
             }
-            if (reg.evento && reg.evento.toLowerCase() === "salida") {
+            // Conteo de salidas
+            if (tipoEvento === "salida") {
                 totalSalidas++;
             }
 
             const fila = document.createElement("tr");
 
-            // Si tiene retardo, le aplicamos un color de fondo sutil de alerta
-            if (reg.observacion && reg.observacion.toLowerCase().includes("retardo")) {
+            // Si tiene retardo, le aplicamos tu estilo sutil de alerta visual
+            if (observacion.includes("retardo")) {
                 fila.style.backgroundColor = "rgba(255, 77, 77, 0.08)";
             }
 
-            // Mapeamos las celdas usando tus estilos semánticos
+            // Sincronizado uno a uno con el nuevo HTML y Ontime3BD
             fila.innerHTML = `
-                <td>${reg.id}</td>
-                <td><strong>${reg.empleado}</strong></td>
+                <td><strong>${reg.usuarioId || reg.documentoIdentidad || '-'}</strong></td>
+                <td>${nombreEmp}</td>
                 <td>
                     <span style="padding: 4px 8px; border-radius: 4px; font-size: 0.85rem; font-weight: bold;
-                        background-color: ${reg.evento === 'entrada' ? '#e8f5e9' : '#fff3e0'};
-                        color: ${reg.evento === 'entrada' ? '#2e7d32' : '#e65100'};">
-                        ${reg.evento.toUpperCase()}
+                        background-color: ${tipoEvento === 'entrada' ? '#e8f5e9' : '#e3f2fd'};
+                        color: ${tipoEvento === 'entrada' ? '#2e7d32' : '#1565c0'}; display: inline-block;">
+                        ${tipoEvento.toUpperCase()}
                     </span>
                 </td>
-                <td>${reg.nombre_turno}</td>
-                <td>${reg.fecha_hora}</td>
-                <td style="font-weight: ${reg.observacion.includes('Retardo') ? '500' : 'normal'};
-                           color: ${reg.observacion.includes('Retardo') ? '#ff4d4d' : '#ffffff'}">
-                    ${reg.observacion}
+                <td>${reg.nombreJornada || 'General'}</td>
+                <td>${reg.fechaHora || '-'}</td>
+                <td style="font-weight: ${observacion.includes('retardo') ? 'bold' : 'normal'};
+                           color: ${observacion.includes('retardo') ? '#ff4d4d' : '#ffffff'}">
+                    ${reg.observacion || 'Ninguna'}
                 </td>
             `;
             tbody.appendChild(fila);
         });
 
-        // Actualizar los números de las tarjetas en la parte superior
+        // Tu lógica para pintar el resumen dinámico en las tarjetas de arriba
         const txtTotal = document.getElementById("stat-total");
         const txtRetardos = document.getElementById("stat-retardos");
         const txtSalidas = document.getElementById("stat-salidas");
 
-        // .size nos da el conteo final de elementos únicos dentro del Set
         if (txtTotal) txtTotal.textContent = empleadosActivos.size;
         if (txtRetardos) txtRetardos.textContent = totalRetardos;
         if (txtSalidas) txtSalidas.textContent = totalSalidas;

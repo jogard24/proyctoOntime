@@ -11,10 +11,10 @@
     <table class="tabla-ontime">
       <thead>
         <tr>
-          <th>ID</th>
-          <th>Entrada</th>
-          <th>Salida</th>
-          <th>Turno</th>
+          <th>ID Jornada</th>
+          <th>Nombre de Jornada</th>
+          <th>Hora Entrada</th>
+          <th>Hora Salida</th>
           <th>Acciones</th>
         </tr>
       </thead>
@@ -26,31 +26,41 @@
     </table>
   </div>
 
-  <div id="modalHorario" class="modal-oculto">
-    <div class="modal-dialog">
+  <!-- El modal ahora cuenta con z-index en CSS o estilos fijos básicos para simular el comportamiento -->
+  <div id="modalHorario" class="modal-oculto" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.5); align-items:center; justify-content:center; z-index:1000;">
+    <div class="modal-dialog" style="background: white; padding:20px; max-width:400px; width:100%; border-radius:6px;">
       <h3 id="tituloModalHorario" class="modal-title">Editar horario</h3>
-      <input type="hidden" id="horarioId">
-      <div class="horario-form">
-        <label>
-          Hora de entrada
-          <input id="horarioEntrada" type="time" class="horario-input">
+      
+      <div class="horario-form" style="display: flex; flex-direction: column; gap: 12px; margin-top: 15px;">
+        <!-- Ajuste 2: Input de ID visible para inserción manual requerida por Ontime3BD -->
+        <label style="display: flex; flex-direction: column; font-weight: bold;">
+          ID de la Jornada (Número único)
+          <input id="horarioId" type="number" min="1" class="horario-input" style="padding: 6px; border: 1px solid #ccc; border-radius: 4px;" required>
         </label>
-        <label>
-          Hora de salida
-          <input id="horarioSalida" type="time" class="horario-input">
-        </label>
-        <label>
-          Turno
-          <select id="horarioTurno" class="horario-input">
-            <option value="diurno">Diurno</option>
-            <option value="nocturno">Nocturno</option>
-            <option value="dominical">Dominical</option>
-            <option value="festivo">Festivo</option>
+
+        <!-- Ajuste 1: Alineado con la columna 'nombrejornada' de tu Base de Datos -->
+        <label style="display: flex; flex-direction: column; font-weight: bold;">
+          Nombre del Turno / Jornada
+          <select id="horarioNombreJornada" class="horario-input" style="padding: 6px; border: 1px solid #ccc; border-radius: 4px;">
+            <option value="Turno Diurno">Turno Diurno</option>
+            <option value="Turno Nocturno">Turno Nocturno</option>
+            <option value="Turno Dominical">Turno Dominical</option>
+            <option value="Turno Festivo">Turno Festivo</option>
           </select>
+        </label>
+
+        <label style="display: flex; flex-direction: column; font-weight: bold;">
+          Hora de entrada
+          <input id="horarioEntrada" type="time" class="horario-input" style="padding: 6px; border: 1px solid #ccc; border-radius: 4px;" required>
+        </label>
+        
+        <label style="display: flex; flex-direction: column; font-weight: bold;">
+          Hora de salida
+          <input id="horarioSalida" type="time" class="horario-input" style="padding: 6px; border: 1px solid #ccc; border-radius: 4px;" required>
         </label>
       </div>
 
-      <div class="form-actions">
+      <div class="form-actions" style="display: flex; gap: 8px; justify-content: flex-end; margin-top: 15px;">
         <button id="btn-cancelar-horario" class="btn-menu-item btn-secondary">Cancelar</button>
         <button id="btn-guardar-horario" class="btn-menu-item btn-primary">Guardar horario</button>
       </div>
