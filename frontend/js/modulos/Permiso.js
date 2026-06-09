@@ -1,7 +1,7 @@
 export function configurarPermisos() {
-	console.log('Módulo permisos cargado.');
+	console.log('Módulo permiso cargado.');
 
-	const tablaBody = document.querySelector('.panel-permisos table tbody');
+	const tablaBody = document.querySelector('.panel-permiso table tbody');
 	const btnNueva = document.getElementById('btn-nueva-solicitud');
 
 	if (!tablaBody) return;

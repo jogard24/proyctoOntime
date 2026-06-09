@@ -3,13 +3,13 @@ export function configurarHorario() {
     const btnNuevoHorario = document.getElementById('btn-nuevo-horario');
     const modal = document.getElementById('modalHorario');
     const tituloModal = document.getElementById('tituloModalHorario');
-    
+
     // Elementos del DOM ajustados a la nueva nomenclatura
     const inputId = document.getElementById('horarioId');
     const inputEntrada = document.getElementById('horarioEntrada');
     const inputSalida = document.getElementById('horarioSalida');
     const selectNombreJornada = document.getElementById('horarioNombreJornada');
-    
+
     const btnGuardar = document.getElementById('btn-guardar-horario');
     const btnCancelar = document.getElementById('btn-cancelar-horario');
 
@@ -122,8 +122,8 @@ export function configurarHorario() {
         }
 
         // Determinamos la acción para orientar de forma directa al Servlet
-        const esEdicion = inputId.disabled; 
-        
+        const esEdicion = inputId.disabled;
+
         const params = new URLSearchParams();
         params.append('accion', esEdicion ? 'actualizar' : 'crear');
         params.append('id', inputId.value);

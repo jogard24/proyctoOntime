@@ -18,14 +18,13 @@ public class EmpleadoServlet extends HttpServlet {
 
     private final EmpleadoDAO empleadoDAO = new EmpleadoDAO();
 
-
-
     private String escaparJson(String valor) {
         return (valor == null) ? "" : valor.replace("\"", "\\\"").replace("\n", "\\n").replace("\r", "\\r");
     }
 
     /**
-     * Alimenta la grilla general del módulo de Gestión (Sincronizado con gestionEmpleados.js).
+     * Alimenta la grilla general del módulo de Gestión (Sincronizado con
+     * gestionEmpleados.js).
      */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -37,27 +36,27 @@ public class EmpleadoServlet extends HttpServlet {
         try {
             List<Empleado> empleados = empleadoDAO.listarTodos();
             StringBuilder json = new StringBuilder("[");
-            
+
             for (int i = 0; i < empleados.size(); i++) {
                 Empleado emp = empleados.get(i);
                 json.append("{");
-                
-                // Ajuste 2: Inyección de ID como tipo numérico nativo JSON
                 json.append("\"id\":").append(emp.getId()).append(",");
-                
-                // Ajuste 1: Suministro de propiedades analíticas obligatorias requeridas por el Frontend
                 json.append("\"documento\":\"").append(escaparJson(emp.getDocumento())).append("\",");
-                json.append("\"nombre\":\"").append(escaparJson(emp.getNombre())).append("\",");
+                json.append("\"nombre\":\"").append(escaparJson(emp.getNombre())).append("\","); // Solo pasamos el campo nombre limpio
+                json.append("\"telefonoCelular\":\"").append(escaparJson(emp.getTelefonoCelular())).append("\","); // ¡Nueva!
+                json.append("\"direccion\":\"").append(escaparJson(emp.getDireccion())).append("\","); // ¡Nueva!
                 json.append("\"cargo\":\"").append(escaparJson(emp.getCargo())).append("\",");
                 json.append("\"estado\":\"").append(escaparJson(emp.getEstado())).append("\",");
                 json.append("\"fotoPerfilUrl\":\"").append(escaparJson(emp.getFoto())).append("\"");
-                
                 json.append("}");
-                if (i < empleados.size() - 1) json.append(",");
+                if (i < empleados.size() - 1) {
+                    json.append(",");
+                }
             }
+
             json.append("]");
             out.print(json.toString());
-            
+
         } catch (Exception e) {
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             out.print("{\"status\":\"error\",\"message\":\"" + escaparJson(e.getMessage()) + "\"}");
@@ -65,10 +64,11 @@ public class EmpleadoServlet extends HttpServlet {
     }
 
     /**
-     * Procesa de forma unificada las acciones del modal de actualización y los clics de borrado lógico (RF23 y RF25).
+     * Procesa de forma unificada las acciones del modal de actualización y los
+     * clics de borrado lógico (RF23 y RF25).
      */
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) 
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
         request.setCharacterEncoding("UTF-8");
@@ -91,14 +91,13 @@ public class EmpleadoServlet extends HttpServlet {
             if ("inactivar".equals(accion)) {
                 // Ejecuta el UPDATE lógico modular que creamos en tu EmpleadoDAO
                 exito = empleadoDAO.inactivarEmpleado(id);
-            } 
-            else if ("actualizar".equals(accion)) {
+            } else if ("actualizar".equals(accion)) {
                 // Construye el objeto Empleado básico con los campos editados en el modal
                 Empleado emp = new Empleado();
                 emp.setId(id);
                 emp.setNombre(request.getParameter("nombre"));
                 emp.setEstado(request.getParameter("estado"));
-                
+
                 exito = empleadoDAO.actualizarEmpleado(emp);
             }
 
@@ -122,4 +121,3 @@ public class EmpleadoServlet extends HttpServlet {
         response.setStatus(HttpServletResponse.SC_OK);
     }
 }
-

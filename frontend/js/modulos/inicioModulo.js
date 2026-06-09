@@ -42,7 +42,7 @@ async function consultarNovedadesInicio() {
 
         if (registros.length === 0) {
             tbody.innerHTML = `<tr><td colspan="6" style="text-align: center; padding: 20px;">No hay movimientos registrados el día de hoy.</td></tr>`;
-            
+
             // Si no hay marcas, dejamos las tarjetas en cero
             document.getElementById("stat-total").textContent = "0";
             document.getElementById("stat-retardos").textContent = "0";

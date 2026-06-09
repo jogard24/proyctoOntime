@@ -8,14 +8,16 @@
     <input type="text" id="input-busqueda-empleado" placeholder="Buscar por nombre o cédula..." class="input-busqueda">
     <button class="bt-menu-item" id="btn-buscarEmpleado">Buscar</button>
   </div>
-  
+
   <div class="tabla-scroll">
     <table class="tabla-ontime">
       <thead>
         <tr>
           <th>Foto</th>
           <th>Documento</th>
-          <th>Nombre Completo</th>
+          <th>Nombre</th>
+          <th>Teléfono</th>
+          <th>Dirección</th>
           <th>Cargo</th>
           <th>Estado</th>
           <th>Acciones</th>
@@ -24,9 +26,12 @@
       <tbody id="tabla-empleados-body">
         <!-- Ejemplo estructural de cómo inyectará JavaScript los registros reales -->
         <tr>
-          <td><img src="img/usuario-defecto.png" alt="Foto Perfil" style="width:40px; height:40px; border-radius:50%; object-fit:cover;"></td>
+          <td><img src="img/usuario-defecto.png" alt="Foto Perfil"
+              style="width:40px; height:40px; border-radius:50%; object-fit:cover;"></td>
           <td><strong>109876543</strong></td>
           <td>Camilo Pérez</td>
+          <td>3001234567</td>
+          <td>Av. Siempre Viva 123</td>
           <td>Contador</td>
           <td><span class="pill verde">Activo</span></td>
           <td>

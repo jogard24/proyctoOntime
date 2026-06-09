@@ -5,7 +5,7 @@ import { configurarRegistro } from './modulos/registro-form.js';
 import { configurarAsistenciaTabla } from './modulos/asistenciaTabla.js';
 import { configurarInicioDashboard } from './modulos/inicioModulo.js'; // Tu código estrella del Set()
 import { configurarHorario } from './modulos/horario.js';
-import { configurarPermisos } from './modulos/permisos.js'; // Ajuste 1: Acoplamos permisos
+import { configurarPermisos } from './modulos/permiso.js'; // Ajuste 1: Acoplamos permisos
 
 // 2. ELEMENTOS CLAVE DEL DOM
 const contenedor = document.getElementById('contenedor-dinamico');
@@ -23,7 +23,7 @@ const rutasApp = {
     'btn-gestionEmpleados': { html: '../html/gestion-empleados.html', init: configurarGestionEmpleados },
     'btn-Asistencia':       { html: '../html/asistenciaTabla.html',   init: configurarAsistenciaTabla },
     'btn-horario':          { html: '../html/horario.html',          init: configurarHorario }, 
-    'btn-Permisos':         { html: '../html/permisos.html',          init: configurarPermisos } // Enlazado con éxito
+    'btn-Permiso':         { html: '../html/permiso.html',          init: configurarPermisos } // Enlazado con éxito
 };
 
 // 5. MOTOR DE INYECCIÓN DINÁMICA

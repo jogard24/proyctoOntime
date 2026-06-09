@@ -50,7 +50,7 @@ export function configurarAsistenciaTabla() {
 
         asistencias.forEach(reg => {
             const fila = document.createElement('tr');
-            
+
             // Evaluamos la clase del badge para Entrada o Salida de forma estética
             const badgeClase = reg.tipoEvento === 'entrada' ? 'verde' : 'azul';
 
