@@ -58,7 +58,8 @@ export function configurarAsistenciaPinpad() {
             params.append('accion', 'registrarAsistencia');
             params.append('documento', cadenaId); // Enviamos el documento/cédula digitada
 
-            const respuesta = await fetch('http://localhost:8080/OnTimeBackend/PinpadServlet', {
+            // const respuesta = await fetch('http://localhost:8080/OnTimeBackend/PinpadServlet', {
+            const respuesta = await fetch('http://192.168.1.2:8080/OnTimeBackend/PinpadServlet', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/x-www-form-urlencoded',
