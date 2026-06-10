@@ -10,11 +10,15 @@ import java.util.List;
 public class AsistenciaDAO {
 
     /**
-     * Recupera todo el historial de asistencias uniendo las tablas para el reporte analítico (RF15).
+     * Recupera todo el historial de asistencias uniendo las tablas para el reporte analítico.
      */
-    public List<Asistencia> listarAsistencia() {
+    
+    //Declaramos que el método devuelve una "lista" de objetos de tipo Asistencia
+    public List<Asistencia> listarAsistencia() { 
+//Inicializamos una lista vacía. Aquí es donde iremos guardando 
+//cada registro que extraigamos de la base de datos.        
         List<Asistencia> lista = new ArrayList<>();
-        // Corrección 1: SQL alineado a Ontime3BD sacando 'nombrejornada' mediante el JOIN
+        //  
         String sql = "SELECT a.id, u.documento_identidad, u.nombre, u.apellido, a.fecha_hora, a.tipo_evento, a.observacion, j.nombrejornada "
                 + "FROM asistencia a "
                 + "INNER JOIN usuario u ON a.usuario_id = u.id "

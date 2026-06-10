@@ -17,18 +17,27 @@ public class CORSFilter implements Filter {
     }
 
     @Override
-    public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain) 
+    public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain)
             throws IOException, ServletException {
-        
+
         HttpServletResponse response = (HttpServletResponse) res;
         HttpServletRequest request = (HttpServletRequest) req;
 
+        // 1. Le preguntamos al navegador de dónde viene la petición web
+        String origenFront = request.getHeader("Origin");
+
         // 1. Especifica el origen exacto de tu frontend (Live Server de VS Code)
-        response.setHeader("Access-Control-Allow-Origin", "http://127.0.0.1:5500");
-        
+        if ("http://127.0.0.1:5500".equals(origenFront) || "http://localhost:5500".equals(origenFront)) {
+            // Si navegas desde la PC localmente, le da el pase
+            response.setHeader("Access-Control-Allow-Origin", origenFront);
+        } else {
+            // Si navegas desde el celular o tablet, le da el pase con la IP fija de tu red local
+            response.setHeader("Access-Control-Allow-Origin", "http://192.168.1.2:5500");
+        }
+
         // 2. Habilita el uso seguro de cookies y sesiones entre dominios diferentes
         response.setHeader("Access-Control-Allow-Credentials", "true");
-        
+
         // 3. Define los métodos HTTP y cabeceras que permites en las peticiones asíncronas
         response.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS, PUT, DELETE");
         response.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization, Accept");

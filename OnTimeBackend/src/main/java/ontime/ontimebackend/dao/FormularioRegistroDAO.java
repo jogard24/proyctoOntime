@@ -13,7 +13,7 @@ public class FormularioRegistroDAO {
      * bajo una única transacción segura 
      */
     public boolean registrarNuevoEmpleado(Empleado emp, Contrato contrato) {
-        // Sentencias SQL nativas alineadas al 100% con tu script Ontime3BD
+        
         String sqlUsuario = "INSERT INTO usuario (documento_identidad, nombre, apellido, direccion, estado, tipo_sangre, fotoPerfil_url) VALUES (?, ?, ?, ?, ?, ?, ?)";
         String sqlContrato = "INSERT INTO contrato (usuario_id, tipo_contrato, cargo, salario_base, jornada_id) VALUES (?, ?, ?, ?, ?)";
         String sqlEmail = "INSERT INTO email_personal (usuario_id, email) VALUES (?, ?)";
@@ -23,7 +23,7 @@ public class FormularioRegistroDAO {
         Connection con = null;
         try {
             con = Conexion.obtenerConexion();
-            con.setAutoCommit(false); // Transacción escolar limpia: Evita que guarde datos a medias
+            con.setAutoCommit(false); // Evita que guarde datos a medias
 
             int nuevoUsuarioId = 0;
 
