@@ -7,6 +7,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.io.PrintWriter; // Inyectado para el manejo correcto de flujos de red
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 
@@ -14,7 +15,6 @@ import java.time.temporal.ChronoUnit;
 public class PinpadServlet extends HttpServlet {
 
     private final AsistenciaDAO asistenciaDAO = new AsistenciaDAO();
-
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -28,14 +28,18 @@ public class PinpadServlet extends HttpServlet {
         // Validación básica de seguridad
         if (docIdentidad == null || docIdentidad.trim().isEmpty()) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            response.getWriter().write("{\"status\":\"error\", \"message\": \" Documento requerido.\"}");
+            PrintWriter out = response.getWriter();
+            out.print("{\"status\":\"error\", \"message\": \"Documento requerido.\"}");
+            out.flush();
             return;
         }
 
         // 2. Verificación: ¿Existe el empleado en la BD?
         if (!asistenciaDAO.existeEmpleado(docIdentidad)) {
             response.setStatus(HttpServletResponse.SC_NOT_FOUND);
-            response.getWriter().write("{\"status\":\"error\", \"message\": \" El documento ingresado no se encuentra registrado en OnTime.\"}");
+            PrintWriter out = response.getWriter();
+            out.print("{\"status\":\"error\", \"message\": \"El documento ingresado no se encuentra registrado en OnTime.\"}");
+            out.flush();
             return;
         }
 
@@ -49,10 +53,10 @@ public class PinpadServlet extends HttpServlet {
 
         String observacion = "Registro Pinpad";
         
-        // 5. Lógica Analítica de Observación: Calculamos si llega tarde o puntual (RF09)
+        // 5. Lógica Analítica de Observación: Calculamos si llega tarde o puntual 
         LocalTime horaActual = LocalTime.now(); // Captura la hora exacta del toque de pantalla
         
-        // Ajuste 2: Extrae la jornada contractual real del empleado mediante el DAO de Ontime3BD
+        // Extrae la jornada contractual real del empleado mediante el DAO de Ontime3BD
         StringBuilder horaEntradaStr = new StringBuilder();
         int jornadaId = asistenciaDAO.obtenerJornadaIdYHoraEntrada(usuarioId, horaEntradaStr);
         LocalTime horaLimite = LocalTime.parse(horaEntradaStr.toString());
@@ -62,8 +66,8 @@ public class PinpadServlet extends HttpServlet {
                 observacion = "Ingreso a tiempo."; // Puntual
             } else {
                 // Cálculo automático de los minutos de retardo
-                long minutosTarde = ChronoUnit.MINUTES.between(horaLimite, horaActual);
-                observacion = "Retardo de " + minutosTarde + " minutos.";
+                long minutesTarde = ChronoUnit.MINUTES.between(horaLimite, horaActual);
+                observacion = "Retardo de " + minutesTarde + " minutos.";
             }
         } else {
             observacion = "Salida registrada.";
@@ -72,17 +76,24 @@ public class PinpadServlet extends HttpServlet {
         // 6. Registro: Guardamos la asistencia pasando los parámetros limpios de Ontime3BD
         boolean registrado = asistenciaDAO.registrarAsistencia(usuarioId, nuevoEvento, observacion, jornadaId);
 
-        // 7. Respuesta: Notificamos al usuario en el frontend (Ajuste 3: Mapeado de llaves)
+        // 7. Respuesta: Notificamos al usuario en el frontend con vaciado de buffer (flush)
         if (registrado) {
+            response.setStatus(HttpServletResponse.SC_OK);
+            
             String mensaje = "¡Hola, " + nombreEmpleado + "! Tu marcaje de " + nuevoEvento.toUpperCase() + " ha sido exitoso.";
-            response.getWriter().write("{"
+            
+            PrintWriter out = response.getWriter();
+            out.print("{"
                     + "\"status\":\"success\","
                     + "\"message\":\"" + mensaje + "\","
                     + "\"evento\":\"" + nuevoEvento + "\""
                     + "}");
+            out.flush(); // Empuja los bytes inmediatamente por el Wi-Fi hacia el celular
         } else {
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-            response.getWriter().write("{\"status\":\"error\", \"message\": \" Error interno en la base de datos al salvar la marca.\"}");
+            PrintWriter out = response.getWriter();
+            out.print("{\"status\":\"error\", \"message\": \"Error interno en la base de datos al salvar la marca.\"}");
+            out.flush();
         }
     }
 

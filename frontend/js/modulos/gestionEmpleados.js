@@ -35,12 +35,11 @@
                 <td><img src="${emp.fotoPerfilUrl || 'img/usuario-defecto.png'}" class="avatar-tabla" alt="Foto" style="width:40px; height:40px; border-radius:50%; object-fit:cover;"></td>
                 <td><strong>${emp.documento || 'N/A'}</strong></td> 
                 <td>${emp.nombre}</td>
-                <td>${emp.telefonoCelular || 'N/A'}</td> <!-- Muestra el teléfono en la grilla -->
-                <td>${emp.direccion || 'N/A'}</td> <!-- Muestra la dirección en la grilla -->
+                <td>${emp.telefonoCelular || 'N/A'}</td> 
+                <td>${emp.direccion || 'N/A'}</td> 
                 <td>${emp.cargo || 'Sin asignar'}</td>
                 <td><span class="pill ${pillClase}">${emp.estado.toUpperCase()}</span></td>
                 <td>
-                    <!-- Inyectamos los botones pasándole el ID único para las operaciones por delegación -->
                     <button class="bt-menu-item bt-ejecucion-editar" data-id="${emp.id}">Editar</button>
                     <button class="bt-menu-item bt-ejecucion-eliminar" data-id="${emp.id}">Eliminar</button>
                 </td>
@@ -66,14 +65,25 @@
             });
     }
 
-    // --- 3. GESTIÓN INTRÍNSECA DEL MODAL ---
+    // --- 3. GESTIÓN INTRÍNSECA DEL MODAL (Refactorizado para el Select) ---
     function abrirModal(id, nombre, cargo, estado, celular, direccion) {
         document.getElementById('editId').value = id;
         document.getElementById('editNombre').value = nombre || '';
-        document.getElementById('editCargo').value = cargo || '';
         document.getElementById('editEstado').value = estado || 'activo';
 
-        // Inyección de las nuevas propiedades refactorizadas en el formulario (RF23)
+        // CORRECCIÓN INTERNA: Mapeamos el texto que viene de la BD al ID numérico del Select
+        const selectCargo = document.getElementById('editCargo');
+        if (selectCargo) {
+            const cargoActual = cargo ? cargo.toLowerCase().trim() : 'empleado';
+            if (cargoActual === 'administrador' || cargoActual === 'admin') {
+                selectCargo.value = "1";
+            } else if (cargoActual === 'contador' || cargoActual === 'conta') {
+                selectCargo.value = "3";
+            } else {
+                selectCargo.value = "2"; // Por defecto Empleado (ID 2)
+            }
+        }
+
         const inputCelular = document.getElementById('editCelular');
         const inputDireccion = document.getElementById('editDireccion');
 
@@ -87,27 +97,33 @@
         if (modalEditar) modalEditar.style.display = 'none';
     };
 
-    // --- 4. PERSISTENCIA MASIVA EN PARÁMETROS PLANOS (doPost - RF23 y RF25) ---
+    // --- 4. PERSISTENCIA EN PARÁMETROS PLANOS (Refactorizado para el Select) ---
     window.guardarEdicion = function () {
         const idVal = document.getElementById('editId').value;
         const nombreVal = document.getElementById('editNombre').value.trim();
-        const cargoVal = document.getElementById('editCargo').value.trim();
         const estadoVal = document.getElementById('editEstado').value;
         const celularVal = document.getElementById('editCelular')?.value.trim() || '';
         const direccionVal = document.getElementById('editDireccion')?.value.trim() || '';
 
-        if (!nombreVal || !cargoVal) {
-            alert("Operación denegada: El nombre y el cargo son campos obligatorios.");
+        // CORRECCIÓN INTERNA: Extraemos tanto el ID como el Texto del Select
+        const selectCargo = document.getElementById('editCargo');
+        if (!selectCargo) return;
+        
+        const rolIdVal = selectCargo.value; // Captura "1", "2" o "3"
+        const cargoTextoVal = selectCargo.options[selectCargo.selectedIndex].text; // Captura "Administrador", "Empleado" o "Contador"
+
+        if (!nombreVal) {
+            alert("Operación denegada: El nombre es un campo obligatorio.");
             return;
         }
 
-        // Serialización limpia mediante URLSearchParams para request.getParameter() de Java Puro
         const params = new URLSearchParams();
         params.append('accion', 'actualizar');
         params.append('id', idVal);
         params.append('nombre', nombreVal);
         params.append('estado', estadoVal);
-        params.append('cargo', cargoVal);
+        params.append('cargo', cargoTextoVal);  // Va para la tabla 'contrato' en Java
+        params.append('rol_id', rolIdVal);     // Va para la tabla 'credenciales' en Java
         params.append('celular', celularVal);
         params.append('direccion', direccionVal);
 
@@ -120,23 +136,21 @@
                 if (res.ok) {
                     alert("¡Información del empleado modificada y guardada con éxito!");
                     window.cerrarModal();
-                    cargarEmpleados(); // Recarga analítica en caliente de la grilla
+                    cargarEmpleados();
                 } else {
-                    // Bloqueo de falsas alertas positivas ante respuestas de error 400/500
-                    alert(" Fallo del Servidor: MySQL rechazó la actualización por restricciones de integridad.");
+                    alert("Fallo del Servidor: MySQL rechazó la actualización por restricciones de integridad.");
                 }
             })
             .catch(err => {
                 console.error("Error al actualizar:", err);
-                alert(" Error de comunicación: No se pudo entablar conexión con OnTime Backend.");
+                alert("Error de comunicación: No se pudo entablar conexión con OnTime Backend.");
             });
     };
 
     // --- 5. INACTIVACIÓN LÓGICA TRANSPARENTE (POST - RF25) ---
-    // Cambia el nombre de la función interna a una de eliminación real
     function ejecutarEliminacion(id) {
         const params = new URLSearchParams();
-        params.append('accion', 'eliminar'); // Cambiado a 'eliminar' para hacer match con Java
+        params.append('accion', 'eliminar'); 
         params.append('id', id);
 
         fetch('http://localhost:8080/OnTimeBackend/EmpleadoServlet', {
@@ -147,16 +161,13 @@
             .then(res => {
                 if (res.ok) {
                     alert("¡El empleado y su historial han sido eliminados permanentemente de la base de datos!");
-                    cargarEmpleados(); // Recarga la tabla en caliente
+                    cargarEmpleados(); 
                 } else {
-                    alert(" Error: El servidor rechazó la eliminación del usuario.");
+                    alert("Error: El servidor rechazó la eliminación del usuario.");
                 }
             })
             .catch(err => console.error("Error al eliminar:", err));
     }
-
-
-
 
     // --- 6. FILTRO DE BÚSQUEDA LOCAL ---
     function buscarEmpleados(termino) {
@@ -172,7 +183,7 @@
         renderizarTabla(filtrados);
     }
 
-    // --- 7. ESCUCHADORES DE EVENTOS EN EL DOM (Elimina scripts redundantes) ---
+    // --- 7. ESCUCHADORES DE EVENTOS EN EL DOM (Sincronizados) ---
     if (btnBuscar) {
         btnBuscar.addEventListener('click', (e) => {
             e.preventDefault();
@@ -188,7 +199,6 @@
         });
     }
 
-    // Escuchadores internos del modal que blindan la navegación modular
     if (btnCancelarEdicion) {
         btnCancelarEdicion.addEventListener('click', (e) => {
             e.preventDefault();
@@ -203,7 +213,6 @@
         });
     }
 
-    // Captura analítica de clics por delegación de eventos en la tabla
     tablaBody.addEventListener('click', (e) => {
         const boton = e.target.closest('button');
         if (!boton) return;
@@ -212,20 +221,16 @@
         if (boton.classList.contains('bt-ejecucion-editar')) {
             const emp = listaEmpleados.find(e => String(e.id) === String(id));
             if (emp) {
-                // Desempaquetamos todos los atributos guardados en el objeto local hacia el modal
                 abrirModal(emp.id, emp.nombre, emp.cargo, emp.estado, emp.telefonoCelular, emp.direccion);
             }
         } else if (boton.classList.contains('bt-ejecucion-eliminar')) {
             if (confirm(" ADVERTENCIA: ¿Está seguro de eliminar permanentemente a este empleado del sistema? Esta acción no se puede deshacer.")) {
-                ejecutarEliminacion(id); // Llama al nuevo flujo
+                ejecutarEliminacion(id);
             }
         }
-
-
     });
-
-
 
     // Carga inicial automatizada de registros al inyectar la vista
     cargarEmpleados();
 }
+

@@ -10,11 +10,11 @@ import java.util.List;
 public class AsistenciaDAO {
 
     /**
-     * Recupera todo el historial de asistencias uniendo las tablas para el reporte analítico.
+     * Recupera todo el historial de asistencias uniendo las tablas para el
+     * reporte analítico.
      */
-    
     //Declaramos que el método devuelve una "lista" de objetos de tipo Asistencia
-    public List<Asistencia> listarAsistencia() { 
+    public List<Asistencia> listarAsistencia() {
 //Inicializamos una lista vacía. Aquí es donde iremos guardando 
 //cada registro que extraigamos de la base de datos.        
         List<Asistencia> lista = new ArrayList<>();
@@ -25,16 +25,14 @@ public class AsistenciaDAO {
                 + "LEFT JOIN jornadaLaboral j ON a.jornada_id = j.id "
                 + "ORDER BY a.fecha_hora DESC";
 
-        try (Connection con = Conexion.obtenerConexion(); 
-             PreparedStatement ps = con.prepareStatement(sql); 
-             ResultSet rs = ps.executeQuery()) {
-            
+        try (Connection con = Conexion.obtenerConexion(); PreparedStatement ps = con.prepareStatement(sql); ResultSet rs = ps.executeQuery()) {
+
             while (rs.next()) {
                 Asistencia asis = new Asistencia();
                 asis.setId(rs.getInt("id"));
                 asis.setDocumentoIdentidad(rs.getString("documento_identidad"));
                 asis.setNombreEmpleado(rs.getString("nombre") + " " + rs.getString("apellido"));
-                
+
                 // Formateamos la fecha a String limpio para JavaScript
                 asis.setFechaHora(rs.getTimestamp("fecha_hora").toString());
                 asis.setTipoEvento(rs.getString("tipo_evento"));
@@ -78,13 +76,23 @@ public class AsistenciaDAO {
         return -1;
     }
 
-    public String obtenerNombrePorDocumento(String docIdentidad) {
-        String sql = "SELECT CONCAT(nombre, ' ', apellido) AS nombre_completo FROM usuario WHERE documento_identidad = ?";
+    public String obtenerNombrePorDocumento(String documento) {
+        String sql = "SELECT nombre, apellido FROM usuario WHERE documento_identidad = ?";
         try (Connection con = Conexion.obtenerConexion(); PreparedStatement ps = con.prepareStatement(sql)) {
-            ps.setString(1, docIdentidad);
+
+            ps.setString(1, documento);
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
-                    return rs.getString("nombre_completo");
+                    String nombreBd = rs.getString("nombre") != null ? rs.getString("nombre").trim() : "";
+                    String apellidoBd = rs.getString("apellido") != null ? rs.getString("apellido").trim() : "";
+
+                    // BLINDAJE: Si la columna nombre ya contiene el apellido físicamente,
+                    // retornamos solo el campo nombre para que no se duplique en el celular.
+                    if (nombreBd.toLowerCase().contains(apellidoBd.toLowerCase()) || apellidoBd.isEmpty()) {
+                        return nombreBd;
+                    } else {
+                        return nombreBd + " " + apellidoBd;
+                    }
                 }
             }
         } catch (SQLException e) {
@@ -94,8 +102,9 @@ public class AsistenciaDAO {
     }
 
     /**
-     * Determina de forma automática el próximo evento del empleado (RF10).
-     * Si su última marca fue 'entrada', le toca marcar 'salida'. De lo contrario, toca 'entrada'.
+     * Determina de forma automática el próximo evento del empleado (RF10). Si
+     * su última marca fue 'entrada', le toca marcar 'salida'. De lo contrario,
+     * toca 'entrada'.
      */
     public String obtenerUltimoTipoEvento(int usuarioId) {
         String sql = "SELECT tipo_evento FROM asistencia WHERE usuario_id = ? ORDER BY fecha_hora DESC LIMIT 1";
@@ -113,7 +122,8 @@ public class AsistenciaDAO {
     }
 
     /**
-     * Inserta la marca física inyectando de manera estricta la hora del servidor MySQL con NOW() (RF10).
+     * Inserta la marca física inyectando de manera estricta la hora del
+     * servidor MySQL con NOW() (RF10).
      */
     public boolean registrarAsistencia(int usuarioId, String tipoEvento, String observacion, int jornadaId) {
         // Corrección 2: Removido el campo obsoleto tipo_turno
@@ -131,7 +141,8 @@ public class AsistenciaDAO {
     }
 
     /**
-     * Trae la jornada horaria contractual del empleado para el cálculo automático de puntualidad.
+     * Trae la jornada horaria contractual del empleado para el cálculo
+     * automático de puntualidad.
      */
     public int obtenerJornadaIdYHoraEntrada(int usuarioId, StringBuilder horaEntradaOut) {
         String sql = "SELECT j.id, j.hora_entrada FROM jornadaLaboral j "
@@ -153,8 +164,9 @@ public class AsistenciaDAO {
     }
 
     /**
-     * Método estrella del Feed de Novedades del Home (Alimenta tu homeInicio.js).
-     * Mapea exactamente los mismos nombres que pusimos en tu JS del Set().
+     * Método estrella del Feed de Novedades del Home que mapea las asistencias
+     * y datos del usuario (Alimenta tu homeInicio.js).
+     *
      */
     public List<Asistencia> listarNovedadesRecientes() {
         List<Asistencia> lista = new ArrayList<>();
@@ -164,19 +176,29 @@ public class AsistenciaDAO {
                 + "LEFT JOIN jornadaLaboral j ON a.jornada_id = j.id "
                 + "ORDER BY a.fecha_hora DESC LIMIT 10";
 
-        try (Connection con = Conexion.obtenerConexion(); 
-             PreparedStatement ps = con.prepareStatement(sql); 
-             ResultSet rs = ps.executeQuery()) {
+        try (Connection con = Conexion.obtenerConexion(); PreparedStatement ps = con.prepareStatement(sql); ResultSet rs = ps.executeQuery()) {
 
             while (rs.next()) {
                 Asistencia asis = new Asistencia();
                 asis.setId(rs.getInt("id"));
                 asis.setDocumentoIdentidad(rs.getString("documento_identidad"));
-                asis.setNombreEmpleado(rs.getString("nombre") + " " + rs.getString("apellido"));
+
+                // BLINDAJE DE NOMBRE DUPLICADO: Extraemos y limpiamos las cadenas
+                String nombreBd = rs.getString("nombre") != null ? rs.getString("nombre").trim() : "";
+                String apellidoBd = rs.getString("apellido") != null ? rs.getString("apellido").trim() : "";
+
+                // Si la columna 'nombre' ya contiene el apellido (o si el apellido viene vacío), 
+                // inyectamos solo el nombre para evitar el efecto espejo.
+                if (nombreBd.toLowerCase().contains(apellidoBd.toLowerCase()) || apellidoBd.isEmpty()) {
+                    asis.setNombreEmpleado(nombreBd);
+                } else {
+                    asis.setNombreEmpleado(nombreBd + " " + apellidoBd);
+                }
+
                 asis.setTipoEvento(rs.getString("tipo_evento"));
                 asis.setFechaHora(rs.getTimestamp("fecha_hora").toString());
                 asis.setObservacion(rs.getString("observacion"));
-                asis.setNombreJornada(rs.getString("nombrejornada")); // Enlazado con tu Set()
+                asis.setNombreJornada(rs.getString("nombrejornada"));
                 lista.add(asis);
             }
         } catch (SQLException e) {
@@ -184,5 +206,5 @@ public class AsistenciaDAO {
         }
         return lista;
     }
-}
 
+}

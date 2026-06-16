@@ -97,7 +97,7 @@ body {
 .feedback-mensaje {
     margin-top: 20px;
     font-size: 1.1rem;
-    color: #f43f5e; /* Rojo por defecto para errores */
+    color: #02fd2c; /* Rojo por defecto para errores */
     min-height: 24px; /* Para evitar salto de contenido */
 }
 

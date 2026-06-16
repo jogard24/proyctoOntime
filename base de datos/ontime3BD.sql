@@ -1,6 +1,7 @@
 CREATE DATABASE Ontime3BD;
 USE Ontime3BD;
 
+drop database ontime3bd;
 -- 1. Tabla Central de Usuarios 
 CREATE TABLE usuario (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -23,21 +24,21 @@ CREATE TABLE contacto_emergencia (
     nombre VARCHAR(100) NOT NULL,
     telefono VARCHAR(50) NOT NULL,
     parentesco VARCHAR(50) NOT NULL,
-    FOREIGN KEY (usuario_id) REFERENCES usuario(id) ON DELETE CASCADE
+    FOREIGN KEY (usuario_id) REFERENCES usuario(id)
 );
 
 CREATE TABLE telefono_personal (
     id INT AUTO_INCREMENT PRIMARY KEY,
     usuario_id INT NOT NULL,
     telefono_celular VARCHAR(50) NOT NULL,
-    FOREIGN KEY (usuario_id) REFERENCES usuario(id) ON DELETE CASCADE
+    FOREIGN KEY (usuario_id) REFERENCES usuario(id)
 );
 
 CREATE TABLE email_personal (
     id INT AUTO_INCREMENT PRIMARY KEY,
     usuario_id INT NOT NULL,
     email VARCHAR(100) NOT NULL,
-    FOREIGN KEY (usuario_id) REFERENCES usuario(id) ON DELETE CASCADE
+    FOREIGN KEY (usuario_id) REFERENCES usuario(id)
 );
 
 -- 2. Tabla de Roles
@@ -55,7 +56,7 @@ CREATE TABLE credenciales (
     rol_id INT NOT NULL,
     activo BOOLEAN DEFAULT TRUE,
     requiere_cambio_clave BOOLEAN DEFAULT FALSE, -- Soporte para claves temporales (RF07)
-    FOREIGN KEY (usuario_id) REFERENCES usuario(id) ON DELETE CASCADE,
+    FOREIGN KEY (usuario_id) REFERENCES usuario(id),
     FOREIGN KEY (rol_id) REFERENCES roles(id)
 );
 
@@ -87,9 +88,17 @@ CREATE TABLE contrato (
     cargo VARCHAR(100) NOT NULL,
     salario_base DECIMAL(10,2) NOT NULL,
     jornada_id INT NOT NULL,
-    FOREIGN KEY (usuario_id) REFERENCES usuario(id) ON DELETE CASCADE,
+    FOREIGN KEY (usuario_id) REFERENCES usuario(id),
     FOREIGN KEY (jornada_id) REFERENCES jornadaLaboral(id)
 );
+
+ALTER TABLE contrato 
+ADD COLUMN fecha_inicio DATE NOT NULL DEFAULT '2026-01-01',
+ADD COLUMN fecha_fin DATE NULL;
+
+UPDATE contrato 
+SET fecha_inicio = '2026-06-16', fecha_fin = '2026-07-14' 
+WHERE usuario_id = 2;
 
 -- 7. Tabla de Permisos Laborales 
 CREATE TABLE permiso_laboral (
@@ -100,7 +109,7 @@ CREATE TABLE permiso_laboral (
     fecha_inicio DATE NOT NULL,
     fecha_fin DATE NOT NULL,
     estado ENUM('pendiente', 'aprobado', 'rechazado') DEFAULT 'pendiente', -- Corregido para cumplir RF12 y RF13
-    FOREIGN KEY (usuario_id) REFERENCES usuario(id) ON DELETE CASCADE
+    FOREIGN KEY (usuario_id) REFERENCES usuario(id)
 );
 
 -- 8. Periodos de Nómina maneja los tiempos de nomina mensuales
@@ -123,6 +132,17 @@ CREATE TABLE nomina (
     FOREIGN KEY (periodo_id) REFERENCES periodo_nomina(id)
 );
 
+
+-- Creamos la tabla  para conectar físicamente los dos módulos de asistencia y nomina
+CREATE TABLE nomina_asistencia (
+    nomina_id INT NOT NULL,
+    asistencia_id INT NOT NULL,
+    PRIMARY KEY (nomina_id, asistencia_id),
+    CONSTRAINT fk_nom_as_nomina FOREIGN KEY (nomina_id) REFERENCES nomina(id),
+    CONSTRAINT fk_nom_as_asistencia FOREIGN KEY (asistencia_id) REFERENCES asistencia(id)
+);
+
+
 -- 10. permite la exportacion del informe general de nomina
 CREATE TABLE concepto_nomina (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -139,9 +159,11 @@ CREATE TABLE detalle_nomina (
     valor DECIMAL(10,2) NOT NULL,
     fecha_registro TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     observacion TEXT,
-    FOREIGN KEY (nomina_id) REFERENCES nomina(id) ON DELETE CASCADE,
+    FOREIGN KEY (nomina_id) REFERENCES nomina(id),
     FOREIGN KEY (concepto_id) REFERENCES concepto_nomina(id)
 );
+
+
 
 
 
@@ -152,9 +174,6 @@ INSERT INTO roles (Rol) VALUES ('administrador');
 INSERT INTO roles (Rol) VALUES ('empleado');
 INSERT INTO roles (Rol) VALUES ('contador');
 
-UPDATE usuario SET nombre = 'alvarito', apellido = 'uribe' WHERE documento_identidad = '123456789';
-UPDATE usuario SET nombre = 'Jose Gabriel', apellido = 'Roa' WHERE documento_identidad = '1020304050';
-
 
 
 INSERT INTO jornadaLaboral (id, nombrejornada, hora_entrada, hora_salida)
@@ -163,7 +182,7 @@ VALUES (101, 'Mañana Completa', '08:00:00', '17:00:00'),
 
 --  (Admin)
 INSERT INTO usuario (id, documento_identidad, nombre, apellido, direccion, estado, tipo_sangre, fotoPerfil_url, usuario_modificador_id)
-VALUES (1, '1020304050', 'Jose', 'Roa', 'Calle 45 # 12-34, Bucaramanga', 'activo', 'o+', 'img/usuario-defecto.png', NULL);
+VALUES (1, '123456789', 'Jose', 'Roa', 'Calle 45 # 12-34, Bucaramanga', 'activo', 'o+', 'img/usuario-defecto.png', NULL);
 
 -- Creamos de una vez las credenciales de Administrador (Rol ID 1) para el Dashboard
 INSERT INTO credenciales (usuario_id, usuario, clave, rol_id, activo, requiere_cambio_clave)

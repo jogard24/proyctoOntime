@@ -9,14 +9,12 @@ import java.util.List;
 public class EmpleadoDAO {
 
     /**
-     * Consulta el listado general uniendo las tablas para la grilla de Gestión
-     * (RF23).
+     * Consulta el listado general uniendo las tablas para la grilla de Gestión (RF23).
      */
     public List<Empleado> listarTodos() {
         List<Empleado> lista = new ArrayList<>();
 
-        // SQL optimizado agregando el apellido al reporte de gestión
-        String sql = "SELECT u.id, u.documento_identidad, u.nombre, u.apellido, u.estado, u.fotoPerfil_url, u.direccion, " // ¡AQUÍ: Agregado u.direccion
+        String sql = "SELECT u.id, u.documento_identidad, u.nombre, u.apellido, u.estado, u.fotoPerfil_url, u.direccion, "
                 + "t.telefono_celular, e.email, con.cargo "
                 + "FROM usuario u "
                 + "LEFT JOIN telefono_personal t ON u.id = t.usuario_id "
@@ -28,15 +26,12 @@ public class EmpleadoDAO {
 
             while (rs.next()) {
                 Empleado emp = new Empleado();
-
-                // Corrección 1: Asignación numérica del ID de Ontime3BD
                 emp.setId(rs.getInt("id"));
 
-                // Unimos nombre y apellido para pintar en la columna 'Nombre Completo'
                 String nombreBd = rs.getString("nombre");
                 String apellidoBd = rs.getString("apellido");
+                if (apellidoBd == null) apellidoBd = "";
 
-// Validamos de forma : si el nombre ya contiene el apellido dentro de la BD, no lo volvemos a sumar
                 if (nombreBd.toLowerCase().contains(apellidoBd.toLowerCase())) {
                     emp.setNombre(nombreBd);
                 } else {
@@ -44,12 +39,10 @@ public class EmpleadoDAO {
                 }
 
                 emp.setDocumento(rs.getString("documento_identidad"));
-
-                String cargo = rs.getString("cargo");
-                emp.setCargo(cargo != null ? cargo : "Sin asignar");
-
+                emp.setCargo(rs.getString("cargo") != null ? rs.getString("cargo") : "Sin asignar");
                 emp.setEstado(rs.getString("estado"));
                 emp.setFoto(rs.getString("fotoPerfil_url"));
+                emp.setDireccion(rs.getString("direccion") != null ? rs.getString("direccion") : "N/A");
                 emp.setTelefonoCelular(rs.getString("telefono_celular") != null ? rs.getString("telefono_celular") : "N/A");
                 emp.setEmail(rs.getString("email") != null ? rs.getString("email") : "N/A");
 
@@ -62,139 +55,111 @@ public class EmpleadoDAO {
     }
 
     /**
-     * Modifica los datos permitidos de un usuario existente (RF23 y RF25).
+     * CORRECCIÓN DEL JURADO: Modifica datos en cascada lógica transaccional.
+     * Sincroniza el rol ID numérico en la tabla de credenciales (RF23).
      */
-    public boolean actualizarEmpleado(Empleado emp) {
-
-        String sqlUsuario = "UPDATE usuario SET nombre = ?, apellido = '', estado = ?, direccion = ? WHERE id = ?";
+    public boolean actualizarEmpleadoConRol(Empleado emp, int rolId) {
+        String sqlUsuario = "UPDATE usuario SET nombre = ?, estado = ?, direccion = ? WHERE id = ?";
         String sqlTelefono = "UPDATE telefono_personal SET telefono_celular = ? WHERE usuario_id = ?";
         String sqlContrato = "UPDATE contrato SET cargo = ? WHERE usuario_id = ?";
+        String sqlCredenciales = "UPDATE credenciales SET rol_id = ? WHERE usuario_id = ?";
 
         Connection con = null;
         try {
             con = Conexion.obtenerConexion();
-            con.setAutoCommit(false);
+            con.setAutoCommit(false); // Transacción atómica manual segura
 
+            // 1. Actualizar tabla central usuario (Garantiza campos no nulos)
             try (PreparedStatement psU = con.prepareStatement(sqlUsuario)) {
                 psU.setString(1, emp.getNombre());
                 psU.setString(2, emp.getEstado().toLowerCase());
-                psU.setString(3, emp.getDireccion());
+                psU.setString(3, (emp.getDireccion() != null && !emp.getDireccion().trim().isEmpty()) ? emp.getDireccion() : "N/A");
                 psU.setInt(4, emp.getId());
                 psU.executeUpdate();
             }
 
+            // 2. Actualizar teléfono celular relacional
             try (PreparedStatement psT = con.prepareStatement(sqlTelefono)) {
-                psT.setString(1, emp.getTelefonoCelular());
+                psT.setString(1, (emp.getTelefonoCelular() != null) ? emp.getTelefonoCelular() : "");
                 psT.setInt(2, emp.getId());
                 psT.executeUpdate();
             }
 
+            // 3. Actualizar cargo textual en contrato
             try (PreparedStatement psC = con.prepareStatement(sqlContrato)) {
                 psC.setString(1, emp.getCargo());
                 psC.setInt(2, emp.getId());
                 psC.executeUpdate();
             }
 
-            con.commit();
+            // 4. Actualizar el ID del rol en la tabla de seguridad credenciales
+            try (PreparedStatement psR = con.prepareStatement(sqlCredenciales)) {
+                psR.setInt(1, rolId);
+                psR.setInt(2, emp.getId());
+                psR.executeUpdate();
+            }
+
+            con.commit(); // Consolidamos de forma inmutable todas las tablas
+            System.out.println(" ÉXITO: Transacción de actualización completada para ID " + emp.getId());
             return true;
         } catch (SQLException e) {
-            e.printStackTrace();
+            System.out.println(" ERROR TRANSACCIONAL EN DAO: " + e.getMessage());
             if (con != null) {
-                try {
-                    con.rollback();
-                } catch (SQLException ex) {
-                    ex.printStackTrace();
-                }
+                try { con.rollback(); } catch (SQLException ex) { ex.printStackTrace(); }
             }
             return false;
         } finally {
             if (con != null) {
-                try {
-                    con.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
+                try { con.close(); } catch (SQLException e) { e.printStackTrace(); }
             }
         }
     }
 
     /**
-     * Elimina de forma física un empleado en cascada relacional (RF25). Borra
-     * primero las tablas hijas y finalmente remueve al usuario padre.
+     * CORRECCIÓN EXIGIDA POR EL JURADO: Se eliminó el ON DELETE CASCADE físico.
+     * Aplica BORRADO LÓGICO: Inactiva el estado del usuario y bloquea su acceso web/pinpad,
+     * protegiendo de forma estricta los históricos de asistencia y nómina (RF25).
      */
     public boolean eliminarEmpleado(int id) {
-        String sqlCred = "DELETE FROM credenciales WHERE usuario_id = ?";
-        String sqlCont = "DELETE FROM contrato WHERE usuario_id = ?";
-        String sqlTel = "DELETE FROM telefono_personal WHERE usuario_id = ?";
-        String sqlEmail = "DELETE FROM email_personal WHERE usuario_id = ?";
-        String sqlContE = "DELETE FROM contacto_emergencia WHERE usuario_id = ?";
-        String sqlAsis = "DELETE FROM asistencia WHERE usuario_id = ?";
-        String sqlPerm = "DELETE FROM permiso_laboral WHERE usuario_id = ?";
-        String sqlUser = "DELETE FROM usuario WHERE id = ?";
+        String sqlUsuario = "UPDATE usuario SET estado = 'inactivo' WHERE id = ?";
+        String sqlCredenciales = "UPDATE credenciales SET activo = 0 WHERE usuario_id = ?";
 
         Connection con = null;
         try {
             con = Conexion.obtenerConexion();
-            con.setAutoCommit(false); // Transacción limpia: borra todo o nada
+            con.setAutoCommit(false); // Transacción segura abierta
 
-            try (PreparedStatement ps = con.prepareStatement(sqlCred)) {
-                ps.setInt(1, id);
-                ps.executeUpdate();
-            }
-            try (PreparedStatement ps = con.prepareStatement(sqlCont)) {
-                ps.setInt(1, id);
-                ps.executeUpdate();
-            }
-            try (PreparedStatement ps = con.prepareStatement(sqlTel)) {
-                ps.setInt(1, id);
-                ps.executeUpdate();
-            }
-            try (PreparedStatement ps = con.prepareStatement(sqlEmail)) {
-                ps.setInt(1, id);
-                ps.executeUpdate();
-            }
-            try (PreparedStatement ps = con.prepareStatement(sqlContE)) {
-                ps.setInt(1, id);
-                ps.executeUpdate();
-            }
-            try (PreparedStatement ps = con.prepareStatement(sqlAsis)) {
-                ps.setInt(1, id);
-                ps.executeUpdate();
-            }
-            try (PreparedStatement ps = con.prepareStatement(sqlPerm)) {
-                ps.setInt(1, id);
-                ps.executeUpdate();
+            // 1. Inactivar el perfil del usuario (Borrado lógico contractual)
+            try (PreparedStatement psU = con.prepareStatement(sqlUsuario)) {
+                psU.setInt(1, id);
+                psU.executeUpdate();
             }
 
-            // Finalmente, borramos al usuario padre de la tabla central
-            int filasAfectadas;
-            try (PreparedStatement ps = con.prepareStatement(sqlUser)) {
-                ps.setInt(1, id);
-                filasAfectadas = ps.executeUpdate();
+            // 2. Bloquear credenciales de inicio de sesión y pinpad
+            try (PreparedStatement psC = con.prepareStatement(sqlCredenciales)) {
+                psC.setInt(1, id);
+                psC.executeUpdate();
             }
 
-            con.commit(); // Consolidamos los cambios en MySQL
-            return filasAfectadas > 0;
-
+            con.commit(); // Confirmamos los cambios de forma consistente
+            System.out.println("BORRADO LÓGICO: Usuario ID " + id + " inactivado correctamente.");
+            return true;
         } catch (SQLException e) {
-            e.printStackTrace();
+            System.out.println("ERROR EN BORRADO LÓGICO: " + e.getMessage());
             if (con != null) {
-                try {
-                    con.rollback();
-                } catch (SQLException ex) {
-                    ex.printStackTrace();
-                }
+                try { con.rollback(); } catch (SQLException ex) { ex.printStackTrace(); }
             }
             return false;
         } finally {
             if (con != null) {
-                try {
-                    con.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
+                try { con.close(); } catch (SQLException e) { e.printStackTrace(); }
             }
         }
     }
 
+    // Método viejo de respaldo compatible por si alguna clase interna lo invoca
+    public boolean actualizarEmpleado(Empleado emp) {
+        return actualizarEmpleadoConRol(emp, 2);
+    }
 }
+

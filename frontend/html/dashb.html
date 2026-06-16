@@ -1,78 +1,89 @@
 <!doctype html>
 <html lang="es">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="../css/dashb.css" />
-    <link rel="stylesheet" href="../css/gestionempleados.css" />
-    <link rel="stylesheet" href="../css/asistenciaTabla.css" />
-    <link rel="stylesheet" href="../css/permiso.css" />
-    <link rel="stylesheet" href="../css/inicioDashboard.css" />
-    <title>Dashboard - OnTime</title>
-  </head>
 
-  <body>
-    <section class="dash">
-      <!-- Contenedor Menú Lateral -->
-      <section class="contenedor-menu">
-        <aside class="menu-lateral">
-          <!-- Foto Perfil / Identificador Corporativo -->
-          <div class="editar-perfil">
-            <div class="avatar-perfil">
-              <img id="visualizar" src="../img/logo sinfondo.png" alt="Logo Corporativo" />                
-            </div>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="../css/dashb.css" />
+  <link rel="stylesheet" href="../css/gestionempleados.css" />
+  <link rel="stylesheet" href="../css/asistenciaTabla.css" />
+  <link rel="stylesheet" href="../css/permiso.css" />
+  <link rel="stylesheet" href="../css/inicioDashboard.css" />
+  <title>Dashboard - OnTime</title>
+</head>
+
+<body>
+  <section class="dash">
+    <!-- Contenedor Menú Lateral -->
+    <section class="contenedor-menu">
+      <aside class="menu-lateral">
+        <!-- Foto Perfil / Identificador Corporativo -->
+        <div class="editar-perfil">
+          <div class="avatar-perfil">
+            <img id="visualizar" src="../img/logo sinfondo.png" alt="Logo Corporativo" />
           </div>
-          
-          <!-- Botones de Navegación del Menú Lateral -->
-          <nav class="menu">
-            <button class="bt-home bt-menu-item" id="btn-home">🏛️ ​ HOME</button>
-            <button type="button" class="bt-menu-item" id="btn-gestionEmpleados">Gestión empleados</button>
-            <button type="button" class="bt-menu-item" id="btn-Registro">Registro</button>
-            <button type="button" class="bt-menu-item" id="btn-Asistencia">Asistencia</button>
-            <button type="button" class="bt-menu-item" id="btn-Permiso">Permiso</button>
-            <button type="button" class="bt-menu-item" id="btn-generarNomina">Nómina</button>
-            <button type="button" class="bt-menu-item" id="btn-horario">Horario</button>
-            
-            <button type="button" class="bt-menu-item btn-Modificador-cerrar" id="btn-CerrarSesion" style="margin-top: auto;">
-              Cerrar sesión
-            </button>
-          </nav>
-        </aside>
-      </section>
-      
-      <!-- Contenedor de Carga Dinámica de Vistas Modulares -->
-      <div class="contenedor-dash" id="contenedor-dinamico">
-         <!-- Aquí JavaScript inyectará el Home, la Gestión, el Registro, etc. -->
-      </div>
+        </div>
+
+        <!-- Botones de Navegación del Menú Lateral -->
+        <nav class="menu">
+          <button class="bt-home bt-menu-item" id="btn-home">🏛️ ​ HOME</button>
+          <button type="button" class="bt-menu-item" id="btn-gestionEmpleados">Gestión empleados</button>
+          <button type="button" class="bt-menu-item" id="btn-Registro">Registro</button>
+          <button type="button" class="bt-menu-item" id="btn-Asistencia">Asistencia</button>
+          <button type="button" class="bt-menu-item" id="btn-Permiso">Permiso</button>
+          <button type="button" class="bt-menu-item" id="btn-generarNomina">Nómina</button>
+          <button type="button" class="bt-menu-item" id="btn-horario">Horario</button>
+
+          <button type="button" class="bt-menu-item btn-Modificador-cerrar" id="btn-CerrarSesion"
+            style="margin-top: auto;">
+            Cerrar sesión
+          </button>
+        </nav>
+      </aside>
     </section>
 
-    <!-- El Modal de Edición se conserva limpio y se controlará de forma estricta mediante eventos en gestionEmpleados.js -->
-<div id="modalEditar" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.5); z-index:1000; align-items:center; justify-content:center;">
-  <div style="background:white; width:min(90vw, 560px); padding:24px; border-radius:12px; box-shadow:0 24px 48px rgba(0,0,0,0.25); color: #333;">
+    <!-- Contenedor de Carga Dinámica de Vistas Modulares -->
+    <div class="contenedor-dash" id="contenedor-dinamico">
+      <!-- Aquí JavaScript inyectará el Home, la Gestión, el Registro, etc. -->
+    </div>
+  </section>
+
+  <!-- El Modal de Edición se conserva limpio y se controlará de forma estricta mediante eventos en gestionEmpleados.js -->
+  <div id="modalEditar"
+    style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.5); z-index:1000; align-items:center; justify-content:center;">
+    <div
+      style="background:white; width:min(90vw, 560px); padding:24px; border-radius:12px; box-shadow:0 24px 48px rgba(0,0,0,0.25); color: #333;">
       <h2 style="margin-top:0; font-size:1.45rem;">Editar Información del Empleado</h2>
       <input type="hidden" id="editId">
-      
+
       <div style="display:flex; flex-direction:column; gap:12px; margin-top:15px;">
         <label style="font-weight:bold; display:flex; flex-direction:column;">
           Nombre :
           <input type="text" id="editNombre" style="padding:6px; border:1px solid #ccc; border-radius:4px;" required>
         </label>
-        
+
         <label style="font-weight:bold; display:flex; flex-direction:column;">
           Celular:
           <input type="number" id="editCelular" style="padding:6px; border:1px solid #ccc; border-radius:4px;" required>
         </label>
-        
+
         <label style="font-weight:bold; display:flex; flex-direction:column;">
           Dirección:
           <input type="text" id="editDireccion" style="padding:6px; border:1px solid #ccc; border-radius:4px;" required>
         </label>
-        
+
+
         <label style="font-weight:bold; display:flex; flex-direction:column;">
-          Cargo / Rol:
-          <input type="text" id="editCargo" style="padding:6px; border:1px solid #ccc; border-radius:4px;" required>
+          Asignar Cargo / Rol:
+          <select id="editCargo" style="padding:6px; border:1px solid #ccc; border-radius:4px; background-color: white;"
+            required>
+            <option value="2">Empleado</option>
+            <option value="1">Administrador</option>
+            <option value="3">Contador</option>
+          </select>
         </label>
-        
+
+
         <label style="font-weight:bold; display:flex; flex-direction:column;">
           Estado del Empleado:
           <select id="editEstado" style="padding:6px; border:1px solid #ccc; border-radius:4px;">
@@ -81,16 +92,19 @@
           </select>
         </label>
       </div>
-      
+
       <div style="display:flex; gap:8px; justify-content:flex-end; margin-top:20px;">
-        <button id="btn-cancelar-edicion" class="bt-menu-item" style="padding:8px 12px; border-radius:6px; border:1px solid #1565c0; background:#1565c0; cursor:pointer;">Cancelar</button>
-        <button id="btn-guardar-edicion" class="bt-menu-item" style="padding:8px 12px; border-radius:6px; background:#1565c0; color:#fff; border:none; font-weight:bold; cursor:pointer;">Guardar Cambios</button>
+        <button id="btn-cancelar-edicion" class="bt-menu-item"
+          style="padding:8px 12px; border-radius:6px; border:1px solid #1565c0; background:#1565c0; cursor:pointer;">Cancelar</button>
+        <button id="btn-guardar-edicion" class="bt-menu-item"
+          style="padding:8px 12px; border-radius:6px; background:#1565c0; color:#fff; border:none; font-weight:bold; cursor:pointer;">Guardar
+          Cambios</button>
       </div>
+    </div>
   </div>
-</div>
 
-    <!-- Orquestador central de módulos -->
-    <script type="module" src="../js/main.js"></script>
-  </body>
+  <!-- Orquestador central de módulos -->
+  <script type="module" src="../js/main.js"></script>
+</body>
+
 </html>
-

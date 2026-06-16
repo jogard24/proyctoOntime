@@ -42,9 +42,9 @@ public class EmpleadoServlet extends HttpServlet {
                 json.append("{");
                 json.append("\"id\":").append(emp.getId()).append(",");
                 json.append("\"documento\":\"").append(escaparJson(emp.getDocumento())).append("\",");
-                json.append("\"nombre\":\"").append(escaparJson(emp.getNombre())).append("\","); // Solo pasamos el campo nombre limpio
-                json.append("\"telefonoCelular\":\"").append(escaparJson(emp.getTelefonoCelular())).append("\","); // ¡Nueva!
-                json.append("\"direccion\":\"").append(escaparJson(emp.getDireccion())).append("\","); // ¡Nueva!
+                json.append("\"nombre\":\"").append(escaparJson(emp.getNombre())).append("\","); 
+                json.append("\"telefonoCelular\":\"").append(escaparJson(emp.getTelefonoCelular())).append("\","); 
+                json.append("\"direccion\":\"").append(escaparJson(emp.getDireccion())).append("\","); 
                 json.append("\"cargo\":\"").append(escaparJson(emp.getCargo())).append("\",");
                 json.append("\"estado\":\"").append(escaparJson(emp.getEstado())).append("\",");
                 json.append("\"fotoPerfilUrl\":\"").append(escaparJson(emp.getFoto())).append("\"");
@@ -70,7 +70,6 @@ public class EmpleadoServlet extends HttpServlet {
         request.setCharacterEncoding("UTF-8");
         response.setContentType("application/json;charset=UTF-8");
 
-        // Ajuste 3: Captura de los parámetros planos de URLSearchParams de tu javascript
         String accion = request.getParameter("accion");
         String idStr = request.getParameter("id");
 
@@ -85,7 +84,7 @@ public class EmpleadoServlet extends HttpServlet {
 
         try {
             if ("eliminar".equals(accion)) { 
-                // Invoca el borrado en cascada que creamos en el DAO
+                // Invoca el borrado lógico seguro (Modificado para cumplir con el jurado)
                 exito = empleadoDAO.eliminarEmpleado(id);
             } else if ("actualizar".equals(accion)) {
                 Empleado emp = new Empleado();
@@ -96,14 +95,19 @@ public class EmpleadoServlet extends HttpServlet {
                 emp.setDireccion(request.getParameter("direccion"));
                 emp.setCargo(request.getParameter("cargo"));
 
-                exito = empleadoDAO.actualizarEmpleado(emp);
+                // CAPTURA CRÍTICA: Extraemos el ID numérico del rol que envía el Select
+                String rolIdStr = request.getParameter("rol_id");
+                int rolId = (rolIdStr != null) ? Integer.parseInt(rolIdStr.trim()) : 2; // 2 = Empleado por defecto
+
+                // Invocamos el nuevo método transaccional que actualiza todas las tablas acopladas
+                exito = empleadoDAO.actualizarEmpleadoConRol(emp, rolId);
             }
 
             if (exito) {
                 response.getWriter().print("{\"status\":\"success\",\"message\":\"Operación completada con éxito.\"}");
             } else {
                 response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-                response.getWriter().print("{\"status\":\"error\",\"message\":\"La base de datos rechazó la modificación.\"}");
+                response.getWriter().print("{\"status\":\"error\",\"message\":\"La base de datos rechazó la modificación por integridad.\"}");
             }
 
         } catch (Exception e) {
@@ -119,3 +123,4 @@ public class EmpleadoServlet extends HttpServlet {
         response.setStatus(HttpServletResponse.SC_OK);
     }
 }
+
