@@ -8,12 +8,12 @@ import java.sql.*;
 public class FormularioRegistroDAO {
 
     /**
-     * Registra un empleado completo en la base de datos Ontime3BD.
-     * Inserta en usuario, contrato, email_personal, telefono_personal y contacto_emergencia
-     * bajo una única transacción segura 
+     * Registra un empleado completo en la base de datos Ontime3BD. Inserta en
+     * usuario, contrato, email_personal, telefono_personal y
+     * contacto_emergencia bajo una única transacción segura
      */
     public boolean registrarNuevoEmpleado(Empleado emp, Contrato contrato) {
-        
+
         String sqlUsuario = "INSERT INTO usuario (documento_identidad, nombre, apellido, direccion, estado, tipo_sangre, fotoPerfil_url) VALUES (?, ?, ?, ?, ?, ?, ?)";
         String sqlContrato = "INSERT INTO contrato (usuario_id, tipo_contrato, cargo, salario_base, jornada_id) VALUES (?, ?, ?, ?, ?)";
         String sqlEmail = "INSERT INTO email_personal (usuario_id, email) VALUES (?, ?)";
@@ -32,11 +32,11 @@ public class FormularioRegistroDAO {
                 psU.setString(1, emp.getDocumento());
                 psU.setString(2, emp.getNombre());
                 psU.setString(3, emp.getApellido());
-                psU.setString(4, emp.getDireccion());
+                psU.setString(4, emp.getDireccion() != null ? emp.getDireccion() : "N/A");
                 psU.setString(5, "activo"); // Estado inicial plano por defecto
                 psU.setString(6, emp.getTipoSangre() != null ? emp.getTipoSangre().toLowerCase() : "o+");
                 psU.setString(7, emp.getFoto() != null ? emp.getFoto() : "img/usuario-defecto.png");
-                
+
                 psU.executeUpdate();
 
                 // Recuperamos el ID autogenerado por MySQL
@@ -86,7 +86,7 @@ public class FormularioRegistroDAO {
             }
 
             // Si todas las inserciones se ejecutaron sin errores, consolidamos de forma permanente en MySQL
-            con.commit(); 
+            con.commit();
             System.out.println("-> ¡Empleado " + emp.getNombre() + " registrado con éxito en Ontime3BD!");
             return true;
 

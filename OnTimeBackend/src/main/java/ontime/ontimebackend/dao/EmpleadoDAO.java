@@ -16,7 +16,7 @@ public class EmpleadoDAO {
         List<Empleado> lista = new ArrayList<>();
 
         // SQL optimizado agregando el apellido al reporte de gestión
-        String sql = "SELECT u.id, u.documento_identidad, u.nombre, COALESCE(u.apellido, '') AS apellido, u.estado, u.fotoPerfil_url, "
+        String sql = "SELECT u.id, u.documento_identidad, u.nombre, u.apellido, u.estado, u.fotoPerfil_url, u.direccion, " // ¡AQUÍ: Agregado u.direccion
                 + "t.telefono_celular, e.email, con.cargo "
                 + "FROM usuario u "
                 + "LEFT JOIN telefono_personal t ON u.id = t.usuario_id "
@@ -119,20 +119,82 @@ public class EmpleadoDAO {
     }
 
     /**
-     * Aplica la Inactivación Lógica del personal en lugar de un DELETE físico
-     * (RF25). Conserva el histórico transaccional de asistencias y nóminas
-     * intacto.
+     * Elimina de forma física un empleado en cascada relacional (RF25). Borra
+     * primero las tablas hijas y finalmente remueve al usuario padre.
      */
-    public boolean inactivarEmpleado(int id) {
-        String sql = "UPDATE usuario SET estado = 'inactivo' WHERE id = ?";
+    public boolean eliminarEmpleado(int id) {
+        String sqlCred = "DELETE FROM credenciales WHERE usuario_id = ?";
+        String sqlCont = "DELETE FROM contrato WHERE usuario_id = ?";
+        String sqlTel = "DELETE FROM telefono_personal WHERE usuario_id = ?";
+        String sqlEmail = "DELETE FROM email_personal WHERE usuario_id = ?";
+        String sqlContE = "DELETE FROM contacto_emergencia WHERE usuario_id = ?";
+        String sqlAsis = "DELETE FROM asistencia WHERE usuario_id = ?";
+        String sqlPerm = "DELETE FROM permiso_laboral WHERE usuario_id = ?";
+        String sqlUser = "DELETE FROM usuario WHERE id = ?";
 
-        try (Connection con = Conexion.obtenerConexion(); PreparedStatement ps = con.prepareStatement(sql)) {
+        Connection con = null;
+        try {
+            con = Conexion.obtenerConexion();
+            con.setAutoCommit(false); // Transacción limpia: borra todo o nada
 
-            ps.setInt(1, id);
-            return ps.executeUpdate() > 0;
+            try (PreparedStatement ps = con.prepareStatement(sqlCred)) {
+                ps.setInt(1, id);
+                ps.executeUpdate();
+            }
+            try (PreparedStatement ps = con.prepareStatement(sqlCont)) {
+                ps.setInt(1, id);
+                ps.executeUpdate();
+            }
+            try (PreparedStatement ps = con.prepareStatement(sqlTel)) {
+                ps.setInt(1, id);
+                ps.executeUpdate();
+            }
+            try (PreparedStatement ps = con.prepareStatement(sqlEmail)) {
+                ps.setInt(1, id);
+                ps.executeUpdate();
+            }
+            try (PreparedStatement ps = con.prepareStatement(sqlContE)) {
+                ps.setInt(1, id);
+                ps.executeUpdate();
+            }
+            try (PreparedStatement ps = con.prepareStatement(sqlAsis)) {
+                ps.setInt(1, id);
+                ps.executeUpdate();
+            }
+            try (PreparedStatement ps = con.prepareStatement(sqlPerm)) {
+                ps.setInt(1, id);
+                ps.executeUpdate();
+            }
+
+            // Finalmente, borramos al usuario padre de la tabla central
+            int filasAfectadas;
+            try (PreparedStatement ps = con.prepareStatement(sqlUser)) {
+                ps.setInt(1, id);
+                filasAfectadas = ps.executeUpdate();
+            }
+
+            con.commit(); // Consolidamos los cambios en MySQL
+            return filasAfectadas > 0;
+
         } catch (SQLException e) {
             e.printStackTrace();
+            if (con != null) {
+                try {
+                    con.rollback();
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                }
+            }
             return false;
+        } finally {
+            if (con != null) {
+                try {
+                    con.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
         }
     }
+
 }

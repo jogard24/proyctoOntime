@@ -48,7 +48,7 @@ export function configurarAsistenciaPinpad() {
     btnConfirmar.addEventListener('click', async (e) => {
         e.preventDefault();
         if (cadenaId.trim() === "") {
-            mostrarFeedback("❌ Por favor ingresa tu identificación", "error");
+            mostrarFeedback(" Por favor ingresa tu identificación", "error");
             return;
         }
 
@@ -59,7 +59,8 @@ export function configurarAsistenciaPinpad() {
             params.append('documento', cadenaId); // Enviamos el documento/cédula digitada
 
             // const respuesta = await fetch('http://localhost:8080/OnTimeBackend/PinpadServlet', {
-            const respuesta = await fetch('http://192.168.1.2:8080/OnTimeBackend/PinpadServlet', {
+            const respuesta = await fetch('http://192.168.1.27:8080/OnTimeBackend/PinpadServlet', {
+            // const respuesta = await fetch('http://10.71.104.170:8080/OnTimeBackend/PinpadServlet', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/x-www-form-urlencoded',
@@ -74,7 +75,7 @@ export function configurarAsistenciaPinpad() {
                 resultado = JSON.parse(textoRespuesta);
             } catch (jsonError) {
                 console.error("Respuesta no es JSON:", textoRespuesta);
-                mostrarFeedback("❌ Error en la comunicación con el servidor OnTime", "error");
+                mostrarFeedback(" Error en la comunicación con el servidor OnTime", "error");
                 return;
             }
 
@@ -82,12 +83,12 @@ export function configurarAsistenciaPinpad() {
                 // El backend procesará de forma automática si es Entrada o Salida según el histórico diario
                 mostrarFeedback(resultado.message || `¡Registro exitoso! Evento: ${resultado.evento}`, "exito");
             } else {
-                mostrarFeedback(resultado.message || "❌ No se pudo completar el registro de marca.", "error");
+                mostrarFeedback(resultado.message || " No se pudo completar el registro de marca.", "error");
             }
 
         } catch (error) {
             console.error("Error de conexión:", error);
-            mostrarFeedback("❌ Error al conectar con el servidor principal.", "error");
+            mostrarFeedback(" Error al conectar con el servidor principal.", "error");
         }
 
         cadenaId = "";

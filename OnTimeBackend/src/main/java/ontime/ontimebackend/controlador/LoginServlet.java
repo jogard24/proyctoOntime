@@ -27,8 +27,6 @@ public class LoginServlet extends HttpServlet {
         response.setCharacterEncoding("UTF-8");
 
         // Obtener parámetros... (continúa tu código normal)
-
-
         // Obtenemos los parámetros enviados desde el formulario HTML/JS (URLSearchParams)
         String user = request.getParameter("usuario");
         String pass = request.getParameter("clave");
@@ -41,7 +39,7 @@ public class LoginServlet extends HttpServlet {
 
         // Si el DAO retorna un objeto credencial, significa que las credenciales son válidas
         if (credencial != null) {
-            
+
             // Verificamos si la cuenta está activa en el sistema escolar
             if (!credencial.isActivo()) {
                 response.setStatus(HttpServletResponse.SC_FORBIDDEN);
@@ -52,11 +50,12 @@ public class LoginServlet extends HttpServlet {
             // Usamos el rol real que viene del INNER JOIN de la tabla roles
             String rolReal = credencial.getNombreRol().toLowerCase();
             System.out.println("DEBUG: Rol detectado en Java para " + credencial.getUsuario() + ": " + rolReal);
-            
+
             // Creamos la sesión en el servidor para mantener el estado del usuario activo
             HttpSession session = request.getSession();
             session.setAttribute("usuarioLogueado", credencial);
             session.setAttribute("rolUsuario", rolReal);
+
 
             // Ajuste 2: Estructura JSON unificada con las llaves que lee tu login.js
             response.getWriter().write("{"
@@ -73,6 +72,4 @@ public class LoginServlet extends HttpServlet {
         }
     }
 
-
 }
-

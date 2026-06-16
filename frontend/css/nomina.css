@@ -78,3 +78,50 @@
     margin-top: auto; /* Empuja los botones hacia abajo si hay espacio disponible */
 }
 
+/* =========================================================================
+   🖨️ ESTILOS EXCLUSIVOS PARA IMPRESIÓN Y DESCARGA DE INFORMES (RF19)
+   ========================================================================= */
+@media print {
+    /* 1. Ocultamos por completo el menú lateral izquierdo para ganar espacio */
+    .contenedor-menu, 
+    .menu-lateral,
+    aside,
+    nav {
+        display: none !important;
+    }
+
+    /* 2. Forzamos a que el contenedor de la nómina ocupe todo el ancho de la hoja */
+    .dash,
+    .contenedor-dash,
+    .contenedorNomina {
+        width: 100% !important;
+        max-width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        left: 0 !important;
+    }
+
+    /* 3. Ocultamos los botones de acción para que no salgan impresos en el PDF final */
+    .btn-contnomina,
+    #btn-generarNomina,
+    #btn-exportarNomina,
+    .busquedaNomina button,
+    .busquedaNomina input {
+        display: none !important;
+    }
+
+    /* 4. Estiramos la tabla y aumentamos el tamaño de la letra para máxima lectura */
+    .tablaNomina,
+    .tabla-ontime {
+        width: 100% !important;
+        border-collapse: collapse !important;
+        font-size: 1.1rem !important; /* Letra un poco más grande */
+    }
+
+    .tablaNomina th, 
+    .tablaNomina td {
+        padding: 12px !important; /* Celdas más espaciosas */
+        border: 1px solid #ddd !important;
+    }
+}
+

@@ -63,10 +63,6 @@ public class EmpleadoServlet extends HttpServlet {
         }
     }
 
-    /**
-     * Procesa de forma unificada las acciones del modal de actualización y los
-     * clics de borrado lógico (RF23 y RF25).
-     */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -88,15 +84,17 @@ public class EmpleadoServlet extends HttpServlet {
         boolean exito = false;
 
         try {
-            if ("inactivar".equals(accion)) {
-                // Ejecuta el UPDATE lógico modular que creamos en tu EmpleadoDAO
-                exito = empleadoDAO.inactivarEmpleado(id);
+            if ("eliminar".equals(accion)) { 
+                // Invoca el borrado en cascada que creamos en el DAO
+                exito = empleadoDAO.eliminarEmpleado(id);
             } else if ("actualizar".equals(accion)) {
-                // Construye el objeto Empleado básico con los campos editados en el modal
                 Empleado emp = new Empleado();
                 emp.setId(id);
                 emp.setNombre(request.getParameter("nombre"));
                 emp.setEstado(request.getParameter("estado"));
+                emp.setTelefonoCelular(request.getParameter("celular"));
+                emp.setDireccion(request.getParameter("direccion"));
+                emp.setCargo(request.getParameter("cargo"));
 
                 exito = empleadoDAO.actualizarEmpleado(emp);
             }

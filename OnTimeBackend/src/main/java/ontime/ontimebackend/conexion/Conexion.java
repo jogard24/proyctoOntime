@@ -9,7 +9,7 @@ public class Conexion {
     // El parámetro useSSL=false evita problemas con certificados de seguridad en desarrollo local
     private static final String URL = "jdbc:mysql://localhost:3306/Ontime3BD?useSSL=false&serverTimezone=UTC";
     private static final String USER = "root";
-    private static final String PASSWORD = "94052413960";
+    private static final String PASSWORD = "";
     //definimos el metodo
     public static Connection obtenerConexion() {
         Connection con = null;// Inicializamos una variable nula para albergar nuestra futura conexión
