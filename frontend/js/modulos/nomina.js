@@ -1,5 +1,5 @@
 export function configurarNomina() {
-    console.log("Nomina cargada correctamente");
+    console.log("Nomina cargada correctamente con control de asistencia");
 
     let listaEmpleadosGlobal = [];
     const tbody = document.querySelector(".tablaNomina tbody");
@@ -24,7 +24,7 @@ export function configurarNomina() {
     if (inputBusqueda) inputBusqueda.addEventListener("input", filtrarTablaNomina);
     if (filtroPeriodo) filtroPeriodo.addEventListener("change", cargarDatosNomina);
 
-    // Ajuste 3: Evento para simular o procesar el cierre financiero en la base de datos (RF17)
+    // Evento para procesar el cierre financiero en la base de datos (RF17)
     if (btnGenerar) {
         btnGenerar.addEventListener("click", () => {
             if(confirm(`¿Está seguro de cerrar y guardar la nómina para el periodo ${filtroPeriodo.value}? Los datos se bloquearán.`)) {
@@ -33,16 +33,15 @@ export function configurarNomina() {
         });
     }
 
-    // Evento para exportar/imprimir el informe de forma básica y escolar (RF19)
+    // Evento para exportar/imprimir el informe de forma básica (RF19)
     if (btnExportar) {
         btnExportar.addEventListener("click", () => {
-            window.print(); // Abre el asistente de PDF nativo del navegador, limpio y rápido
+            window.print(); // Abre el asistente de PDF nativo del navegador
         });
     }
 
     function cargarDatosNomina() {
         const periodo = filtroPeriodo ? filtroPeriodo.value : '2026-06';
-        // Enviamos el periodo seleccionado como parámetro GET hacia Java
         const url = `http://localhost:8080/OnTimeBackend/NominaServlet?periodo=${periodo}`;
 
         fetch(url, { method: 'GET' })
@@ -54,7 +53,7 @@ export function configurarNomina() {
         })
         .catch(error => {
             console.error("Error conectando con NominaServlet:", error);
-            if (tbody) tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; color:red;">Error de conexión con el servidor.</td></tr>`;
+            if (tbody) tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; color:red;">Error de conexión con el servidor.</td></tr>`;
         });
     }
 
@@ -70,26 +69,51 @@ export function configurarNomina() {
         empleados.forEach(empleado => {
             const cedulaMostrada = empleado.documento || empleado.documento_identidad || empleado.cedula || "N/A";
             
-            // Ajuste 1: Extraer el salario real de la base de datos, con un respaldo básico por si viene nulo
-            const salarioBase = empleado.salarioBase || empleado.salario_base || 1300000; 
+            // 1. Captura el salario base contractual real de la base de datos
+            const salarioBaseContractual = empleado.salarioBase || empleado.salario_base || 1400000; 
             
-            // Cálculos dinámicos provenientes del conteo analítico de tu Servlet/DAO (RF18)
-            const deducciones = (empleado.totalRetardos || 0) * 15000; 
-            const bonificaciones = (empleado.totalExtras || 0) * 20000; 
-            const salarioNeto = salarioBase - deducciones + bonificaciones;
+            // 2. Trazabilidad: totalExtras equivale a los días que el empleado asistió y marcó salida
+            const diasTrabajados = empleado.totalExtras !== undefined ? empleado.totalExtras : 0;
+            
+            // 3. Conteo de retardos (Mapea el número de retardos acumulados en el mes)
+            const numeroRetardos = empleado.totalRetardos || 0;
+            const deducciones = numeroRetardos * 15000; // Deducción fija por cada retardo
+
+            // =========================================================================
+            // 🧮 CÁLCULO PROPORCIONAL EXACTO (REGLA DE TRES LEGAL)
+            // =========================================================================
+            // Dividimos el sueldo del contrato en 30 días y lo multiplicamos por sus asistencias reales
+            const sueldoPorDiasTrabajados = (salarioBaseContractual / 30) * diasTrabajados;
+            
+            // El Salario Neto final es el proporcional devengado menos las penalizaciones por retardo
+            const salarioNetoFinal = sueldoPorDiasTrabajados - deducciones;
+            // =========================================================================
 
             const fila = document.createElement("tr");
+            
+            // Mantenemos exactamente tus mismas 6 columnas del HTML para no desalinear la grilla
             fila.innerHTML = `
                 <td><strong>${cedulaMostrada}</strong></td>
                 <td>${empleado.nombre} ${empleado.apellido || ''}</td>
-                <td>${formatoMoneda.format(salarioBase)}</td>
-                <td style="${deducciones > 0 ? 'color: #e74c3c; font-weight: bold;' : ''}">${formatoMoneda.format(deducciones)}</td>
-                <td style="${bonificaciones > 0 ? 'color: #2ecc71; font-weight: bold;' : ''}">${formatoMoneda.format(bonificaciones)}</td>
-                <td><strong>${formatoMoneda.format(salarioNeto)}</strong></td>
+                <td>${formatoMoneda.format(salarioBaseContractual)}</td>
+                
+                <!-- Columna RETARDOS: Muestra cuántos retardos tuvo y el descuento acumulado -->
+                <td style="${deducciones > 0 ? 'color: #e74c3c; font-weight: bold;' : ''}">
+                    ${numeroRetardos} (${formatoMoneda.format(deducciones)})
+                </td>
+                
+                <!-- Columna EXTRAS: Reutilizada estratégicamente para mostrar los Días Trabajados del Pinpad -->
+                <td style="color: #2ecc71; font-weight: bold; text-align: center;">
+                    ${diasTrabajados} días
+                </td>
+                
+                <!-- Columna SALARIO NETO: Muestra el dinero real proporcional a pagar congelado -->
+                <td><strong>${formatoMoneda.format(salarioNetoFinal)}</strong></td>
             `;
             tbody.appendChild(fila);
         });
     }
+
 
     function filtrarTablaNomina() {
         const textoBuscar = inputBusqueda.value.toLowerCase().trim();

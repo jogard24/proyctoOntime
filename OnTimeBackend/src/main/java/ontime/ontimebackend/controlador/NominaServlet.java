@@ -23,7 +23,7 @@ public class NominaServlet extends HttpServlet {
     }
 
     /**
-     * Consulta y transmite la grilla financiera de tiempos filtrada por periodo (GET - RF17).
+     * Consulta y transmite los tiempos filtrado por periodo 
      */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -42,7 +42,7 @@ public class NominaServlet extends HttpServlet {
         try {
             List<Nomina> listaNomina = nominaDAO.obtenerReporteNomina(periodo);
             
-            // Renderizado de JSON nativo y directo en Java Puro básico sin frameworks
+            // Renderizado de JSON nativo y directo 
             StringBuilder json = new StringBuilder("[");
             for (int i = 0; i < listaNomina.size(); i++) {
                 Nomina n = listaNomina.get(i);
