@@ -1,5 +1,5 @@
 export function configurarNomina() {
-    console.log("Nomina cargada correctamente con control de asistencia");
+    console.log("Nomina cargada correctamente con control de asistencia de 7 columnas");
 
     let listaEmpleadosGlobal = [];
     const tbody = document.querySelector(".tablaNomina tbody");
@@ -19,7 +19,7 @@ export function configurarNomina() {
     // Cargar datos al iniciar
     cargarDatosNomina();
 
-    // Enlace de Eventos
+    // Enlace de Eventos Seguros
     if (btnBuscar) btnBuscar.addEventListener("click", filtrarTablaNomina);
     if (inputBusqueda) inputBusqueda.addEventListener("input", filtrarTablaNomina);
     if (filtroPeriodo) filtroPeriodo.addEventListener("change", cargarDatosNomina);
@@ -36,7 +36,7 @@ export function configurarNomina() {
     // Evento para exportar/imprimir el informe de forma básica (RF19)
     if (btnExportar) {
         btnExportar.addEventListener("click", () => {
-            window.print(); // Abre el asistente de PDF nativo del navegador
+            window.print(); 
         });
     }
 
@@ -53,7 +53,7 @@ export function configurarNomina() {
         })
         .catch(error => {
             console.error("Error conectando con NominaServlet:", error);
-            if (tbody) tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; color:red;">Error de conexión con el servidor.</td></tr>`;
+            if (tbody) tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; color:red; font-weight:bold;">❌ Error de conexión con el servidor.</td></tr>`;
         });
     }
 
@@ -62,58 +62,54 @@ export function configurarNomina() {
         tbody.innerHTML = ""; 
 
         if (empleados.length === 0) {
-            tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;">No hay registros de tiempo para este periodo.</td></tr>`;
+            tbody.innerHTML = `<tr><td colspan="7" style="text-align:center;">No hay registros de tiempo para este periodo.</td></tr>`;
             return;
         }
 
         empleados.forEach(empleado => {
             const cedulaMostrada = empleado.documento || empleado.documento_identidad || empleado.cedula || "N/A";
             
-            // 1. Captura el salario base contractual real de la base de datos
+            // 1. Salario base contractual de la base de datos
             const salarioBaseContractual = empleado.salarioBase || empleado.salario_base || 1400000; 
             
-            // 2. Trazabilidad: totalExtras equivale a los días que el empleado asistió y marcó salida
+            // 2. Trazabilidad: totalExtras equivale a los días que asistió (marcas de salida)
             const diasTrabajados = empleado.totalExtras !== undefined ? empleado.totalExtras : 0;
             
-            // 3. Conteo de retardos (Mapea el número de retardos acumulados en el mes)
+            // 3. Conteo y cálculo monetario de las deducciones por retardos
             const numeroRetardos = empleado.totalRetardos || 0;
-            const deducciones = numeroRetardos * 15000; // Deducción fija por cada retardo
+            const deducciones = numeroRetardos * 15000; 
+
+            // 4. Cálculo de las bonificaciones de extras en dinero real ($)
+            const bonificaciones = 0; 
 
             // =========================================================================
-            // 🧮 CÁLCULO PROPORCIONAL EXACTO (REGLA DE TRES LEGAL)
+            // ALGORITMO FINANCIERO CON SOLUCIÓN DE PROPORCIONALIDAD
             // =========================================================================
-            // Dividimos el sueldo del contrato en 30 días y lo multiplicamos por sus asistencias reales
-            const sueldoPorDiasTrabajados = (salarioBaseContractual / 30) * diasTrabajados;
-            
-            // El Salario Neto final es el proporcional devengado menos las penalizaciones por retardo
-            const salarioNetoFinal = sueldoPorDiasTrabajados - deducciones;
+            const sueldoProporcionalDias = (salarioBaseContractual / 30) * diasTrabajados;
+            const salarioNetoFinal = sueldoProporcionalDias - deducciones + bonificaciones;
             // =========================================================================
 
             const fila = document.createElement("tr");
             
-            // Mantenemos exactamente tus mismas 6 columnas del HTML para no desalinear la grilla
+            // INYECCIÓN DE LAS 7 CELDAS PERFECTAMENTE CORREGIDAS
             fila.innerHTML = `
                 <td><strong>${cedulaMostrada}</strong></td>
                 <td>${empleado.nombre} ${empleado.apellido || ''}</td>
                 <td>${formatoMoneda.format(salarioBaseContractual)}</td>
-                
-                <!-- Columna RETARDOS: Muestra cuántos retardos tuvo y el descuento acumulado -->
                 <td style="${deducciones > 0 ? 'color: #e74c3c; font-weight: bold;' : ''}">
-                    ${numeroRetardos} (${formatoMoneda.format(deducciones)})
+                     (${formatoMoneda.format(deducciones)})
                 </td>
-                
-                <!-- Columna EXTRAS: Reutilizada estratégicamente para mostrar los Días Trabajados del Pinpad -->
                 <td style="color: #2ecc71; font-weight: bold; text-align: center;">
                     ${diasTrabajados} días
                 </td>
-                
-                <!-- Columna SALARIO NETO: Muestra el dinero real proporcional a pagar congelado -->
+                <td style="${bonificaciones > 0 ? 'color: #2ecc71; font-weight: bold;' : ''}">
+                    ${formatoMoneda.format(bonificaciones)}
+                </td>
                 <td><strong>${formatoMoneda.format(salarioNetoFinal)}</strong></td>
             `;
             tbody.appendChild(fila);
         });
     }
-
 
     function filtrarTablaNomina() {
         const textoBuscar = inputBusqueda.value.toLowerCase().trim();
@@ -152,4 +148,5 @@ export function configurarNomina() {
         .catch(err => console.error("Error en el guardado de nómina:", err));
     }
 }
+
 

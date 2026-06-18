@@ -92,7 +92,7 @@ public class NominaServlet extends HttpServlet {
                     
                     // Aplicamos los mismos factores matemáticos pactados con tu frontend (RF17)
                     BigDecimal deducciones = BigDecimal.valueOf(n.getTotalRetardos() * 15000L);
-                    BigDecimal bonificaciones = BigDecimal.valueOf(n.getTotalExtras() * 20000L);
+                    BigDecimal bonificaciones = BigDecimal.valueOf(n.getTotalExtras() * 0L);
                     BigDecimal neto = base.subtract(deducciones).add(bonificaciones);
 
                     // Inserta el registro en cascada relacional dentro de Ontime3BD

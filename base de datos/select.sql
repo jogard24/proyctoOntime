@@ -21,7 +21,7 @@ USE ontime3bd;
 USE ontime3bd;
 
 -- Corregimos la fila 2 de Camilo Pérez
-UPDATE usuario SET nombre = 'Camilo' WHERE id = 2;
+UPDATE usuario SET nombre = 'pedro' WHERE id = 6;
 
 ----- CONSULTA DE AGREGACION
 SELECT u.id, con.salario_base, -- Extrae el identificador del usuario y su salario base mensual fijo.
