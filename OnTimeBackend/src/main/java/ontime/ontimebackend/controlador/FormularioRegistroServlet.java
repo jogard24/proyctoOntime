@@ -16,8 +16,6 @@ public class FormularioRegistroServlet extends HttpServlet {
 
     private final FormularioRegistroDAO registroDAO = new FormularioRegistroDAO();
 
-
-
     @Override
     protected void doOptions(HttpServletRequest request, HttpServletResponse response) 
             throws ServletException, IOException {
@@ -57,16 +55,29 @@ public class FormularioRegistroServlet extends HttpServlet {
                 emp.setFoto("img/usuario-defecto.png"); // Respaldo escolar por defecto
             }
 
-            // 2. Recoger datos laborales del Contrato (Aplanados en el frontend para evitar JSON)
+            // 2. Recoger datos laborales del Contrato (Sincronizado con las llaves de contrato.js)
             Contrato contrato = new Contrato();
-            contrato.setTipoContrato(request.getParameter("tipoContrato"));
-            contrato.setCargo(request.getParameter("cargoContrato"));
+            contrato.setTipoContrato(request.getParameter("tipo_contrato"));
+            contrato.setCargo(request.getParameter("cargo"));
             
-            String salarioStr = request.getParameter("salarioBase");
+            String salarioStr = request.getParameter("salario_base");
             contrato.setSalarioBase(salarioStr != null ? new BigDecimal(salarioStr) : BigDecimal.ZERO);
             
-            String jornadaStr = request.getParameter("jornadaContrato");
+            String jornadaStr = request.getParameter("jornada_id");
             contrato.setJornadaId(jornadaStr != null ? Integer.parseInt(jornadaStr.trim()) : 1);
+
+            // =========================================================================
+            //  APLICACIÓN DE LA CORRECCIÓN DEL JURADO: CAPTURA DE LAS FECHAS DESDE EL MODAL
+            // =========================================================================
+            String fechaInicioStr = request.getParameter("regFechaInicio");
+            String fechaFinStr = request.getParameter("regFechaFin");
+
+            // Seteamos la fecha de inicio. Si por algún error viene vacía, le dejamos la fecha actual de respaldo
+            contrato.setFechaInicio(fechaInicioStr != null && !fechaInicioStr.trim().isEmpty() ? fechaInicioStr : "2026-06-18");
+            
+            // Control de nulidad para Término Indefinido: Si viene vacía del modal, se guarda como null
+            contrato.setFechaFin(fechaFinStr != null && !fechaFinStr.trim().isEmpty() ? fechaFinStr : null);
+            // =========================================================================
 
             // 3. Ejecutar inserción atómica mediante el DAO descriptivo
             boolean exito = registroDAO.registrarNuevoEmpleado(emp, contrato);
@@ -86,3 +97,4 @@ public class FormularioRegistroServlet extends HttpServlet {
         }
     }
 }
+

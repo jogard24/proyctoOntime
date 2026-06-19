@@ -10,14 +10,27 @@ public class NominaDAO {
 
     /**
      * Consulta analítica por periodos que extrae el salario contractual de cada empleado
-     * y cuenta dinámicamente sus extras y retardos del mes (RF17 y RF18).
+     * y cuenta dinámicamente sus extras y retardos del mes 
      */
     public List<Nomina> obtenerReporteNomina(String periodo) {
         List<Nomina> lista = new ArrayList<>();
         
+    /**
+     * Consulta analítica sincronizada de 7 columnas que separa el control de días asistidos
+     * de los retardos y horas extras verdaderas calculadas en el Pinpad.
+     */
+        
+        //  Separamos el conteo de marcas de salida (días) del conteo de salidas tarde (extras)
         String sql = "SELECT u.id, u.documento_identidad, u.nombre, u.apellido, con.salario_base, " +
+                     //  total_retardos: Cuenta las marcas de entrada tarde para las deducciones
                      "COALESCE(SUM(CASE WHEN a.tipo_evento = 'entrada' AND a.observacion LIKE '%retardo%' THEN 1 ELSE 0 END), 0) as total_retardos, " +
-                     "COALESCE(SUM(CASE WHEN a.tipo_evento = 'salida' THEN 1 ELSE 0 END), 0) as total_extras " +
+                     
+                     //  total_extras: Cuenta EXCLUSIVAMENTE las salidas que registran tiempo adicional de trabajo
+                     "COALESCE(SUM(CASE WHEN a.tipo_evento = 'salida' AND a.observacion LIKE '%extra%' THEN 1 ELSE 0 END), 0) as total_extras, " +
+                     
+                     //  dias_asistidos: Cuenta todas las marcas de salida como jornadas de asistencia completadas
+                     "COALESCE(SUM(CASE WHEN a.tipo_evento = 'salida' THEN 1 ELSE 0 END), 0) as dias_asistidos " +
+                     
                      "FROM usuario u " +
                      "INNER JOIN contrato con ON u.id = con.usuario_id " +
                      "LEFT JOIN asistencia a ON u.id = a.usuario_id AND DATE_FORMAT(a.fecha_hora, '%Y-%m') = ? " +
@@ -36,9 +49,13 @@ public class NominaDAO {
                     n.setNombre(rs.getString("nombre"));
                     n.setApellido(rs.getString("apellido"));
                     n.setSalarioBasePeriodo(rs.getBigDecimal("salario_base"));
-                    n.setTotalRetardos(rs.getInt("total_retardos"));
-                    n.setTotalExtras(rs.getInt("total_extras"));
                     
+                    // MAPEO DE AUDITORÍA SINCRONIZADO CON NOMINA.JS Y SERVLET:
+                    n.setTotalRetardos(rs.getInt("total_retardos")); // Viaja a la columna Deducciones
+                    
+                    // Pasamos las horas extras verdaderas contadas 
+                    n.setTotalExtras(rs.getInt("total_extras")); // Viaja a la columna Extras del front
+                                     
                     lista.add(n);
                 }
             }

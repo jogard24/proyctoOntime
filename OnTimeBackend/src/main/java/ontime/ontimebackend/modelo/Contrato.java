@@ -10,6 +10,8 @@ public class Contrato {
     private String cargo;
     private BigDecimal salarioBase;
     private int jornadaId;
+    private String fechaInicio;
+    private String fechaFin;
 
     // Constructor vacío obligatorio para instanciar en los Servlets/DAOs
     public Contrato() {
@@ -22,6 +24,8 @@ public class Contrato {
         this.cargo = cargo;
         this.salarioBase = salarioBase;
         this.jornadaId = jornadaId;
+        this.fechaInicio = fechaInicio;
+        this.fechaFin = fechaFin;
     }
 
     // --- Métodos Getters y Setters ---
@@ -71,6 +75,22 @@ public class Contrato {
 
     public void setJornadaId(int jornadaId) {
         this.jornadaId = jornadaId;
+    }
+    
+        public String getFechaInicio() {
+        return fechaInicio;
+    }
+
+    public void setFechaInicio(String fechaInicio) {
+        this.fechaInicio = fechaInicio;
+    }
+
+    public String getFechaFin() {
+        return fechaFin;
+    }
+
+    public void setFechaFin(String fechaFin) {
+        this.fechaFin = fechaFin;
     }
 }
 

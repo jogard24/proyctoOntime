@@ -8,9 +8,9 @@ public class Conexion {
     // Definimos los datos de conexión de manera clara y ordenada
     // URL: Especifica el protocolo (jdbc:mysql), la dirección (localhost), puerto (3306) y la base de datos (Ontime2BD)
     // El parámetro useSSL=false evita problemas con certificados de seguridad en desarrollo local
-    private static final String URL = "jdbc:mysql://localhost:3306/Ontime3BD?useSSL=false&serverTimezone=UTC";
+    private static final String URL = "jdbc:mysql://localhost:3306/Ontime3BD?useSSL=false&serverTimezone=America/Bogota";
     private static final String USER = "root";
-    private static final String PASSWORD = "";
+    private static final String PASSWORD = "94052413960";
     //definimos el metodo
     public static Connection obtenerConexion() {
         Connection con = null;// Inicializamos una variable nula para albergar nuestra futura conexión

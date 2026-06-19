@@ -1,5 +1,4 @@
 export function configurarNomina() {
-    console.log("Nomina cargada correctamente con control de asistencia de 7 columnas");
 
     let listaEmpleadosGlobal = [];
     const tbody = document.querySelector(".tablaNomina tbody");
@@ -9,22 +8,22 @@ export function configurarNomina() {
     const btnGenerar = document.getElementById("btn-generarNomina");
     const btnExportar = document.getElementById("btn-exportarNomina");
 
-    // Formateador oficial de pesos colombianos
+    // Formateador oficial de pesos colombianos (COP)
     const formatoMoneda = new Intl.NumberFormat('es-CO', { 
         style: 'currency', 
         currency: 'COP', 
         minimumFractionDigits: 0 
     });
 
-    // Cargar datos al iniciar
+    // Cargar datos al iniciar de forma automatizada
     cargarDatosNomina();
 
-    // Enlace de Eventos Seguros
+    // Enlace de Eventos del DOM
     if (btnBuscar) btnBuscar.addEventListener("click", filtrarTablaNomina);
     if (inputBusqueda) inputBusqueda.addEventListener("input", filtrarTablaNomina);
     if (filtroPeriodo) filtroPeriodo.addEventListener("change", cargarDatosNomina);
 
-    // Evento para procesar el cierre financiero en la base de datos (RF17)
+    // Evento para procesar el cierre financiero inmutable en la base de datos (RF17)
     if (btnGenerar) {
         btnGenerar.addEventListener("click", () => {
             if(confirm(`¿Está seguro de cerrar y guardar la nómina para el periodo ${filtroPeriodo.value}? Los datos se bloquearán.`)) {
@@ -33,10 +32,10 @@ export function configurarNomina() {
         });
     }
 
-    // Evento para exportar/imprimir el informe de forma básica (RF19)
+    // Evento para exportar/imprimir el informe masivo (RF19)
     if (btnExportar) {
         btnExportar.addEventListener("click", () => {
-            window.print(); 
+            window.print(); // Invoca el asistente de PDF nativo desacoplado por CSS
         });
     }
 
@@ -47,7 +46,7 @@ export function configurarNomina() {
         fetch(url, { method: 'GET' })
         .then(response => response.json())
         .then(data => {
-            console.log("Datos de nómina recibidos:", data); 
+            console.log("Datos de nómina recibidos del backend:", data); 
             listaEmpleadosGlobal = Array.isArray(data) ? data : [];
             renderizarTabla(listaEmpleadosGlobal);
         })
@@ -69,42 +68,54 @@ export function configurarNomina() {
         empleados.forEach(empleado => {
             const cedulaMostrada = empleado.documento || empleado.documento_identidad || empleado.cedula || "N/A";
             
-            // 1. Salario base contractual de la base de datos
+            // 1. Salario base contractual extraído de la tabla contrato de Ontime3BD
             const salarioBaseContractual = empleado.salarioBase || empleado.salario_base || 1400000; 
             
-            // 2. Trazabilidad: totalExtras equivale a los días que asistió (marcas de salida)
-            const diasTrabajados = empleado.totalExtras !== undefined ? empleado.totalExtras : 0;
+            // 2. Trazabilidad de Días: Lee la propiedad asignada de marcas de salida
+            const diasTrabajados = empleado.diasAsistidos !== undefined ? empleado.diasAsistidos : 30;
             
-            // 3. Conteo y cálculo monetario de las deducciones por retardos
+            // 3. Conteo y cálculo monetario de las deducciones por retardos ($10.000 por cada evento)
             const numeroRetardos = empleado.totalRetardos || 0;
-            const deducciones = numeroRetardos * 15000; 
+            const deducciones = numeroRetardos * 1000; 
 
-            // 4. Cálculo de las bonificaciones de extras en dinero real ($)
-            const bonificaciones = 0; 
+            // 4. Conteo y cálculo monetario de las horas extras reales ($20.000 por marca %extra%)
+            const numeroHorasExtras = empleado.totalExtras !== undefined ? empleado.totalExtras : 0;
+            const bonificaciones = numeroHorasExtras * 20000; 
 
             // =========================================================================
-            // ALGORITMO FINANCIERO CON SOLUCIÓN DE PROPORCIONALIDAD
+            // 🧮 ALGORITMO FINANCIERO CON SOLUCIÓN DE PROPORCIONALIDAD
             // =========================================================================
+            // Dividimos el salario contractual en 30 días y multiplicamos por sus asistencias reales
             const sueldoProporcionalDias = (salarioBaseContractual / 30) * diasTrabajados;
+            
+            // El Salario Neto final procesa los descuentos de retardos y suma las bonificaciones
             const salarioNetoFinal = sueldoProporcionalDias - deducciones + bonificaciones;
             // =========================================================================
 
             const fila = document.createElement("tr");
             
-            // INYECCIÓN DE LAS 7 CELDAS PERFECTAMENTE CORREGIDAS
+            // INYECCIÓN DE LAS 7 CELDAS EN PERFECTO ORDEN SECUENCIAL
             fila.innerHTML = `
                 <td><strong>${cedulaMostrada}</strong></td>
                 <td>${empleado.nombre} ${empleado.apellido || ''}</td>
                 <td>${formatoMoneda.format(salarioBaseContractual)}</td>
+                
+                <!-- 4. DEDUCCIONES: Cantidad de retardos y dinero en rojo si aplica -->
                 <td style="${deducciones > 0 ? 'color: #e74c3c; font-weight: bold;' : ''}">
-                     (${formatoMoneda.format(deducciones)})
+                  <!-- llegada tarde ${numeroRetardos}--> ${formatoMoneda.format(deducciones)}
                 </td>
+                
+                <!-- 5. DIAS: Cantidad de días asistidos calculados en color verde -->
                 <td style="color: #2ecc71; font-weight: bold; text-align: center;">
                     ${diasTrabajados} días
                 </td>
+                
+                <!-- 6. EXTRAS: Bonificaciones monetarias reales en verde si tiene horas adicionales -->
                 <td style="${bonificaciones > 0 ? 'color: #2ecc71; font-weight: bold;' : ''}">
                     ${formatoMoneda.format(bonificaciones)}
                 </td>
+                
+                <!-- 7. SALARIO NETO: Balance total consolidado para el cierre -->
                 <td><strong>${formatoMoneda.format(salarioNetoFinal)}</strong></td>
             `;
             tbody.appendChild(fila);

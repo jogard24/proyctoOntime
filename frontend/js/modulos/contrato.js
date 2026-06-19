@@ -27,25 +27,31 @@ export function configurarContrato() {
         cerrarModal();
     });
 
+
     formContrato.addEventListener('submit', (e) => {
         e.preventDefault();
 
-        // CORRECCIÓN CRÍTICA: Nombres alineados al 100% con registro-form.js y el Servlet
+        // CORRECCIÓN INTEGRAL: Mapeamos los nombres de las llaves en formato Snake_Case 
+        // para que request.getParameter() en Java Puro los lea sin fallas de red
         const contrato = {
-            tipoContrato: document.getElementById('tipoContrato')?.value.trim() || '',
-            cargoContrato: document.getElementById('cargoContrato')?.value.trim() || '',
-            salarioBase: parseFloat(document.getElementById('salarioBase')?.value) || 0,
-            jornadaContrato: document.getElementById('jornadaContrato')?.value.trim() || '',
-            fechaInicio: document.getElementById('fechaInicio')?.value || '',
-            fechaFin: document.getElementById('fechaFin')?.value || '',
+            tipo_contrato: document.getElementById('tipoContrato')?.value.trim() || '',
+            cargo: document.getElementById('cargoContrato')?.value.trim() || '',
+            salario_base: parseFloat(document.getElementById('salarioBase')?.value) || 0,
+            jornada_id: document.getElementById('jornadaContrato')?.value.trim() || '',
+            
+            // SINCRO: Cambiamos el nombre de las llaves para que coincidan con el Servlet
+            fecha_inicio: document.getElementById('regFechaInicio')?.value || '',
+            fecha_fin: document.getElementById('regFechaFin')?.value || '', // Cadena vacía si es indefinido
+            
             observacion: document.getElementById('observacionContrato')?.value.trim() || ''
         };
 
-        // Guardamos temporalmente el contrato en la ventana global para enviarlo junto al empleado
+        // Guardamos de forma modular en la ventana global
         window._contratoTemporal = contrato;
 
-        alert('Contrato pre-guardado con éxito. Recuerde dar clic en "Guardar" al final del formulario principal.');
+        alert('¡Contrato pre-guardado con éxito! Recuerde dar clic en el botón "Guardar" al final del formulario principal.');
         cerrarModal();
     });
+
 }
 
