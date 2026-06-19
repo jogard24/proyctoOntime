@@ -10,6 +10,13 @@ select * from email_personal;
 select * from contacto_emergencia;
 
 
+
+
+-- Insertamos una marca de salida que simula horas extras para Camilo Pérez
+INSERT INTO asistencia (usuario_id, tipo_evento, fecha_hora, observacion, jornada_id)
+VALUES (2, 'salida', '2026-06-18 19:30:00', 'Trabajo adicional. 1 hora extra.', 1);
+
+
 -- visualizar quien modifico o asigno un rol en la tabla usuaro a usuario 
 select id, nombre, apellido, usuario_modificador_id from usuario;
 
@@ -21,7 +28,7 @@ USE ontime3bd;
 USE ontime3bd;
 
 -- Corregimos la fila 2 de Camilo Pérez
-UPDATE usuario SET nombre = 'pedro' WHERE id = 6;
+UPDATE usuario SET nombre = 'michael' WHERE id = 5;
 
 ----- CONSULTA DE AGREGACION
 SELECT u.id, con.salario_base, -- Extrae el identificador del usuario y su salario base mensual fijo.
