@@ -50,7 +50,7 @@ public class PinpadServlet extends HttpServlet {
         String observacion = "Registro Pinpad";
 
         // =========================================================================
-        // ⏰ CORRECCIÓN CRÍTICA DE ZONA HORARIA: COLOMBIA (BOGOTÁ)
+        // CORRECCIÓN CRÍTICA DE ZONA HORARIA: COLOMBIA (BOGOTÁ)
         // =========================================================================
         // Forzamos la captura horaria exacta de la región de Colombia burlando el desfase UTC
         ZoneId zonaColombia = ZoneId.of("America/Bogota");

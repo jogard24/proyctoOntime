@@ -24,7 +24,7 @@ public class NominaDAO {
         String sql = "SELECT u.id, u.documento_identidad, u.nombre, u.apellido, con.salario_base, " +
                      //  total_retardos: Cuenta las marcas de entrada tarde para las deducciones
                      "COALESCE(SUM(CASE WHEN a.tipo_evento = 'entrada' AND a.observacion LIKE '%retardo%' THEN 1 ELSE 0 END), 0) as total_retardos, " +
-                     
+                     //funcion de agregacion
                      //  total_extras: Cuenta EXCLUSIVAMENTE las salidas que registran tiempo adicional de trabajo
                      "COALESCE(SUM(CASE WHEN a.tipo_evento = 'salida' AND a.observacion LIKE '%extra%' THEN 1 ELSE 0 END), 0) as total_extras, " +
                      
@@ -98,6 +98,9 @@ public class NominaDAO {
             int nominaId = 0;
             // 2. Insertar en la tabla central 'nomina'
             try (PreparedStatement psN = con.prepareStatement(sqlNomina, Statement.RETURN_GENERATED_KEYS)) {
+                //RETURN_GENERATED_KEYS Sirve para recuperar el ID autogenerado después de un INSERT.
+                //Es muy útil cuando necesitas trabajar inmediatamente con ese registro 
+                //(ej. insertar en otra tabla usando ese ID como foreign key).
                 psN.setInt(1, usuarioId);
                 psN.setInt(2, periodoId);
                 psN.setBigDecimal(3, salarioBase);
@@ -145,7 +148,7 @@ public class NominaDAO {
             }
             // =========================================================================
 
-            con.commit(); // Consolidar todos los cambios de forma 100% atómica en MySQL
+            con.commit(); // Consolidar todos los cambios de forma 100%  en MySQL
             System.out.println(" ÉXITO: Nómina #" + nominaId + " guardada y amarrada a sus marcas de asistencia.");
             return true;
         } catch (SQLException e) {

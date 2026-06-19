@@ -19,7 +19,7 @@ public class FormularioRegistroDAO {
 
         String sqlUsuario = "INSERT INTO usuario (documento_identidad, nombre, apellido, direccion, estado, tipo_sangre, fotoPerfil_url) VALUES (?, ?, ?, ?, ?, ?, ?)";
         
-        // CORRECCIÓN DEL JURADO: Sincronización explícita de las columnas fecha_inicio y fecha_fin en el query relacional
+        // Sincronización explícita de las columnas fecha_inicio y fecha_fin en el query relacional
         String sqlContrato = "INSERT INTO contrato (usuario_id, tipo_contrato, cargo, salario_base, jornada_id, fecha_inicio, fecha_fin) VALUES (?, ?, ?, ?, ?, ?, ?)";
         
         String sqlEmail = "INSERT INTO email_personal (usuario_id, email) VALUES (?, ?)";
@@ -72,10 +72,10 @@ public class FormularioRegistroDAO {
                 // BLINDAJE DE VENCIMIENTO CONTRACTUAL: Control lógico robusto basado en longitud de caracteres
                 if (contrato.getFechaFin() != null && contrato.getFechaFin().trim().length() >= 4) {
                     psC.setString(7, contrato.getFechaFin().trim()); // Almacena la fecha real elegida en el modal flotante
-                    System.out.println(" AUDITORÍA JDBC: Sembrando fecha de vencimiento contractual: " + contrato.getFechaFin());
+                    System.out.println("  Sembrando fecha de vencimiento contractual: " + contrato.getFechaFin());
                 } else {
                     psC.setNull(7, java.sql.Types.DATE); // Si el input viaja vacío, inyecta NULL legal (Contrato Indefinido)
-                    System.out.println(" AUDITORÍA JDBC: Contrato configurado como Término Indefinido (Inyectando NULL).");
+                    System.out.println("  Contrato configurado como Término Indefinido (Inyectando NULL).");
                 }
                 
                 psC.executeUpdate();

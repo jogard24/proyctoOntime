@@ -44,11 +44,11 @@ public class NominaServlet extends HttpServlet {
             for (int i = 0; i < listaNomina.size(); i++) {
                 Nomina n = listaNomina.get(i);
                 
-                // NOTA TÉCNICA: En la base de datos limpia de pruebas, las marcas de salida totales
+                // En la base de datos limpia de pruebas, las marcas de salida totales
                 // representan los días que el usuario completó su jornada laboral.
                 int diasTrabajados = n.getTotalExtras(); 
                 
-                // REGLA DE NEGOCIO CONTROLADA: Si el empleado tiene marcas de salida, asumiremos
+                //  Si el empleado tiene marcas de salida, asumiremos
                 // que sus horas extras reales se calculan si cumple criterios (para la prueba dará 1 si hay marcas '%extra%')
                 int horasExtrasReales = (n.getTotalExtras() > 0) ? 1 : 0; 
 

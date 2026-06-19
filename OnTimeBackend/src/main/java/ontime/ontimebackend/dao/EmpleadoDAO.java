@@ -55,7 +55,7 @@ public class EmpleadoDAO {
     }
 
     /**
-     * CORRECCIÓN DEL JURADO: Modifica datos en cascada lógica transaccional.
+     *  Modifica datos en cascada lógica transaccional.
      * Sincroniza el rol ID numérico en la tabla de credenciales (RF23).
      */
     public boolean actualizarEmpleadoConRol(Empleado emp, int rolId) {
@@ -116,7 +116,7 @@ public class EmpleadoDAO {
     }
 
     /**
-     * CORRECCIÓN EXIGIDA POR EL JURADO: Se eliminó el ON DELETE CASCADE físico.
+     *Se eliminó el ON DELETE CASCADE físico.
      * Aplica BORRADO LÓGICO: Inactiva el estado del usuario y bloquea su acceso web/pinpad,
      * protegiendo de forma estricta los históricos de asistencia y nómina (RF25).
      */

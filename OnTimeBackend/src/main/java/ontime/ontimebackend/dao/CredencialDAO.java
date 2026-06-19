@@ -20,7 +20,7 @@ public class CredencialDAO {
              PreparedStatement ps = con.prepareStatement(sql)) {
             
             ps.setString(1, usuario);
-            ps.setString(2, clave); // Validación directa de clave plana, ideal para tu proyecto educativo
+            ps.setString(2, clave); // Validación directa de clave plana
 
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
