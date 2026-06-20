@@ -69,8 +69,8 @@ public class FormularioRegistroServlet extends HttpServlet {
             // =========================================================================
             //  APLICACIÓN DE LA CORRECCIÓN DEL JURADO: CAPTURA DE LAS FECHAS DESDE EL MODAL
             // =========================================================================
-            String fechaInicioStr = request.getParameter("regFechaInicio");
-            String fechaFinStr = request.getParameter("regFechaFin");
+            String fechaInicioStr = request.getParameter("fecha_inicio");
+            String fechaFinStr = request.getParameter("fecha_fin");
 
             // Seteamos la fecha de inicio. Si por algún error viene vacía, le dejamos la fecha actual de respaldo
             contrato.setFechaInicio(fechaInicioStr != null && !fechaInicioStr.trim().isEmpty() ? fechaInicioStr : "2026-06-18");
