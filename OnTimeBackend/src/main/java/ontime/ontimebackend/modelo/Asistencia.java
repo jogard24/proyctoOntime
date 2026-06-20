@@ -3,14 +3,14 @@ package ontime.ontimebackend.modelo;
 public class Asistencia {
     
     private int id;
-    private int usuarioId; // Mapea la llave foránea física de la tabla asistencia
+    private int usuarioId; // busca la llave foránea física de la tabla asistencia
     private String documentoIdentidad; // Útil para pintar la cédula en los reportes (RF15)
     private String nombreEmpleado;
     private String fechaHora;
     private String tipoEvento;
     private String observacion;
     private int jornadaId;
-    private String nombreJornada; // Mapea el campo 'nombrejornada' de tu tabla jornadaLaboral
+    private String nombreJornada; // busca el campo 'nombrejornada' de tu tabla jornadaLaboral
 
     // Constructor vacío obligatorio
     public Asistencia() {
@@ -22,11 +22,13 @@ public class Asistencia {
 
     public int getUsuarioId() { return usuarioId; }
     public void setUsuarioId(int usuarioId) { this.usuarioId = usuarioId; }
-
+    // Retorna el número de documento almacenado
     public String getDocumentoIdentidad() { return documentoIdentidad; }
+    // Actualiza el documento de identidad con el valor recibido
     public void setDocumentoIdentidad(String documentoIdentidad) { this.documentoIdentidad = documentoIdentidad; }
-
+    // Retorna el nombre del empleado almacenado
     public String getNombreEmpleado() { return nombreEmpleado; }
+    // Actualiza el nombre del empleado con el valor recibido
     public void setNombreEmpleado(String nombreEmpleado) { this.nombreEmpleado = nombreEmpleado; }
 
     public String getFechaHora() { return fechaHora; }

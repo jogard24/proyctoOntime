@@ -23,7 +23,7 @@ public class EmpleadoServlet extends HttpServlet {
     }
 
     /**
-     * Alimenta la grilla general del módulo de Gestión (Sincronizado con
+     * Alimenta la tabla general del módulo de Gestión (Sincronizado con
      * gestionEmpleados.js).
      */
     @Override

@@ -14,7 +14,7 @@
 
             <div class="datos-principales">
                 <div class="input-login">
-                    <input class="label-modificador" type="text" name="nombre" id="nombre" placeholder=" " required>
+                    <input class="label-modificador" type="text" name="nombre" id="nombre" placeholder=" " pattern="[A-Za-z\s]+" title="Solo se permiten letras" required>
                     <label for="nombre" class="label-flotante">Nombre</label>
                 </div>
                 <div class="input-login">
@@ -31,7 +31,7 @@
                     <label for="email" class="label-flotante">Email</label>
                 </div>
                 <div class="input-login">
-                    <input class="label-modificador" type="number" name="celular" id="celular" placeholder=" " required>
+                    <input class="label-modificador" type="number" name="celular" id="celular" placeholder=" " maxlength="10" pattern="\d{10}" title="Debe tener 10 números" required>
                     <label for="celular" class="label-flotante">Celular</label>
                 </div>
                 <div class="input-login">

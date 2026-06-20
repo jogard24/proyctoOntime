@@ -11,7 +11,7 @@ public class Nomina {
     private double totalHorasExtras;
     private BigDecimal totalNeto;
     
-    // Campos de transferencia analíticos (Soportan tu lógica en nomina.js)
+    // Campos de transferencia analíticos Soportan tu lógica en nomina.js
     private String documento;
     private String nombre;
     private String apellido;
