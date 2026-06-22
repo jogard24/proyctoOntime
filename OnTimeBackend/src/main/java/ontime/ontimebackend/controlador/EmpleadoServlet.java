@@ -63,7 +63,7 @@ public class EmpleadoServlet extends HttpServlet {
         }
     }
 
-    @Override
+     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
@@ -95,7 +95,17 @@ public class EmpleadoServlet extends HttpServlet {
                 emp.setDireccion(request.getParameter("direccion"));
                 emp.setCargo(request.getParameter("cargo"));
 
-                // CAPTURA CRÍTICA: Extraemos el ID numérico del rol que envía el Select
+                //  CAPTURA DE CREDENCIALES DE ACCESO WEB PARA EL REGISTRO
+                // Captura las cadenas de texto del FormData enviado por el modal reactivo
+                String usuarioWebParam = request.getParameter("usuario_web");
+                String claveWebParam = request.getParameter("clave_web");
+                
+                // Las inyectamos de forma segura en las nuevas propiedades de tu objeto modelo
+                emp.setUsuarioWeb(usuarioWebParam != null ? usuarioWebParam.trim() : "");
+                emp.setClaveWeb(claveWebParam != null ? claveWebParam : "");
+                // =========================================================================
+
+                // Extraemos el ID numérico del rol que envía el Select
                 String rolIdStr = request.getParameter("rol_id");
                 int rolId = (rolIdStr != null) ? Integer.parseInt(rolIdStr.trim()) : 2; // 2 = Empleado por defecto
 

@@ -61,6 +61,9 @@ CREATE TABLE credenciales (
     FOREIGN KEY (rol_id) REFERENCES roles(id)
 );
 
+ALTER TABLE credenciales 
+ADD CONSTRAINT unique_usuario_credencial UNIQUE (usuario_id);
+
 -- 4. Tabla de Jornadas Laborales / horarios
 CREATE TABLE jornadaLaboral (
     id INT PRIMARY KEY, 

@@ -11,6 +11,8 @@ public class Empleado {
     private String tipoSangre;
     private String foto;
     private String fechaRegistro;
+    private String usuarioWeb;
+    private String claveWeb;
 
     // Datos de tablas asociadas (Para evitar redundancia de archivos en un entorno académico)
     private String email;
@@ -70,4 +72,10 @@ public class Empleado {
 
     public String getCargo() { return cargo; }
     public void setCargo(String cargo) { this.cargo = cargo; }
+    
+    public String getUsuarioWeb() { return usuarioWeb; }
+    public void setUsuarioWeb(String usuarioWeb) { this.usuarioWeb = usuarioWeb; }
+    
+    public String getClaveWeb() { return claveWeb; }
+    public void setClaveWeb(String claveWeb) { this.claveWeb = claveWeb; }
 }

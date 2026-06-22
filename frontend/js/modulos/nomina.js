@@ -83,7 +83,7 @@ export function configurarNomina() {
             const bonificaciones = numeroHorasExtras * 20000; 
 
             // =========================================================================
-            // 🧮 ALGORITMO FINANCIERO CON SOLUCIÓN DE PROPORCIONALIDAD
+            // ALGORITMO FINANCIERO CON SOLUCIÓN DE PROPORCIONALIDAD
             // =========================================================================
             // Dividimos el salario contractual en 30 días y multiplicamos por sus asistencias reales
             const sueldoProporcionalDias = (salarioBaseContractual / 30) * diasTrabajados;
@@ -94,7 +94,7 @@ export function configurarNomina() {
 
             const fila = document.createElement("tr");
             
-            // INYECCIÓN DE LAS 7 CELDAS EN PERFECTO ORDEN SECUENCIAL
+            // INYECCIÓN DE LAS 7 CELDAS EN  ORDEN SECUENCIAL
             fila.innerHTML = `
                 <td><strong>${cedulaMostrada}</strong></td>
                 <td>${empleado.nombre} ${empleado.apellido || ''}</td>

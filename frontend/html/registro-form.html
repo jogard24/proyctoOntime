@@ -22,7 +22,7 @@
                     <label for="apellido" class="label-flotante">Apellido</label>
                 </div>
                 <div class="input-login">
-                    <input class="label-modificador" type="text" name="documento_identidad" id="documento_identidad"
+                    <input class="label-modificador" type="tel" name="documento_identidad" id="documento_identidad" maxlength="10" pattern="\d{10}" title="Debe tener 10 números"
                         placeholder=" " required>
                     <label for="documento_identidad" class="label-flotante">Cédula</label>
                 </div>
@@ -31,7 +31,7 @@
                     <label for="email" class="label-flotante">Email</label>
                 </div>
                 <div class="input-login">
-                    <input class="label-modificador" type="number" name="celular" id="celular" placeholder=" " maxlength="10" pattern="\d{10}" title="Debe tener 10 números" required>
+                    <input class="label-modificador" type="tel" name="celular" id="celular" maxlength="10" pattern="\d{10}" title="Debe tener 10 números" placeholder=" "  required>
                     <label for="celular" class="label-flotante">Celular</label>
                 </div>
                 <div class="input-login">
@@ -65,8 +65,8 @@
                     <label for="nombreContacto" class="label-flotante">Nombre del contacto</label>
                 </div>
                 <div class="input-login">
-                    <input class="label-modificador" type="number" name="celularContacto" id="celularContacto"
-                        placeholder=" " required>
+                    <input class="label-modificador" type="tel" name="celularContacto" id="celularContacto"
+                        placeholder=" " maxlength="10" pattern="\d{10}" title="Debe tener 10 números" required>
                     <label for="celularContacto" class="label-flotante">Celular del contacto</label>
                 </div>
                 <div class="input-login">

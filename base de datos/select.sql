@@ -8,13 +8,24 @@ select * from roles;
 select * from telefono_personal;
 select * from email_personal;
 select * from contacto_emergencia;
+select * from concepto_nomina;
+select * from detalle_nomina;
+select * from periodo_nomina;
+select * from credenciales;
+select * from nomina_asistencia;
+
+USE ontime3bd;
+
+-- Limpiamos la fila nula e insertamos los dos identificadores obligatorios
+TRUNCATE TABLE concepto_nomina;
+
+INSERT INTO concepto_nomina (id, nombre, tipo, factor_calculo) 
+VALUES 
+(1, 'Deducción por Retardo', 'descuento', 1.00),
+(2, 'Bonificación de Hora Extra', 'extra', 1.00);
 
 
 
-
--- Insertamos una marca de salida que simula horas extras para Camilo Pérez
-INSERT INTO asistencia (usuario_id, tipo_evento, fecha_hora, observacion, jornada_id)
-VALUES (2, 'salida', '2026-06-18 19:30:00', 'Trabajo adicional. 1 hora extra.', 1);
 
 
 -- visualizar quien modifico o asigno un rol en la tabla usuaro a usuario 
@@ -27,8 +38,9 @@ USE ontime3bd;
 
 USE ontime3bd;
 
--- Corregimos la fila 2 de Camilo Pérez
-UPDATE usuario SET nombre = 'michael' WHERE id = 5;
+-- Corregimos usuarios
+select * from usuario;
+UPDATE usuario SET nombre = 'hernando' WHERE id = 14;
 
 ----- CONSULTA DE AGREGACION
 SELECT u.id, con.salario_base, -- Extrae el identificador del usuario y su salario base mensual fijo.

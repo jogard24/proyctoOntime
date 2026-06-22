@@ -2,7 +2,7 @@ export function configurarAsistenciaTabla() {
     const tablaBody = document.getElementById('tabla-asistencia-body');
     const fechaDesde = document.getElementById('filtro-fecha-desde');
     const fechaHasta = document.getElementById('filtro-fecha-hasta');
-    const filtroEmpleado = document.getElementById('filtro-empleado'); // Captura el nuevo buscador (RF15)
+    const filtroEmpleado = document.getElementById('filtro-empleado'); // Captura el nuevo buscador 
     const btnFiltrar = document.getElementById('btn-filtrar-asistencia');
 
     if (!tablaBody || !fechaDesde || !fechaHasta || !btnFiltrar) {
@@ -72,7 +72,7 @@ export function configurarAsistenciaTabla() {
         const hasta = fechaHasta.value;
         const buscador = filtroEmpleado?.value.toLowerCase().trim() || '';
 
-        // --- REGLA DE NEGOCIO CRÍTICA (Cumple RF16 y RNF06) ---
+        // ---  ---
         if (desde && hasta && desde > hasta) {
             alert("Operación inválida: La 'Fecha Desde' no puede ser mayor o posterior a la 'Fecha Hasta'. Por favor, corrige las fechas.");
             return;

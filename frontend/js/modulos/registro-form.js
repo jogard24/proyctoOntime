@@ -11,12 +11,45 @@ export function configurarRegistro() {
     const nombreContactoInput = document.getElementById('nombreContacto');
     const celularContactoInput = document.getElementById('celularContacto');
     const relacionContactoInput = document.getElementById('relacionContacto');
-    const documentoInput = document.getElementById('documento_identidad'); // Asegúrate de tener este input en tu HTML
+    const documentoInput = document.getElementById('documento_identidad');
 
     if (!btnGuardar || !inputFoto || !vistaPrevia) {
         console.warn('No se encontró el formulario de registro o sus elementos principales.');
         return;
     }
+
+    // =========================================================================
+    // 🛡️ BLOQUEO FÍSICO EN TIEMPO REAL (Evita que el usuario escriba basura)
+    // =========================================================================
+
+    // Función para forzar solo letras y espacios en caliente
+    const forzarSoloLetras = (input) => {
+        if (input) {
+            input.addEventListener('input', () => {
+                input.value = input.value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ\s]/g, '');
+            });
+        }
+    };
+
+    // Función para forzar solo números en caliente
+    const forzarSoloNumeros = (input) => {
+        if (input) {
+            input.addEventListener('input', () => {
+                input.value = input.value.replace(/[^0-9]/g, '');
+            });
+        }
+    };
+
+    // Aplicamos los escuchadores de teclado en tiempo real
+    forzarSoloLetras(nombreInput);
+    forzarSoloLetras(apellidoInput);
+    forzarSoloLetras(nombreContactoInput);
+    forzarSoloLetras(relacionContactoInput);
+    forzarSoloNumeros(documentoInput);
+    forzarSoloNumeros(celularInput);
+    forzarSoloNumeros(celularContactoInput);
+
+    // =========================================================================
 
     inputFoto.addEventListener('change', function () {
         const archivo = inputFoto.files && inputFoto.files[0];
@@ -56,7 +89,7 @@ export function configurarRegistro() {
 
         try {
             await enviarEmpleado(datosEmpleado, inputFoto.files && inputFoto.files[0]);
-            alert('Empleado guardado correctamente.');
+            alert('¡Empleado registrado con éxito en el sistema!');
             limpiarFormulario();
         } catch (error) {
             console.error('Error guardando el empleado:', error);
@@ -66,6 +99,11 @@ export function configurarRegistro() {
 
     function validarDatos(datos) {
         const errores = [];
+
+        // CORRECCIÓN CRÍTICA: Declaración explícita de expresiones regulares
+        const regexLetras = /^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/;
+        const regexNumeros = /^[0-9]+$/;
+
         if (!datos.nombre) errores.push('Nombre es obligatorio.');
         if (!datos.apellido) errores.push('Apellido es obligatorio.');
         if (!datos.documento_identidad) errores.push('Documento de identidad es obligatorio.');
@@ -76,15 +114,53 @@ export function configurarRegistro() {
         if (!datos.nombreContacto) errores.push('Nombre del contacto es obligatorio.');
         if (!datos.celularContacto) errores.push('Celular del contacto es obligatorio.');
         if (!datos.relacionContacto) errores.push('Parentesco es obligatorio.');
+
+        if (errores.length > 0) return errores;
+
+        // 2. VALIDACIÓN DE FORMATO DE TEXTO (Filtro perimetral)
+        if (!regexLetras.test(datos.nombre)) {
+            errores.push('El campo Nombre solo debe contener letras.');
+        }
+        if (!regexLetras.test(datos.apellido)) {
+            errores.push('El campo Apellido solo debe contener letras.');
+        }
+        if (!regexLetras.test(datos.nombreContacto)) {
+            errores.push('El Nombre del Contacto de Emergencia solo debe contener letras.');
+        }
+
+        // 3. VALIDACIÓN DE NÚMEROS Y LONGITUDES
+        if (!regexNumeros.test(datos.documento_identidad)) {
+            errores.push('El Documento de Identidad debe contener únicamente números.');
+        } else if (datos.documento_identidad.length < 6 || datos.documento_identidad.length > 10) {
+            errores.push('El Documento de Identidad debe tener entre 6 y 10 dígitos.');
+        }
+
+        if (!regexNumeros.test(datos.celular)) {
+            errores.push('El Celular del empleado debe contener únicamente números.');
+        } else if (datos.celular.length !== 10) {
+            errores.push('El Celular del empleado debe tener exactamente 10 dígitos.');
+        }
+
+        if (!regexNumeros.test(datos.celularContacto)) {
+            errores.push('El Celular del contacto debe contener únicamente números.');
+        } else if (datos.celularContacto.length !== 10) {
+            errores.push('El Celular del contacto debe tener exactamente 10 dígitos.');
+        }
+
+  
+
+        // 4. VALIDACIÓN DE FORMATO DE CORREO
+        if (!datos.email.includes('@') || !datos.email.includes('.')) {
+            errores.push('El formato del Email ingresado no es válido (ejemplo@dominio.com).');
+        }
+
         return errores;
     }
 
     async function enviarEmpleado(datos, archivoFoto) {
-        // 1. Ajuste de la URL para que coincida con el Servlet descriptivo
         const url = 'http://localhost:8080/OnTimeBackend/FormularioRegistroServlet';
         const formData = new FormData();
 
-        // Agregar los datos del empleado al FormData
         Object.keys(datos).forEach((key) => {
             formData.append(key, datos[key]);
         });
@@ -93,13 +169,11 @@ export function configurarRegistro() {
             formData.append('fotoPerfil', archivoFoto);
         }
 
-        //  Validación y Desempaquetado seguro del Contrato (Cumple RF26)
         if (window._contratoTemporal) {
             Object.keys(window._contratoTemporal).forEach((key) => {
                 formData.append(key, window._contratoTemporal[key]);
             });
         } else {
-            // Bloqueamos el envío si no hay contrato adjunto en memoria
             alert("Error: Debe hacer clic en 'Agregar contrato' y rellenar los datos laborales antes de guardar al empleado.");
             throw new Error("Contrato laboral omitido.");
         }
@@ -114,26 +188,25 @@ export function configurarRegistro() {
             throw new Error(`Error al guardar el empleado en el backend: ${textoError}`);
         }
 
-        // Retornamos el texto plano de forma segura para evitar fallas de parseo en la respuesta
         return await respuesta.text();
     }
 
-
     function limpiarFormulario() {
-        nombreInput.value = '';
-        apellidoInput.value = '';
-        emailInput.value = '';
-        celularInput.value = '';
-        direccionInput.value = '';
-        tipoSangreInput.value = '';
-        nombreContactoInput.value = '';
-        celularContactoInput.value = '';
-        relacionContactoInput.value = '';
+        if (nombreInput) nombreInput.value = '';
+        if (apellidoInput) apellidoInput.value = '';
+        if (emailInput) emailInput.value = '';
+        if (celularInput) celularInput.value = '';
+        if (direccionInput) direccionInput.value = '';
+        if (tipoSangreInput) tipoSangreInput.value = '';
+        if (nombreContactoInput) nombreContactoInput.value = '';
+        if (celularContactoInput) celularContactoInput.value = '';
+        if (relacionContactoInput) relacionContactoInput.value = '';
+        if (documentoInput) documentoInput.value = '';
         inputFoto.value = '';
         vistaPrevia.src = '../img/usuario-defecto.png';
     }
 
-    // Inicializar módulo de contrato (modal) si existe la vista
+    // Inicializar módulo de contrato (modal)
     try {
         import('./contrato.js').then(mod => {
             if (mod && mod.configurarContrato) mod.configurarContrato();
@@ -144,3 +217,5 @@ export function configurarRegistro() {
         console.warn('Import dinámico de contrato no soportado:', error);
     }
 }
+
+

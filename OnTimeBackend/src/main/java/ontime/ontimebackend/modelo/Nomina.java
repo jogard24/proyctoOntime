@@ -10,7 +10,8 @@ public class Nomina {
     private BigDecimal salarioBasePeriodo;
     private double totalHorasExtras;
     private BigDecimal totalNeto;
-    
+    private int diasAsistidos;
+
     // Campos de transferencia analíticos Soportan tu lógica en nomina.js
     private String documento;
     private String nombre;
@@ -54,5 +55,9 @@ public class Nomina {
 
     public int getTotalExtras() { return totalExtras; }
     public void setTotalExtras(int totalExtras) { this.totalExtras = totalExtras; }
+    
+    public int getDiasAsistidos() {return diasAsistidos;}
+    public void setDiasAsistidos(int diasAsistidos) { this.diasAsistidos = diasAsistidos;
+}
 }
 

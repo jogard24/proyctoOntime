@@ -34,7 +34,7 @@ public class NominaServlet extends HttpServlet {
 
         String periodo = request.getParameter("periodo");
         if (periodo == null || periodo.trim().isEmpty()) {
-            periodo = "2026-06"; 
+            periodo = "2026-06";
         }
 
         try {
@@ -43,14 +43,14 @@ public class NominaServlet extends HttpServlet {
             StringBuilder json = new StringBuilder("[");
             for (int i = 0; i < listaNomina.size(); i++) {
                 Nomina n = listaNomina.get(i);
-                
+
                 // En la base de datos limpia de pruebas, las marcas de salida totales
                 // representan los días que el usuario completó su jornada laboral.
-                int diasTrabajados = n.getTotalExtras(); 
-                
+                int diasTrabajados = n.getTotalExtras();
+
                 //  Si el empleado tiene marcas de salida, asumiremos
                 // que sus horas extras reales se calculan si cumple criterios (para la prueba dará 1 si hay marcas '%extra%')
-                int horasExtrasReales = (n.getTotalExtras() > 0) ? 1 : 0; 
+                int horasExtrasReales = (n.getTotalExtras() > 0) ? 1 : 0;
 
                 json.append("{");
                 json.append("\"id\":").append(n.getUsuarioId()).append(",");
@@ -59,12 +59,12 @@ public class NominaServlet extends HttpServlet {
                 json.append("\"apellido\":\"").append(escaparJson(n.getApellido())).append("\",");
                 json.append("\"salarioBase\":").append(n.getSalarioBasePeriodo()).append(",");
                 json.append("\"totalRetardos\":").append(n.getTotalRetardos()).append(",");
-                
-                // MANDATORIO: Sincronizamos las llaves exactas que lee tu nomina.js refactorizado
+
+                // Sincronizamos las llaves exactas que lee tu nomina.js refactorizado
                 json.append("\"diasAsistidos\":").append(diasTrabajados).append(",");
-                json.append("\"totalExtras\":").append(horasExtrasReales); 
+                json.append("\"totalExtras\":").append(horasExtrasReales);
                 json.append("}");
-                
+
                 if (i < listaNomina.size() - 1) {
                     json.append(",");
                 }
@@ -79,8 +79,11 @@ public class NominaServlet extends HttpServlet {
         }
     }
 
+ 
     /**
-     * Procesa la consolidación final e inyección en las tablas de auditoría de nómina (POST).
+     * Procesa la consolidación final de nómina e inyección atómica en cascada
+     * dentro de periodo_nomina, nomina, detalle_nomina y la tabla puente
+     * (POST).
      */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
@@ -91,49 +94,56 @@ public class NominaServlet extends HttpServlet {
         response.setCharacterEncoding("UTF-8");
 
         String accion = request.getParameter("accion");
-        String periodo = request.getParameter("periodo");
+        String periodo = request.getParameter("periodo"); 
 
         if ("guardarPeriodo".equals(accion) && periodo != null) {
             try {
+                //  Recuperamos la lista analítica real procesada por el query de tu DAO
                 List<Nomina> lista = nominaDAO.obtenerReporteNomina(periodo);
                 boolean completado = true;
 
+                //  Procesamos empleado por empleado para la congelación 
                 for (Nomina n : lista) {
-                    BigDecimal baseContractual = n.getSalarioBasePeriodo(); 
+                    BigDecimal baseContractual = n.getSalarioBasePeriodo();
 
-                    // 1. CONTEO DE ASISTENCIA DIARIA MÁXIMA
-                    int diasTrabajados = n.getTotalExtras(); 
-                    if (diasTrabajados <= 0) diasTrabajados = 30; // Respaldo por defecto para liquidar mes completo si no hay marcas
-
-                    // 2. CÁLCULO PROPORCIONAL DE DÍAS LABORADOS
+                    // CONTROL OPERATIVO Leemos los días asistidos reales 
+                    int diasTrabajados = n.getDiasAsistidos();
+                    if (diasTrabajados <= 0) {
+                        diasTrabajados = 30; // Respaldo seguro por mes completo
+                    }
+                    // REGLA DE TRES  Fraccionamiento de sueldo por asistencia
                     double factorDias = (double) diasTrabajados / 30.0;
                     BigDecimal sueldoProporcionalDias = baseContractual.multiply(BigDecimal.valueOf(factorDias));
 
-                    // 3. PENALIZACIONES POR RETARDO EN ENTRADAS
+                    // PENALIZACIONES Conteo de retardos multiplicado por $15.000 fijos
                     int retardosDelMes = n.getTotalRetardos();
                     BigDecimal deducciones = BigDecimal.valueOf(retardosDelMes * 15000L);
 
-                    // 4. BONIFICACIONES POR HORAS EXTRAS REALES (Sincronizado con marcas %extra%)
-                    int horasExtrasReales = (n.getTotalExtras() > 0) ? 1 : 0;
+                    // BONIFICACIONES Conteo de extras reales multiplicado por $20.000 fijos
+                    int horasExtrasReales = n.getTotalExtras();
                     BigDecimal bonificaciones = BigDecimal.valueOf(horasExtrasReales * 20000L);
 
-                    // 5. LIQUIDACIÓN NETA FINAL BALANCEADA
+                    // BALANCE  FINAL
                     BigDecimal neto = sueldoProporcionalDias.subtract(deducciones).add(bonificaciones);
 
-                    // Almacenamiento histórico inmutable en cascada lógica y tabla puente
+                    // DISPARO EN CASCADA RELACIONAL
+                    // Enviamos los datos al DAO para que siembre 'periodo_nomina', 'nomina', 'detalle_nomina' 
+                    // y ensamble los cables físicos en la tabla puente 'nomina_asistencia' .
                     boolean r = nominaDAO.guardarNominaPeriodo(n.getUsuarioId(), baseContractual, (double) horasExtrasReales, neto, periodo);
                     if (!r) {
                         completado = false;
                     }
                 }
 
+                // 3. Respuesta síncrona controlada hacia el fetch de nomina.js
                 if (completado) {
-                    response.getWriter().print("{\"status\":\"success\",\"message\":\"Nómina cerrada con éxito.\"}");
+                    response.getWriter().print("{\"status\":\"success\",\"message\":\"¡Nómina consolidada y guardada con éxito en las tablas históricas!\"}");
                 } else {
                     response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-                    response.getWriter().print("{\"status\":\"error\",\"message\":\"Algunos registros de usuario no pudieron congelarse.\"}");
+                    response.getWriter().print("{\"status\":\"error\",\"message\":\"Algunos desprendibles no pudieron congelarse por restricciones de integridad.\"}");
                 }
             } catch (Exception e) {
+                e.printStackTrace();
                 response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
                 response.getWriter().print("{\"status\":\"error\",\"message\":\"" + e.getMessage() + "\"}");
             }
@@ -146,4 +156,3 @@ public class NominaServlet extends HttpServlet {
         response.setStatus(HttpServletResponse.SC_OK);
     }
 }
-

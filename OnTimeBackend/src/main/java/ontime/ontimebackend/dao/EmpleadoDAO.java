@@ -9,7 +9,8 @@ import java.util.List;
 public class EmpleadoDAO {
 
     /**
-     * Consulta el listado general uniendo las tablas para la grilla de Gestión (RF23).
+     * Consulta el listado general uniendo las tablas para la grilla de Gestión
+     * (RF23).
      */
     public List<Empleado> listarTodos() {
         List<Empleado> lista = new ArrayList<>();
@@ -30,7 +31,9 @@ public class EmpleadoDAO {
 
                 String nombreBd = rs.getString("nombre");
                 String apellidoBd = rs.getString("apellido");
-                if (apellidoBd == null) apellidoBd = "";
+                if (apellidoBd == null) {
+                    apellidoBd = "";
+                }
 
                 if (nombreBd.toLowerCase().contains(apellidoBd.toLowerCase())) {
                     emp.setNombre(nombreBd);
@@ -55,19 +58,23 @@ public class EmpleadoDAO {
     }
 
     /**
-     *  Modifica datos en cascada lógica transaccional.
-     * Sincroniza el rol ID numérico en la tabla de credenciales (RF23).
+     * Modifica datos en cascada lógica transaccional. Sincroniza el rol ID
+     * numérico en la tabla de credenciales (RF23).
      */
     public boolean actualizarEmpleadoConRol(Empleado emp, int rolId) {
         String sqlUsuario = "UPDATE usuario SET nombre = ?, estado = ?, direccion = ? WHERE id = ?";
         String sqlTelefono = "UPDATE telefono_personal SET telefono_celular = ? WHERE usuario_id = ?";
         String sqlContrato = "UPDATE contrato SET cargo = ? WHERE usuario_id = ?";
-        String sqlCredenciales = "UPDATE credenciales SET rol_id = ? WHERE usuario_id = ?";
+
+        // Guarda si no existe, o actualiza si ya tiene credenciales
+        String sqlCredencialesInteligente = "INSERT INTO credenciales (usuario_id, usuario, clave, rol_id, activo) "
+                + "VALUES (?, ?, ?, ?, TRUE) "
+                + "ON DUPLICATE KEY UPDATE usuario = ?, clave = ?, rol_id = ?, activo = TRUE";
 
         Connection con = null;
         try {
             con = Conexion.obtenerConexion();
-            con.setAutoCommit(false); // Transacción atómica manual segura
+            con.setAutoCommit(false); // Transacción  manual segura abierta
 
             // 1. Actualizar tabla central usuario (Garantiza campos no nulos)
             try (PreparedStatement psU = con.prepareStatement(sqlUsuario)) {
@@ -92,33 +99,55 @@ public class EmpleadoDAO {
                 psC.executeUpdate();
             }
 
-            // 4. Actualizar el ID del rol en la tabla de seguridad credenciales
-            try (PreparedStatement psR = con.prepareStatement(sqlCredenciales)) {
-                psR.setInt(1, rolId);
-                psR.setInt(2, emp.getId());
+            // 4. Inserción o Actualización Inteligente de Credenciales Web (Admin o Contador)
+            try (PreparedStatement psR = con.prepareStatement(sqlCredencialesInteligente)) {
+                // Parámetros del bloque INSERT (Si no tiene credenciales en la tabla)
+                psR.setInt(1, emp.getId());
+
+                // Si el empleado pasa a rol 2 (Empleado sin login) y no tiene datos web, le asignamos valores de contingencia
+                String userFinal = (emp.getUsuarioWeb() != null && !emp.getUsuarioWeb().trim().isEmpty()) ? emp.getUsuarioWeb() : "user" + emp.getId();
+                String passFinal = (emp.getClaveWeb() != null && !emp.getClaveWeb().trim().isEmpty()) ? emp.getClaveWeb() : "123456";
+
+                psR.setString(2, userFinal);
+                psR.setString(3, passFinal); // Soporta texto plano o hashes
+                psR.setInt(4, rolId);
+
+                // Parámetros del bloque UPDATE (Si ya existía el registro en la tabla)
+                psR.setString(5, userFinal);
+                psR.setString(6, passFinal);
+                psR.setInt(7, rolId);
+
                 psR.executeUpdate();
             }
 
-            con.commit(); // Consolidamos de forma inmutable todas las tablas
-            System.out.println(" ÉXITO: Transacción de actualización completada para ID " + emp.getId());
+            con.commit(); // Consolidamos de forma inmutable todas las tablas en un solo ciclo atómico
+            System.out.println(" ÉXITO: Acceso web y datos corporativos actualizados para ID #" + emp.getId());
             return true;
         } catch (SQLException e) {
-            System.out.println(" ERROR TRANSACCIONAL EN DAO: " + e.getMessage());
+            System.out.println("  ERROR TRANSACCIONAL: " + e.getMessage());
             if (con != null) {
-                try { con.rollback(); } catch (SQLException ex) { ex.printStackTrace(); }
+                try {
+                    con.rollback();
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                }
             }
             return false;
         } finally {
             if (con != null) {
-                try { con.close(); } catch (SQLException e) { e.printStackTrace(); }
+                try {
+                    con.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
             }
         }
     }
 
     /**
-     *Se eliminó el ON DELETE CASCADE físico.
-     * Aplica BORRADO LÓGICO: Inactiva el estado del usuario y bloquea su acceso web/pinpad,
-     * protegiendo de forma estricta los históricos de asistencia y nómina (RF25).
+     * Se eliminó el ON DELETE CASCADE físico. Aplica BORRADO LÓGICO: Inactiva
+     * el estado del usuario y bloquea su acceso web/pinpad, protegiendo de
+     * forma estricta los históricos de asistencia y nómina (RF25).
      */
     public boolean eliminarEmpleado(int id) {
         String sqlUsuario = "UPDATE usuario SET estado = 'inactivo' WHERE id = ?";
@@ -147,12 +176,20 @@ public class EmpleadoDAO {
         } catch (SQLException e) {
             System.out.println("ERROR EN BORRADO LÓGICO: " + e.getMessage());
             if (con != null) {
-                try { con.rollback(); } catch (SQLException ex) { ex.printStackTrace(); }
+                try {
+                    con.rollback();
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                }
             }
             return false;
         } finally {
             if (con != null) {
-                try { con.close(); } catch (SQLException e) { e.printStackTrace(); }
+                try {
+                    con.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
             }
         }
     }
@@ -162,4 +199,3 @@ public class EmpleadoDAO {
         return actualizarEmpleadoConRol(emp, 2);
     }
 }
-

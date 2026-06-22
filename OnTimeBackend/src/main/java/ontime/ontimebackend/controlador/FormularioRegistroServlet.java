@@ -67,7 +67,7 @@ public class FormularioRegistroServlet extends HttpServlet {
             contrato.setJornadaId(jornadaStr != null ? Integer.parseInt(jornadaStr.trim()) : 1);
 
             // =========================================================================
-            //  APLICACIÓN DE LA CORRECCIÓN DEL JURADO: CAPTURA DE LAS FECHAS DESDE EL MODAL
+            // CAPTURA DE LAS FECHAS DESDE EL MODAL
             // =========================================================================
             String fechaInicioStr = request.getParameter("fecha_inicio");
             String fechaFinStr = request.getParameter("fecha_fin");
