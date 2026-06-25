@@ -50,7 +50,7 @@ async function consultarNovedadesInicio() {
             return;
         }
 
-        // Tu lógica analítica estrella (¡No la pierdas!)
+        // lógica analítica estrella
         let empleadosActivos = new Set();
         let totalRetardos = 0;
         let totalSalidas = 0;
@@ -103,7 +103,7 @@ async function consultarNovedadesInicio() {
             tbody.appendChild(fila);
         });
 
-        // Tu lógica para pintar el resumen dinámico en las tarjetas de arriba
+        //  lógica para pintar el resumen dinámico en las tarjetas de arriba
         const txtTotal = document.getElementById("stat-total");
         const txtRetardos = document.getElementById("stat-retardos");
         const txtSalidas = document.getElementById("stat-salidas");

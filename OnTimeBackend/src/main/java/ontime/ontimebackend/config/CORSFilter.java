@@ -14,11 +14,12 @@ import java.io.IOException;//Importa una clase estándar de Java para el manejo 
 //mediante los métodos init(), doFilter() y destroy().
 public class CORSFilter implements Filter {
 
-    @Override
+    @Override//Se ejecuta al iniciar el filtro.
     public void init(FilterConfig filterConfig) throws ServletException {
     }
 
-    @Override
+    @Override//Se ejecuta en cada petición HTTP antes de llegar al servlet.
+//Permite modificar la respuesta o decidir si la petición continúa.
     public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain)
             throws IOException, ServletException {
 //Transforma los parámetros genéricos de la red a objetos
@@ -49,16 +50,19 @@ public class CORSFilter implements Filter {
         // 3. Define los métodos HTTP y cabeceras que permites en las peticiones asíncronas
         response.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS, PUT, DELETE");
         response.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization, Accept");
+        
+        //Content-Type es la cabecera que define el formato del contenido en la respuesta HTTP. En tu servlet, al poner "application/json", 
+        //estás diciendo: “Lo que te envío es JSON, interprétalo como datos estructurados.”
 
-//request.getMethod() devuelve el tipo de método de la petición (GET, POST, PUT, DELETE, OPTIONS, etc.).
-//Aquí se compara con "OPTIONS", usando .equalsIgnoreCase() para que no importe si está en mayúsculas o minúsculas.
 //
 //Caso verdadero:
 //Si la petición es de tipo OPTIONS, se responde inmediatamente con un estado 200 OK (HttpServletResponse.SC_OK equivale a 200).
 //Luego se hace return; para salir del método y no ejecutar más lógica.
         
-        // 4. Maneja de forma automática la petición pre-flight OPTIONS (Evita el bloqueo de CORS del navegador)
+        //  Maneja de forma automática la petición  OPTIONS Evita el bloqueo de CORS del navegador
+        //request.getMethod() devuelve el tipo de método de la petición (GET, POST, PUT, DELETE, OPTIONS, etc.).
         if ("OPTIONS".equalsIgnoreCase(request.getMethod())) {
+    ////Aquí se compara con "OPTIONS", usando .equalsIgnoreCase() para que no importe si está en mayúsculas o minúsculas.
             response.setStatus(HttpServletResponse.SC_OK);
             return;
         }
@@ -69,7 +73,7 @@ public class CORSFilter implements Filter {
     }
 
     @Override
-    public void destroy() {
+    public void destroy() {//Se ejecuta cuando el filtro se destruye (ej. al apagar el servidor).
         // Método de destrucción de recursos obligatorio en Jakarta EE (se deja vacío)
     }
 }

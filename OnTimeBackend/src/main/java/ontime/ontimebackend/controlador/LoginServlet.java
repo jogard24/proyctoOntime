@@ -10,7 +10,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
 
-// Ajuste 1: URL cambiada de "/login" a "/LoginServlet" para que coincida con tu login.js
+
 @WebServlet("/LoginServlet")
 public class LoginServlet extends HttpServlet {
 

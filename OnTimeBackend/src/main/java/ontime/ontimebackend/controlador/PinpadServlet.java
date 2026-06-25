@@ -49,14 +49,13 @@ public class PinpadServlet extends HttpServlet {
 
         String observacion = "Registro Pinpad";
 
-        // =========================================================================
-        // CORRECCIÓN CRÍTICA DE ZONA HORARIA: COLOMBIA (BOGOTÁ)
-        // =========================================================================
+        
+        // ZONA HORARIA: COLOMBIA (BOGOTÁ)
         // Forzamos la captura horaria exacta de la región de Colombia burlando el desfase UTC
         ZoneId zonaColombia = ZoneId.of("America/Bogota");
         LocalTime horaActual = LocalTime.now(zonaColombia); 
-        // =========================================================================
 
+        
         StringBuilder horaEntradaStr = new StringBuilder();
         int jornadaId = asistenciaDAO.obtenerJornadaIdYHoraEntrada(usuarioId, horaEntradaStr);
         LocalTime horaLimite = LocalTime.parse(horaEntradaStr.toString());

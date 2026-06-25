@@ -8,7 +8,7 @@ public class CredencialDAO {
 
     /**
      * Valida las credenciales planas del usuario contra la base de datos Ontime3BD.
-     * Retorna un objeto Credencial con su respectivo Rol si existe y está activo.
+     * Retorna un objeto Credencial con su respectivo Rol si existe y está activo si no , no devuelve nada.
      */
     public Credencial validarLogin(String usuario, String clave) {
         String sql = "SELECT c.id, c.usuario_id, c.usuario, c.activo, r.Rol " +

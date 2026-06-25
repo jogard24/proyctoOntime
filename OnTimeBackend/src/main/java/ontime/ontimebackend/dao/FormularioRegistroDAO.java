@@ -17,9 +17,11 @@ public class FormularioRegistroDAO {
      */
     public boolean registrarNuevoEmpleado(Empleado emp, Contrato contrato) {
 
+        //sqlUsuario: Registra al "Padre". Crea la entidad principal con los datos básicos de la persona.
         String sqlUsuario = "INSERT INTO usuario (documento_identidad, nombre, apellido, direccion, estado, tipo_sangre, fotoPerfil_url) VALUES (?, ?, ?, ?, ?, ?, ?)";
         
-        // Sincronización explícita de las columnas fecha_inicio y fecha_fin en el query relacional
+        // Sincronización explícita de las columnas fecha_inicio y fecha_fin 
+        //se pide usuario para saber  a quien pertenece el contrato
         String sqlContrato = "INSERT INTO contrato (usuario_id, tipo_contrato, cargo, salario_base, jornada_id, fecha_inicio, fecha_fin) VALUES (?, ?, ?, ?, ?, ?, ?)";
         
         String sqlEmail = "INSERT INTO email_personal (usuario_id, email) VALUES (?, ?)";
@@ -29,7 +31,7 @@ public class FormularioRegistroDAO {
         Connection con = null;
         try {
             con = Conexion.obtenerConexion();
-            con.setAutoCommit(false); // Transacción atómica manual: Evita que guarde datos a medias si falla un canal
+            con.setAutoCommit(false); // Transacción  manual: Evita que guarde datos a medias si falla un canal
 
             int nuevoUsuarioId = 0;
 
@@ -66,13 +68,13 @@ public class FormularioRegistroDAO {
                 psC.setBigDecimal(4, contrato.getSalarioBase()); 
                 psC.setInt(5, contrato.getJornadaId()); 
                 
-                // INYECCIÓN DE VIGENCIA TEMPORAL CORREGIDA
+                // 
                 psC.setString(6, contrato.getFechaInicio()); // Sobrescribe el default '2026-01-01'
                 
-                // BLINDAJE DE VENCIMIENTO CONTRACTUAL: Control lógico robusto basado en longitud de caracteres
+                // : Control lógico  basado en longitud de caracteres      //trim eliminar espacios
                 if (contrato.getFechaFin() != null && contrato.getFechaFin().trim().length() >= 4) {
                     psC.setString(7, contrato.getFechaFin().trim()); // Almacena la fecha real elegida en el modal flotante
-                    System.out.println("  Sembrando fecha de vencimiento contractual: " + contrato.getFechaFin());
+                    System.out.println("  fecha de vencimiento contractual: " + contrato.getFechaFin());
                 } else {
                     psC.setNull(7, java.sql.Types.DATE); // Si el input viaja vacío, inyecta NULL legal (Contrato Indefinido)
                     System.out.println("  Contrato configurado como Término Indefinido (Inyectando NULL).");
