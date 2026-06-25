@@ -1,0 +1,7 @@
+-- Limpiamos la fila nula e insertamos los dos identificadores obligatorios
+TRUNCATE TABLE concepto_nomina;
+
+INSERT INTO concepto_nomina (id, nombre, tipo, factor_calculo) 
+VALUES 
+(1, 'Deducción por Retardo', 'descuento', 1.00),
+(2, 'Bonificación de Hora Extra', 'extra', 1.00);
