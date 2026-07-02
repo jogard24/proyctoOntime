@@ -40,7 +40,7 @@ public class LoginServlet extends HttpServlet {
         // Si el DAO retorna un objeto credencial, significa que las credenciales son válidas
         if (credencial != null) {
 
-            // Verificamos si la cuenta está activa en el sistema escolar
+            // Verificamos si la cuenta está activa en el sistema 
             if (!credencial.isActivo()) {
                 response.setStatus(HttpServletResponse.SC_FORBIDDEN);
                 response.getWriter().write("{\"exito\": false, \"message\": \" Cuenta inactiva. Contacte al administrador.\"}");

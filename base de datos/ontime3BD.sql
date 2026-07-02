@@ -2,6 +2,7 @@ CREATE DATABASE Ontime3BD;
 USE Ontime3BD;
 
 
+
 drop database ontime3bd;
 -- 1. Tabla Central de Usuarios 
 CREATE TABLE usuario (

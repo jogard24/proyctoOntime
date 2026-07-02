@@ -8,13 +8,24 @@ select * from roles;
 select * from telefono_personal;
 select * from email_personal;
 select * from contacto_emergencia;
-select * from concepto_nomina;
 select * from detalle_nomina;
 select * from periodo_nomina;
-select * from credenciales;
 select * from nomina_asistencia;
+select * from concepto_nomina;
 
 USE ontime3bd;
+SELECT DISTINCT usuario_id FROM asistencia;
+
+-- Reemplaza el '1' por el ID real que te arrojó la consulta anterior
+INSERT IGNORE INTO contrato (usuario_id, tipo_contrato, cargo, salario_base, jornada_id, fecha_inicio, fecha_fin)
+VALUES (2, 'Término Fijo', 'Contador', 1800000.00, 1, '2026-06-01', '2026-09-30');
+
+-- Por si acaso el contrato ya existía pero con datos desactualizados, forzamos la vigencia:
+UPDATE contrato 
+SET fecha_inicio = '2026-06-01', fecha_fin = '2026-09-30' 
+WHERE usuario_id = 2;
+
+
 
 -- Limpiamos la fila nula e insertamos los dos identificadores obligatorios
 TRUNCATE TABLE concepto_nomina;
@@ -26,6 +37,9 @@ VALUES
 
 
 
+-- Insertamos una marca de salida que simula horas extras para Camilo Pérez
+INSERT INTO asistencia (usuario_id, tipo_evento, fecha_hora, observacion, jornada_id)
+VALUES (2, 'salida', '2026-06-18 19:30:00', 'Trabajo adicional. 1 hora extra.', 1);
 
 
 -- visualizar quien modifico o asigno un rol en la tabla usuaro a usuario 
@@ -38,9 +52,10 @@ USE ontime3bd;
 
 USE ontime3bd;
 
--- Corregimos usuarios
-select * from usuario;
-UPDATE usuario SET nombre = 'hernando' WHERE id = 14;
+-- Corregimos la fila 2 de Camilo Pérez
+UPDATE usuario SET nombre = 'camilo' WHERE id = 2;
+UPDATE usuario SET apellido = 'diaz' WHERE id = 7;
+update telefono_personal set telefono_celular = '111111' where id = 9;
 
 ----- CONSULTA DE AGREGACION
 SELECT u.id, con.salario_base, -- Extrae el identificador del usuario y su salario base mensual fijo.
@@ -55,6 +70,25 @@ INNER JOIN contrato con ON u.id = con.usuario_id -- Une esta tabla con la tabla 
 --  date format Filtra los registros de asistencia para tomar únicamente los que ocurrieron en junio de 2026
 LEFT JOIN asistencia a ON u.id = a.usuario_id AND DATE_FORMAT(a.fecha_hora, '%Y-%m') = '2026-06'
 GROUP BY u.id, con.salario_base; -- Agrupa los resultados finales por cada usuario
+
+USE ontime3bd;
+
+-- Consulta relacional para auditar el horario oficial de cada empleado
+SELECT 
+    u.id AS usuario_id,
+    u.documento_identidad,
+    CONCAT(u.nombre, ' ', u.apellido) AS nombre_completo,
+    con.cargo,
+    j.nombrejornada AS jornada_asignada,
+    j.hora_entrada,
+    j.hora_salida
+FROM usuario u
+INNER JOIN contrato con ON u.id = con.usuario_id
+INNER JOIN jornadaLaboral j ON con.jornada_id = j.id;
+
+DELETE FROM usuario
+WHERE usuario_id = 2 
+AND cargo = 'Contador'; -- Elimina la fila con la 'C' mayúscula si es la duplicada
 
 
 

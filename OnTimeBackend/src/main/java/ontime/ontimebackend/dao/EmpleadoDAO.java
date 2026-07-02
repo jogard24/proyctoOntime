@@ -9,12 +9,17 @@ import java.util.List;
 public class EmpleadoDAO {
 
     /**
-     * Consulta el listado general uniendo las tablas para la grilla de Gestión
+     * Consulta el listado general uniendo las tablas para la Gestión
      * (RF23).
      */
+    // Método público que recupera el listado completo de empleados registrados en el sistema.
+// Devuelve una colección de objetos 'Empleado' ordenados del más reciente al más antiguo.
     public List<Empleado> listarTodos() {
+            // Instancia una lista dinámica vacía para almacenar los registros de los empleados.
         List<Empleado> lista = new ArrayList<>();
-
+ // Consulta SQL estructurada para consolidar la información del empleado desde múltiples tablas.
+    // Se usa 'LEFT JOIN' para que el usuario aparezca en la lista incluso si aún no tiene asignado 
+    // un teléfono, un correo electrónico o un contrato laboral en el sistema
         String sql = "SELECT u.id, u.documento_identidad, u.nombre, u.apellido, u.estado, u.fotoPerfil_url, u.direccion, "
                 + "t.telefono_celular, e.email, con.cargo "
                 + "FROM usuario u "
@@ -22,25 +27,29 @@ public class EmpleadoDAO {
                 + "LEFT JOIN email_personal e ON u.id = e.usuario_id "
                 + "LEFT JOIN contrato con ON u.id = con.usuario_id "
                 + "ORDER BY u.id DESC";
-
+ // Abre la conexión, compila la consulta SQL y ejecuta la lectura en un bloque try-with-resources.
+    // Esto garantiza la liberación automática de los canales de la base de datos al finalizar el bloque
         try (Connection con = Conexion.obtenerConexion(); PreparedStatement ps = con.prepareStatement(sql); ResultSet rs = ps.executeQuery()) {
-
+        // Itera sobre el conjunto de resultados fila por fila mientras existan registros.
             while (rs.next()) {
                 Empleado emp = new Empleado();
                 emp.setId(rs.getInt("id"));
 
                 String nombreBd = rs.getString("nombre");
                 String apellidoBd = rs.getString("apellido");
+            // Control de nulos preventivo para evitar fallos de ejecución (NullPointerException).
                 if (apellidoBd == null) {
                     apellidoBd = "";
                 }
-
+// Evita la duplicidad visual en la interfaz: si el apellido ya está incluido dentro 
+            // del campo nombre (por error de registro), setea solo el nombre. Si no, los concatena.
                 if (nombreBd.toLowerCase().contains(apellidoBd.toLowerCase())) {
                     emp.setNombre(nombreBd);
                 } else {
                     emp.setNombre(nombreBd + " " + apellidoBd);
                 }
-
+ // Operadores ternarios para manejar valores nulos provenientes de los LEFT JOIN.
+            // Si el dato no existe en la base de datos, se asigna un valor por defecto ("Sin asignar" o "N/A").
                 emp.setDocumento(rs.getString("documento_identidad"));
                 emp.setCargo(rs.getString("cargo") != null ? rs.getString("cargo") : "Sin asignar");
                 emp.setEstado(rs.getString("estado"));
@@ -62,6 +71,7 @@ public class EmpleadoDAO {
      * numérico en la tabla de credenciales (RF23).
      */
     public boolean actualizarEmpleadoConRol(Empleado emp, int rolId) {
+        //sentencia de modificacion para actualizar datos en mysql
         String sqlUsuario = "UPDATE usuario SET nombre = ?, estado = ?, direccion = ? WHERE id = ?";
         String sqlTelefono = "UPDATE telefono_personal SET telefono_celular = ? WHERE usuario_id = ?";
         String sqlContrato = "UPDATE contrato SET cargo = ? WHERE usuario_id = ?";
@@ -72,7 +82,9 @@ public class EmpleadoDAO {
                 + "ON DUPLICATE KEY UPDATE usuario = ?, clave = ?, rol_id = ?, activo = TRUE";
 
         Connection con = null;
-        try {
+        try { // se conecta con la base de datos ,Java le pone un "freno de mano" al motor de la base de datos. 
+            //Le prohíbe guardar cualquier cambio en el disco duro de forma individual 
+            //hasta que todo el proceso termine con éxito
             con = Conexion.obtenerConexion();
             con.setAutoCommit(false); // Transacción  manual segura abierta
 
@@ -150,6 +162,7 @@ public class EmpleadoDAO {
      * forma estricta los históricos de asistencia y nómina (RF25).
      */
     public boolean eliminarEmpleado(int id) {
+        //sentencia de modificacion 
         String sqlUsuario = "UPDATE usuario SET estado = 'inactivo' WHERE id = ?";
         String sqlCredenciales = "UPDATE credenciales SET activo = 0 WHERE usuario_id = ?";
 

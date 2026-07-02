@@ -147,7 +147,7 @@ public class AsistenciaDAO {
     //devuelve true si la inserción fue exitosa, false si falló.
     public boolean registrarAsistencia(int usuarioId, String tipoEvento, String observacion, int jornadaId) {
         // NOW() asigna automáticamente la fecha y hora actual del sistema.
-        //Inserta un nuevo registro en la tabla asistencia.
+        //sentencia de modificacion : Inserta un nuevo registro en la tabla asistencia.
         String sql = "INSERT INTO asistencia (usuario_id, tipo_evento, observacion, jornada_id, fecha_hora) VALUES (?, ?, ?, ?, NOW())";
         //try-with-resources asegura que la conexión y el statement se cierren automáticamente.
         try (Connection con = Conexion.obtenerConexion(); PreparedStatement ps = con.prepareStatement(sql)) {

@@ -67,7 +67,7 @@
     border-radius: 10%;
 }
 
-.bt-ejecucion-eliminar {
+/* .bt-ejecucion-eliminar {
     width: 75px;
     height: 40px;
     border-radius: 10%;
@@ -78,7 +78,7 @@
     border: 1px solid var(--border-btn-activo);
     box-shadow: 0 0 10px 1px var(--border-btn-activo);
     transform: scale(1.05);
-}
+} */
 
 .bt-ejecucion-editar:hover{
     background-color: var(--color-verde);

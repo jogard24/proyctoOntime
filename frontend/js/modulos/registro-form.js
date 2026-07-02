@@ -93,7 +93,7 @@ export function configurarRegistro() {
             limpiarFormulario();
         } catch (error) {
             console.error('Error guardando el empleado:', error);
-            alert('No se pudo guardar el empleado. Revisa la consola para más detalles.');
+            alert('No se pudo guardar el empleado.');
         }
     });
 
