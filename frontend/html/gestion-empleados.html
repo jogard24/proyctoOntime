@@ -36,6 +36,7 @@
           <td><span class="pill verde">Activo</span></td>
           <td>
             <!-- Botones con data-id para saber exactamente a quién editar o desactivar en JS -->
+            <button class="btn-menu-item btn-renovar-admin" data-id="${emp.contratoId}">🔄 Contrato</button>
             <button class="bt-menu-item bt-ejecucion-editar" data-id="1">Editar</button>
             <!-- <button class="bt-menu-item bt-ejecucion-eliminar" data-id="1">Eliminar</button> -->
           </td>
@@ -43,6 +44,27 @@
       </tbody>
     </table>
   </div>
+</div>
+<div id="modalRenovarAdmin" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 1000; align-items: center; justify-content: center; font-family: sans-serif;">
+    <div style="background: #ffffff; padding: 25px; border-radius: 8px; width: 340px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); display: flex; flex-direction: column; gap: 15px;">
+        <div style="border-bottom: 1px solid #dee2e6; padding-bottom: 10px;">
+            <h3 style="margin: 0; color: #1e3d59; font-size: 16px;"> Prórroga de Contrato</h3>
+            <p style="margin: 5px 0 0 0; color: #666; font-size: 12px;">Defina el bloque de meses para la extensión laboral.</p>
+        </div>
+        
+        <!-- Campo oculto de contingencia para retener el ID en la memoria RAM -->
+        <input type="hidden" id="renovarContratoId">
+
+        <div style="display: flex; flex-direction: column; gap: 5px;">
+            <label style="font-size: 12.5px; font-weight: bold; color: #495057;">Meses a prorrogar:</label>
+            <input type="number" id="mesesProrrogaAdmin" value="6" min="1" max="60" style="padding: 8px; border: 1px solid #ccc; border-radius: 4px; font-size: 14px; outline: none;">
+        </div>
+
+        <div style="display: flex; gap: 10px; margin-top: 5px;">
+            <button id="btnCancelarRenovarAdmin" style="flex: 1; padding: 9px; background: #6c757d; color: white; border: none; border-radius: 4px; font-weight: bold; cursor: pointer; font-size: 13px;">Cancelar</button>
+            <button id="btnGuardarRenovarAdmin" style="flex: 1; padding: 9px; background: #28a745; color: white; border: none; border-radius: 4px; font-weight: bold; cursor: pointer; font-size: 13px;">Confirmar</button>
+        </div>
+    </div>
 </div>
 
 <script src="../js/modulos/gestionEmpleados.js"></script>

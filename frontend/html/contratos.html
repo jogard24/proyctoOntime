@@ -1,0 +1,24 @@
+<link rel="stylesheet" href="../css/contrato.css">
+
+<div class="modulo-contratos">
+    <div class="panel-header">
+        <h2 style="color: #1e3d59; font-weight: bold; margin-bottom: 5px;">Control de Liquidaciones</h2>
+        <p style="color: #000000; font-size: 13.5px;"> "Cuida de los pequeños gastos, un pequeño agujero hunde un gran
+            barco" — Benjamin Franklin. </p>
+    </div>
+    <div class="filtros-contratos"
+        style="display: flex; gap: 15px; margin-bottom: 25px; align-items: center; background: rgba(255,255,255,0.05); padding: 15px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.15);">
+        <label style="font-weight: bold; font-family: sans-serif; color: #1e3d59;">Seleccione Período de Cierre
+            (Mes):</label>
+        <input type="month" id="filtro-periodo-contratos" value="2026-07"
+            style="padding: 6px 10px; border: 1px solid #ccc; border-radius: 4px; font-family: sans-serif;">
+        <button id="btn-buscar-contratos"
+            style="padding: 7px 15px; background: #1e3d59; color: white; border: none; border-radius: 4px; font-family: sans-serif; font-weight: bold; cursor: pointer;">🔍
+            Cargar Novedades</button>
+    </div>
+
+    <!-- 🛡️ CRÍTICO: Asegúrate de que el ID y la CLASS coincidan exactamente con tu CSS -->
+    <div id="contenedor-cards-contratos" class="contenedor-cards-contratos">
+        <!-- Las tarjetas ejecutivas en cuadritos se inyectarán de forma automatizada aquí -->
+    </div>
+</div>

@@ -15,7 +15,7 @@ public class CredencialDAO {
         String sql = "SELECT c.id, c.usuario_id, c.usuario, c.activo, r.Rol " +
                      "FROM credenciales c " +
                      "INNER JOIN roles r ON c.rol_id = r.id " +
-                     "WHERE c.usuario = ? AND c.clave = ?";
+                     "WHERE c.usuario = ? AND c.clave = ?  ";
 
         // Abre la conexión y prepara la consulta usando 'try-with-resources' para un cierre automático.
         try (Connection con = Conexion.obtenerConexion(); 

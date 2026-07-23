@@ -3,6 +3,7 @@ USE Ontime3BD;
 
 
 
+
 drop database ontime3bd;
 -- 1. Tabla Central de Usuarios 
 CREATE TABLE usuario (
@@ -19,6 +20,9 @@ CREATE TABLE usuario (
     fecha_modificacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (usuario_modificador_id) REFERENCES usuario(id)
 );
+
+ALTER TABLE usuario MODIFY COLUMN estado ENUM('activo', 'inactivo') NOT NULL DEFAULT 'activo';
+
 
 CREATE TABLE contacto_emergencia (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -73,6 +77,8 @@ CREATE TABLE jornadaLaboral (
     hora_salida TIME NOT NULL
 );
 
+ALTER TABLE jornadaLaboral MODIFY COLUMN id INT AUTO_INCREMENT;
+
 -- 5. Tabla de Asistencia en las que inyecta el keypad de forma  automática al Backend 
 CREATE TABLE asistencia (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -96,6 +102,14 @@ CREATE TABLE contrato (
     FOREIGN KEY (usuario_id) REFERENCES usuario(id),
     FOREIGN KEY (jornada_id) REFERENCES jornadaLaboral(id)
 );
+
+ALTER TABLE contrato ADD COLUMN estado VARCHAR(20) DEFAULT 'activo';
+
+USE ontime3bd;
+
+-- Agregamos la columna para definir la periodicidad pactada en el contrato 
+ALTER TABLE contrato ADD COLUMN periodo_pago VARCHAR(20) DEFAULT 'Mensual';
+
 
 ALTER TABLE contrato 
 ADD COLUMN fecha_inicio DATE NOT NULL DEFAULT '2026-01-01',

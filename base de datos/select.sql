@@ -3,15 +3,20 @@ select * from usuario;
 select * from jornadaLaboral;
 select * from credenciales;
 select * from contrato;
-select * from nomina;
 select * from roles;
 select * from telefono_personal;
 select * from email_personal;
 select * from contacto_emergencia;
 select * from detalle_nomina;
 select * from periodo_nomina;
+select * from nomina;
 select * from nomina_asistencia;
 select * from concepto_nomina;
+SELECT * FROM permiso_laboral;
+SELECT id, cargo, salario_base, estado FROM contrato;
+SELECT id, cargo, estado FROM contrato;
+
+DELETE FROM contrato WHERE id = 8;
 
 USE ontime3bd;
 SELECT DISTINCT usuario_id FROM asistencia;
@@ -53,7 +58,7 @@ USE ontime3bd;
 USE ontime3bd;
 
 -- Corregimos la fila 2 de Camilo Pérez
-UPDATE usuario SET nombre = 'camilo' WHERE id = 2;
+UPDATE usuario SET nombre = 'paola' WHERE id = 9;
 UPDATE usuario SET apellido = 'diaz' WHERE id = 7;
 update telefono_personal set telefono_celular = '111111' where id = 9;
 
@@ -89,6 +94,16 @@ INNER JOIN jornadaLaboral j ON con.jornada_id = j.id;
 DELETE FROM usuario
 WHERE usuario_id = 2 
 AND cargo = 'Contador'; -- Elimina la fila con la 'C' mayúscula si es la duplicada
+-----------------
+USE ontime3bd;
 
+-- 1. Apagamos temporalmente los sensores de seguridad de llaves foráneas
+SET FOREIGN_KEY_CHECKS = 0;
+
+-- 2. Ejecutamos la reestructuración oficial para volver el ID autoincremental
+ALTER TABLE jornadaLaboral MODIFY COLUMN id INT AUTO_INCREMENT;
+
+-- 3. Volvemos a encender los sensores de seguridad de la base de datos
+SET FOREIGN_KEY_CHECKS = 1;
 
 

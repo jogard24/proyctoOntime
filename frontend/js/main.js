@@ -5,7 +5,9 @@ import { configurarRegistro } from './modulos/registro-form.js';
 import { configurarAsistenciaTabla } from './modulos/asistenciaTabla.js';
 import { configurarInicioDashboard } from './modulos/inicioModulo.js'; // Tu código estrella del Set()
 import { configurarHorario } from './modulos/horario.js';
-import { configurarPermisos } from './modulos/permiso.js'; // Ajuste 1: Acoplamos permisos
+import { configurarPermisos } from './modulos/permiso.js'; // Acoplamos permisos con éxito
+import { inicializarPlanilla } from './modulos/planilla.js'; // Conectado al nuevo PlanillaServlet
+import { inicializarGestionContratos } from './modulos/contratos.js';
 
 // 2. ELEMENTOS CLAVE DEL DOM
 const contenedor = document.getElementById('contenedor-dinamico');
@@ -15,7 +17,7 @@ if (!sessionStorage.getItem("usuarioActual")) {
     window.location.href = "login.html";
 }
 
-// 4. MAPA DE ENRUTAMIENTO (Centralizado y sincronizado con Ontime3BD)
+// 4. MAPA DE ENRUTAMIENTO (Centralizado, sincronizado y libre de ataduras estáticas)
 const rutasApp = {
     'btn-home':             { html: '../html/inicio.html',             init: configurarInicioDashboard },
     'btn-Registro':         { html: '../html/registro-form.html',     init: configurarRegistro },
@@ -23,7 +25,9 @@ const rutasApp = {
     'btn-gestionEmpleados': { html: '../html/gestion-empleados.html', init: configurarGestionEmpleados },
     'btn-Asistencia':       { html: '../html/asistenciaTabla.html',   init: configurarAsistenciaTabla },
     'btn-horario':          { html: '../html/horario.html',          init: configurarHorario }, 
-    'btn-Permiso':         { html: '../html/permiso.html',          init: configurarPermisos } // Enlazado con éxito
+    'btn-Permiso':          { html: '../html/permiso.html',          init: configurarPermisos },
+    'btn-planilla':         { html: '../html/planilla.html',          init: inicializarPlanilla }, // GOBERNADO POR EL MOTOR DINÁMICO
+    'btn-gestionContratos': { html: '../html/contratos.html',         init: inicializarGestionContratos }
 };
 
 // 5. MOTOR DE INYECCIÓN DINÁMICA
@@ -33,7 +37,7 @@ async function cargarSeccion(rutaHtml) {
         if (!respuesta.ok) throw new Error(`No se pudo cargar la vista: ${rutaHtml}`);
         
         const html = await respuesta.text();
-        contenedor.innerHTML = html;
+        contenedor.innerHTML = html; // Inyecta la estructura limpia en el div unificado
         return true;
     } catch (error) {
         console.error("Error crítico en el enrutador:", error);
@@ -42,7 +46,7 @@ async function cargarSeccion(rutaHtml) {
     }
 }
 
-// 6. INICIALIZADOR DEL MENÚ LATERAL
+// 6. INICIALIZADOR DEL MENÚ LATERAL AUTOMATIZADO
 function inicializarMenu() {
     Object.entries(rutasApp).forEach(([idBoton, configuracion]) => {
         const boton = document.getElementById(idBoton);
@@ -51,20 +55,21 @@ function inicializarMenu() {
             boton.addEventListener('click', async (e) => {
                 e.preventDefault();
                 
-                // Removemos clase activa de otros botones y se la ponemos al actual si manejas estilos de selección
+                // Removemos clase activa de otros botones y se la ponemos al actual
                 document.querySelectorAll('.bt-menu-item').forEach(b => b.classList.remove('activo'));
-                boton.classList.add('activo');
+                boton.classList.add('active');
 
+                // Llama al motor asíncrono para leer e inyectar el archivo físico de la planilla
                 const exito = await cargarSeccion(configuracion.html);
                 if (exito && configuracion.init) {
-                    configuracion.init(); // Levanta el JS del módulo inyectado
+                    configuracion.init(); // Dispara inicializarPlanilla() una vez cargado el DOM
                 }
             });
         }
     });
 }
 
-// 7. CONTROL DE CIERRE DE SESIÓN (Ajuste 3: Ruta unificada y limpia)
+// 7. CONTROL DE CIERRE DE SESIÓN (Ruta unificada y limpia)
 function configurarCerrarSesion() {
     const btnCerrarSesion = document.getElementById('btn-CerrarSesion');
     if (btnCerrarSesion) {
@@ -90,3 +95,4 @@ window.addEventListener('DOMContentLoaded', async () => {
         if (exito) rutasApp['btn-home'].init();
     }
 });
+

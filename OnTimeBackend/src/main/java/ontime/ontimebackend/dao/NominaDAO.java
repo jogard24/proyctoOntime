@@ -32,7 +32,7 @@ public class NominaDAO {
                      "COALESCE(SUM(CASE WHEN a.tipo_evento = 'salida' THEN 1 ELSE 0 END), 0) as dias_asistidos_reales " +
                      "FROM usuario u " +
                      "INNER JOIN contrato con ON u.id = con.usuario_id " + //Une usuario con su contrato.
-                     // left join Une asistencias filtradas por el periodo (? será reemplazado).
+                     // left join Une asistencias filtradas por el periodo (hhh será reemplazado).
                      "LEFT JOIN asistencia a ON u.id = a.usuario_id AND DATE_FORMAT(a.fecha_hora, '%Y-%m') = ? " +
                      "GROUP BY u.id, u.documento_identidad, u.nombre, u.apellido, con.salario_base";
 
@@ -45,7 +45,8 @@ public class NominaDAO {
             
             // Ejecuta la consulta (ps.executeQuery()) y guarda el resultado en un objeto llamado ResultSet (rs).
             try (ResultSet rs = ps.executeQuery()) { // ResultSet es como una tabla temporal en memoria.
-                while (rs.next()) { // mueve ese cursor a la siguiente fila. Si hay datos, devuelve true; si se acaban los resultados, devuelve false y el bucle termina
+                while (rs.next()) { // mueve ese cursor a la siguiente fila. Si hay datos, devuelve true; si se acaban 
+                    //los resultados, devuelve false y el bucle termina
                     Nomina n = new Nomina(); // Crea una nueva instancia de tu clase Nomina. Cada fila representa un objeto diferente.
                     n.setUsuarioId(rs.getInt("id"));
                     n.setDocumento(rs.getString("documento_identidad"));
@@ -109,7 +110,7 @@ public class NominaDAO {
 
             int nominaId = 0;
             // Insertar en la tabla central 'nomina'
-//Aquí la cascada avanza hacia la tabla central nomina [INDEX]. Nota cómo le inyectas el periodoId que acabas de recuperar 
+//Aquí la cascada avanza hacia la tabla central nomina. Nota cómo le inyectas el periodoId que acabas de recuperar 
 //en la estación anterior, amarrando el dinero al mes correspondiente            
             try (PreparedStatement psN = con.prepareStatement(sqlNomina, Statement.RETURN_GENERATED_KEYS)) {
                 // RETURN_GENERATED_KEYS Sirve para recuperar el ID autogenerado después de un INSERT.
@@ -124,7 +125,7 @@ public class NominaDAO {
                 }
             }
 
-            // 3. Insertar el renglón analítico en 'detalle_nomina' para registrar el histórico de la liquidación
+            // 3. Insertar el renglón por renglon en 'detalle_nomina' para registrar el histórico de la liquidación
             try (PreparedStatement psD = con.prepareStatement(sqlDetalle)) {
                 psD.setInt(1, nominaId);// id anteriormente generado
                 psD.setInt(2, 1); // Concepto ID 1 (Liquidación general)
@@ -134,12 +135,21 @@ public class NominaDAO {
             }
 
             //  ALIMENTAR TABLA PUENTE EN LA MEMORIA TRANSACCIONAL DE MYSQL
+            //toques de pantalla (entradas y salidas) que el empleado hizo en el Pinpad durante el mes, 
+            //para guardarlos en una lista temporal antes de amarrarlos al pago
             List<Integer> listAsistenciasIds = new ArrayList<>();
+            //se prepara la consulta sql 
             try (PreparedStatement psBuscar = con.prepareStatement(sqlBuscarAsistencias)) {
+            // y le amarra los dos datos del empleado que estamos liquidando: su código de usuario
                 psBuscar.setInt(1, usuarioId);
+                //y el mes que se está cerrando 
                 psBuscar.setString(2, periodoStr);
                 try (ResultSet rs = psBuscar.executeQuery()) {
+                    //comienza a recorrer fila por fila en la tabla resulset 
                     while (rs.next()) {
+                        //en cada paso ejecuta la instruccion rs.getint para extraer la c.c. interna de 
+                        //esa asistencia 
+                        //y con el add las va metiendo una por una dentro de la list
                         listAsistenciasIds.add(rs.getInt("id"));
                     }
                 }
@@ -151,15 +161,15 @@ public class NominaDAO {
                     for (int asistenciaId : listAsistenciasIds) {
                         psPuente.setInt(1, nominaId);//El ID del pago congelado
                         psPuente.setInt(2, asistenciaId);//El ID de la marca del Pinpad
-                        psPuente.addBatch(); // Empaqueta para inserción masiva veloz
+                        psPuente.addBatch(); // Empaqueta para inserción masiva
                     }
                     psPuente.executeBatch(); // Envía todo en un solo ciclo relacional
                 }
             }
 
-            con.commit(); // Consolidar todos los cambios de forma 100% en MySQL
+            con.commit(); // Consolidar todos los cambios de forma 100% en MySQL AQUÍ SE GUARDAN LOS CAMBIOS DE VERDAD
             System.out.println(" ÉXITO Nómina #" + nominaId + " guardada y amarrada a sus marcas de asistencia.");
-            return true;
+            return true;//SALE DEL DAO AVISANDO ÉXITO
             
             
         } catch (SQLException e) {

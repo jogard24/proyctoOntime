@@ -12,6 +12,9 @@ public class Contrato {
     private int jornadaId;
     private String fechaInicio;
     private String fechaFin;
+    private String empleadoNombre; // Guarda el Nombre + Apellido devuelto por el JOIN
+    private String periodoPago;    // Guarda el texto 'Mensual' o 'Quincenal' de MySQL
+
 
     // Constructor vacío obligatorio para instanciar en los Servlets/DAOs
     public Contrato() {
@@ -91,6 +94,22 @@ public class Contrato {
 
     public void setFechaFin(String fechaFin) {
         this.fechaFin = fechaFin;
+    }
+    
+    public String getEmpleadoNombre() {
+    return empleadoNombre;
+    }
+
+    public void setEmpleadoNombre(String empleadoNombre) {
+        this.empleadoNombre = empleadoNombre;
+    }
+
+    public String getPeriodoPago() {
+        return periodoPago;
+    }
+
+    public void setPeriodoPago(String periodoPago) {
+        this.periodoPago = periodoPago;
     }
 }
 

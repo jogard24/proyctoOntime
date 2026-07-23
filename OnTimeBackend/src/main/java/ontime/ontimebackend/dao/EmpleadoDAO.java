@@ -20,7 +20,7 @@ public class EmpleadoDAO {
  // Consulta SQL estructurada para consolidar la información del empleado desde múltiples tablas.
     // Se usa 'LEFT JOIN' para que el usuario aparezca en la lista incluso si aún no tiene asignado 
     // un teléfono, un correo electrónico o un contrato laboral en el sistema
-        String sql = "SELECT u.id, u.documento_identidad, u.nombre, u.apellido, u.estado, u.fotoPerfil_url, u.direccion, "
+        String sql = "SELECT DISTINCT u.id, u.documento_identidad, u.nombre, u.apellido, u.estado, u.fotoPerfil_url, u.direccion, "
                 + "t.telefono_celular, e.email, con.cargo "
                 + "FROM usuario u "
                 + "LEFT JOIN telefono_personal t ON u.id = t.usuario_id "

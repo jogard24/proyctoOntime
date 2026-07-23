@@ -62,23 +62,35 @@
 } */
 
 .bt-ejecucion-editar {
-    width: 75px;
+    width: 60px;
     height: 40px;
     border-radius: 10%;
 }
 
-/* .bt-ejecucion-eliminar {
-    width: 75px;
+.btn-renovar-admin {
+    background-color: #ffffff00;
+    color: var(--white);
     height: 40px;
-    border-radius: 10%;
+    width: 63px;
+    border-radius: 10px;
+    margin-top: 10px;
+    text-align: center;
+    text-decoration: none;
+    padding: 7px;
+    transition: 0.3s;
+    cursor: pointer;
+    -webkit-backdrop-filter: blur(5px);
+    backdrop-filter: blur(5px);
+    border: 1px solid #183357;
+    box-shadow: 0 0 5px 3px var(--blue);
 }
 
-.bt-ejecucion-eliminar:hover{
+.btn-renovar-admin:hover{
     background-color: var(--color-rojo);
     border: 1px solid var(--border-btn-activo);
     box-shadow: 0 0 10px 1px var(--border-btn-activo);
     transform: scale(1.05);
-} */
+}
 
 .bt-ejecucion-editar:hover{
     background-color: var(--color-verde);

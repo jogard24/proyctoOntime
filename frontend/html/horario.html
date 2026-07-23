@@ -26,27 +26,20 @@
     </table>
   </div>
 
-  <!-- El modal ahora cuenta con z-index en CSS o estilos fijos básicos para simular el comportamiento -->
+   <!-- El modal ahora cuenta con z-index en CSS o estilos fijos básicos para simular el comportamiento -->
   <div id="modalHorario" class="modal-oculto" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.5); align-items:center; justify-content:center; z-index:1000;">
     <div class="modal-dialog" style="background: white; padding:20px; max-width:400px; width:100%; border-radius:6px;">
       <h3 id="tituloModalHorario" class="modal-title">Editar horario</h3>
       
       <div class="horario-form" style="display: flex; flex-direction: column; gap: 12px; margin-top: 15px;">
-        <!-- Ajuste 2: Input de ID visible para inserción manual requerida por Ontime3BD -->
-        <label style="display: flex; flex-direction: column; font-weight: bold;">
-          ID de la Jornada (Número único)
-          <input id="horarioId" type="number" min="1" class="horario-input" style="padding: 6px; border: 1px solid #ccc; border-radius: 4px;" required>
-        </label>
+        
+        <!--  CAMBIO 1: El ID ahora se oculta o se bloquea porque el Backend lo generará automáticamente en MySQL -->
+        <input id="horarioId" type="hidden" value="0">
 
-        <!-- Ajuste 1: Alineado con la columna 'nombrejornada' de tu Base de Datos -->
+        <!--  CAMBIO 2: ¡LIBERADO! Se eliminó el select fijo y se cambió por una caja de texto libre -->
         <label style="display: flex; flex-direction: column; font-weight: bold;">
-          Nombre del Turno / Jornada
-          <select id="horarioNombreJornada" class="horario-input" style="padding: 6px; border: 1px solid #ccc; border-radius: 4px;">
-            <option value="Turno Diurno">Turno Diurno</option>
-            <option value="Turno Nocturno">Turno Nocturno</option>
-            <option value="Turno Dominical">Turno Dominical</option>
-            <option value="Turno Festivo">Turno Festivo</option>
-          </select>
+          Nombre del Turno / Jornada (Ej: Turno Tarde, Oficina, Rotativo)
+          <input id="horarioNombreJornada" type="text" placeholder="Escriba el nombre del nuevo horario..." class="horario-input" style="padding: 6px; border: 1px solid #ccc; border-radius: 4px;" required>
         </label>
 
         <label style="display: flex; flex-direction: column; font-weight: bold;">
@@ -66,4 +59,3 @@
       </div>
     </div>
   </div>
-</div>

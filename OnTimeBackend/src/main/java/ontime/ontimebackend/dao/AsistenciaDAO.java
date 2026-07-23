@@ -6,6 +6,7 @@ import java.sql.*;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
+import ontime.ontimebackend.modelo.EmpleadoPlanilla;
 
 public class AsistenciaDAO {
 
@@ -20,7 +21,7 @@ public class AsistenciaDAO {
 //cada registro que extraigamos de la base de datos.        
         List<Asistencia> lista = new ArrayList<>();
         //  Selecciona los campos principales de la tabla asistencia.
-        String sql = "SELECT a.id, u.documento_identidad, u.nombre, u.apellido, a.fecha_hora, a.tipo_evento, a.observacion, j.nombrejornada "
+        String sql = "SELECT DISTINCT  a.id, u.documento_identidad, u.nombre, u.apellido, a.fecha_hora, a.tipo_evento, a.observacion, j.nombrejornada "
                 + "FROM asistencia a "//Une con la tabla usuario para obtener datos personales.
                 + "INNER JOIN usuario u ON a.usuario_id = u.id "
                 //Usa LEFT JOIN con jornadaLaboral para traer el nombre de la jornada
@@ -53,7 +54,7 @@ public class AsistenciaDAO {
 
     // Valida si un usuario existe en el sistema basándose en su documento (RF09)
     public boolean existeEmpleado(String docIdentidad) {
-        String sql = "SELECT id FROM usuario WHERE documento_identidad = ?";
+        String sql = "SELECT id FROM usuario WHERE documento_identidad = ? AND estado = 'activo'";
         //try-with-resources asegura que la conexión y el statement se cierren automáticamente.
         try (Connection con = Conexion.obtenerConexion(); PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setString(1, docIdentidad);
@@ -97,6 +98,10 @@ public class AsistenciaDAO {
             ps.setString(1, documento);
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
+                    //Evalúa si el casillero de la base de datos tiene un texto real y no está vacío con un valor nulo 
+                    // Si la celda sí contiene un nombre, ejecuta rs.getString("nombre").trim(). El método .trim() es una función 
+                    //de limpieza: borra de forma automática cualquier espacio en blanco oculto que el usuario haya metido por error 
+                    //al principio o al final del texto al registrarse
                     String nombreBd = rs.getString("nombre") != null ? rs.getString("nombre").trim() : "";
                     String apellidoBd = rs.getString("apellido") != null ? rs.getString("apellido").trim() : "";
 
@@ -171,7 +176,6 @@ public class AsistenciaDAO {
      * Trae la jornada horaria contractual del empleado para el cálculo
      * automático de puntualidad.
      */
-    
     //horaEntradaOut: un StringBuilder que se usa como “salida adicional” para devolver la hora de entrada.
     public int obtenerJornadaIdYHoraEntrada(int usuarioId, StringBuilder horaEntradaOut) {
         //consulta :Se selecciona el id y la hora de entrada de la tabla jornadaLaboral.
@@ -251,6 +255,65 @@ public class AsistenciaDAO {
             e.printStackTrace();
         }
         return lista;//Devuelve la lista con los 10 registros más recientes de asistencia.
+    }
+
+
+ 
+    public List<EmpleadoPlanilla> obtenerMallaAsistencia(String periodoStr) {
+        List<EmpleadoPlanilla> lista = new ArrayList<>();
+        StringBuilder sql = new StringBuilder();
+        
+        sql.append("SELECT u.id, u.nombre, u.apellido, con.cargo ");
+        
+        // EL EMBLEMA MATRICIAL: Evaluamos de forma directa las marcas usando funciones nativas
+        for (int dia = 1; dia <= 31; dia++) {
+            sql.append(", CASE ")
+               // Regla 1: Si el empleado marcó salida en el Pinpad en este día, registra Asistencia (1)
+               .append("    WHEN MAX(CASE WHEN DAY(a.fecha_hora) = ").append(dia).append(" AND a.tipo_evento = 'salida' THEN 1 ELSE 0 END) = 1 THEN 1 ")
+               // Regla 2: Si el día cae dentro del rango de un permiso aprobado (Evaluado dinámicamente en MySQL)
+               .append("    WHEN MAX(CASE WHEN p.id IS NOT NULL AND ").append(dia).append(" BETWEEN DAY(p.fecha_inicio) AND DAY(p.fecha_fin) THEN 1 ELSE 0 END) = 1 THEN 2 ")
+               .append("    ELSE 0 ")
+               .append("END AS dia_").append(dia);
+        }
+        
+        sql.append(" FROM usuario u ")
+           .append(" INNER JOIN contrato con ON u.id = con.usuario_id ")
+           // LEFT JOIN 1: Trae los marcajes del Pinpad que coincidan con el mes consultado
+           .append(" LEFT JOIN asistencia a ON u.id = a.usuario_id AND DATE_FORMAT(a.fecha_hora, '%Y-%m') = ? ")
+           // LEFT JOIN 2: Trae los permisos aprobados que coincidan con el mes consultado
+           .append(" LEFT JOIN permiso_laboral p ON u.id = p.usuario_id AND p.estado = 'aprobado' AND DATE_FORMAT(p.fecha_inicio, '%Y-%m') = ? ")
+           .append(" GROUP BY u.id, u.nombre, u.apellido, con.cargo ")
+           .append(" ORDER BY u.nombre ASC");
+
+        try (Connection con = ontime.ontimebackend.conexion.Conexion.obtenerConexion();
+             PreparedStatement ps = con.prepareStatement(sql.toString())) {
+            
+            // 🛡️ SINCRO DE ALTA INGENIERÍA: 
+            // Eliminamos las 32 iteraciones confusas y pasamos solo los 2 parámetros estrictos que el motor requiere
+            ps.setString(1, periodoStr); // Alimenta el ? de las asistencias
+            ps.setString(2, periodoStr); // Alimenta el ? de los permisos
+            
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    EmpleadoPlanilla emp = new EmpleadoPlanilla();
+                    emp.setId(rs.getInt("id"));
+                    emp.setNombre(rs.getString("nombre"));
+                    emp.setApellido(rs.getString("apellido"));
+                    emp.setCargo(rs.getString("cargo"));
+                    
+                    // Extraemos los estados (0, 1 o 2) de cada columna y los inyectamos en la RAM
+                    for (int dia = 1; dia <= 31; dia++) {
+                        int valorDia = rs.getInt("dia_" + dia);
+                        emp.setDiaValor(dia, valorDia);
+                    }
+                    lista.add(emp);
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println(" EXCEPCIÓN CRÍTICA EN EL PIVOTE UNIFICADO DE ASISTENCIAS: " + e.getMessage());
+            e.printStackTrace();
+        }
+        return lista;
     }
 
 }

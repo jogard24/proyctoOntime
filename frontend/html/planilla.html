@@ -1,0 +1,23 @@
+<div class="modulo-planilla">
+    <div class="filtros-planilla">
+        <label class="etiqueta-filtro">Seleccione Período (Mes):</label>
+        <input type="month" id="filtro-periodo-planilla" value="2026-06" class="input-periodo">
+        <button id="btn-buscar-planilla" class="btn-buscar-planilla">🔍 Buscar</button>
+    </div>
+
+    <div class="contenedor-tabla-scroll">
+        <table class="tabla-planilla">
+            <thead>
+                <tr id="cabecera-planilla-dias">
+                    <th>N°</th>
+                    <th class="columna-persona">Persona</th>
+                    <th class="columna-puesto">Puesto</th>
+                    <!-- JavaScript inyectará dinámicamente aquí las columnas de los días del 1 al 30/31 -->
+                </tr>
+            </thead>
+            <tbody id="cuerpo-planilla-datos">
+                <!-- JavaScript renderizará las filas aquí -->
+            </tbody>
+        </table>
+    </div>
+</div>

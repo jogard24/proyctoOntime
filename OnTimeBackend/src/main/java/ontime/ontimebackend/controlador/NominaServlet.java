@@ -12,35 +12,57 @@ import java.io.PrintWriter;
 import java.math.BigDecimal;
 import java.util.List;
 
+//urlpatterns funciona como enrutador o un puente de acople permitiendo al fetch localizar la peticion e iniciar 
+//el flujo hacia los metodos doget o dopost.
 @WebServlet(name = "NominaServlet", urlPatterns = {"/NominaServlet"})
 public class NominaServlet extends HttpServlet {
 
+    //Crea e instancia una variable global interna llamada nominaDAO. La palabra final es una regla de 
+    //seguridad estricta: le indica a Java que este puente de comunicación es inmutable y constante
     private final NominaDAO nominaDAO = new NominaDAO();
-
+    
+//Cuando Java traduce los datos de MySQL a formato JSON, utiliza comillas dobles (") para delimitar los textos. Si un empleado se llama, 
+    //por ejemplo, José "El Ingeniero" Díaz, esa comilla interna rompería la estructura del JSON y haría que la pantalla web colapse arrojando un error de sintaxis.
+    
+    //si el texto viene vacío (null), retorna una cadena limpia "". Si trae texto, el método .replace() busca las 
+    //comillas dobles y les inyecta una barra invertida de escape (\"), y limpia los saltos de línea (\n), 
+    //garantizando que el paquete de red viaje con una sintaxis 100% perfecta hacia tu front
     private String escaparJson(String valor) {
         return (valor == null) ? "" : valor.replace("\"", "\\\"").replace("\n", "\\n").replace("\r", "\\r");
     }
 
     /**
-     * Consulta y transmite los tiempos filtrado por periodo
+     * doget muestra en pantalla informacion de nomina 
      */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        response.setContentType("application/json");
-        response.setCharacterEncoding("UTF-8");
-        PrintWriter out = response.getWriter();
-
+        response.setContentType("application/json");//Esto le dice al navegador o aplicación que debe interpretar el contenido como datos en formato JSON.
+        response.setCharacterEncoding("UTF-8");//Así se asegura que el texto enviado en la respuesta se interprete correctamente. interpreta caracteres
+        PrintWriter out = response.getWriter();// permite escribir directamente en el cuerpo de la respuesta con print o outwrite
+//captura y extrae la informacion enviada por el fetch desde el front
         String periodo = request.getParameter("periodo");
+        
+        //si la variable periodo viaja con un valor nulo O si tras aplicar la función de limpieza .trim()
+        //su longitud se encuentra completamente vacía . Si se cumple cualquiera de las dos condiciones
+        //lo que ocurre la primera vez que el Administrador carga el Dashboard sin haber interactuado con el 
+        //selector de fechas
         if (periodo == null || periodo.trim().isEmpty()) {
-            periodo = "2026-06";
+            periodo = "2026-06";//de manera forzada asigna una fecha por defecto 
+            //Esto garantiza que el Servlet siempre tenga un mes válido para interrogar a la base de datos, 
+            //evitando que el query aborte o genere una pantalla en blanco.
         }
 
         try {
+            //creamos una lista en la cual llamamos al metodo ejecutando la consulta devolviendo al controlador la lista 
+            //cargada con los datos de la nomnina 
             List<Nomina> listaNomina = nominaDAO.obtenerReporteNomina(periodo);
-
+            
+            //stringbuilder heramienta para construir texto  
+            //Instancia un objeto StringBuilder inicializado con un corchete de apertura [
             StringBuilder json = new StringBuilder("[");
+            //i) que arrancará en 0 e irá avanzando posición por posición hasta recorrer el tamaño total de la lista (listaNomina.size()),
             for (int i = 0; i < listaNomina.size(); i++) {
                 Nomina n = listaNomina.get(i);
 
@@ -49,7 +71,9 @@ public class NominaServlet extends HttpServlet {
                 int diasTrabajados = n.getDiasAsistidos();
 
                 //  Si el empleado tiene marcas de salida, asumiremos
-                // que sus horas extras reales se calculan si cumple criterios (para la prueba dará 1 si hay marcas '%extra%')
+                // que sus horas extras reales se calculan si cumple criterios (para la prueba dará 1 si hay marcas '%extra%')            
+                                                     //1: si la condicion es verdadera 
+                                                    //0: si es false
                 int horasExtrasReales = (n.getTotalExtras() > 0) ? 1 : 0;
 
                 json.append("{");
@@ -93,7 +117,7 @@ public class NominaServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        request.setCharacterEncoding("UTF-8");// Configura la codificación a UTF-8 para evitar problemas con tildes y caracteres especiales (como la 'ñ').
+        request.setCharacterEncoding("UTF-8");//Esto le dice al navegador o aplicación que debe interpretar el contenido como datos en formato JSON.evitar problemas con tildes y caracteres especiales.
         response.setContentType("application/json");// Establece que la respuesta enviada al cliente será un JSON.
         response.setCharacterEncoding("UTF-8");
         PrintWriter out = response.getWriter();// Objeto para escribir texto en el cuerpo de la respuesta.
@@ -129,7 +153,11 @@ public class NominaServlet extends HttpServlet {
                     int retardosDelMes = n.getTotalRetardos();
                     BigDecimal deducciones = BigDecimal.valueOf(retardosDelMes * 15000L);// Penalización fija de $15,000 por retardo.
 
-                    // CORRECCIÓN MATEMÁTICA: Sincroniza la lógica de extras con la de tu doGet para la prueba
+                    // Sincroniza la lógica de extras con la de tu doGet para la prueba
+                    //operador ternario si extras es mayo a cero Si el empleado marcó en el Pinpad al menos una 
+                    //salida tarde con la palabra clave "extra", esta condición da Verdadero
+                                                               //1: si la condicion es verdadera 
+                                                               //0: si es false
                     int horasExtrasReales = (n.getTotalExtras() > 0) ? 1 : 0;
                     BigDecimal bonificaciones = BigDecimal.valueOf(horasExtrasReales * 20000L);// Bono fijo de $20,000.
 
@@ -137,7 +165,7 @@ public class NominaServlet extends HttpServlet {
                     // Fórmula: Sueldo Proporcional - Deducciones + Bonificaciones.
                     BigDecimal neto = sueldoProporcionalDias.subtract(deducciones).add(bonificaciones);
 
-                    // Guarda de forma definitiva el desprendible calculado en la base de datos (congela el periodo).
+                    // Guarda de forma definitiva  calculado en la base de datos (congela el periodo).
                     boolean r = nominaDAO.guardarNominaPeriodo(n.getUsuarioId(), baseContractual, (double) horasExtrasReales, neto, periodo);
                     if (!r) {
                         completado = false;// Si falla tan solo un empleado (ej. por clave duplicada), el boolean cambia a false.
@@ -145,11 +173,13 @@ public class NominaServlet extends HttpServlet {
                 }
                 // Evalúa el resultado final del lote procesado para enviar la respuesta adecuada al frontend.
                 if (completado) {
+                    // Si todo salió bien, le responde un texto plano en verde a tu archivo nomina.js
                     response.setStatus(HttpServletResponse.SC_OK);// Estado HTTP 200 (Éxito).
                     out.print("{\"status\":\"success\",\"message\":\"¡Nómina consolidada y guardada con éxito!\"}");
                 } else {
+                    // Si la base de datos rebotó algún dato, avisa el error de integridad
                     response.setStatus(HttpServletResponse.SC_CONFLICT);
-                    out.print("{\"status\":\"error\",\"message\":\"Algunos desprendibles no pudieron congelarse por restricciones de integridad.\"}");
+                    out.print("{\"status\":\"error\",\"message\":\"Algunos datos no pudieron congelarse por restricciones de integridad.\"}");
                 }
             } catch (Exception e) {
                 // Maneja fallos imprevistos de código, conexiones caídas o errores de conversión.

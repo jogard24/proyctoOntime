@@ -10,6 +10,10 @@
     const btnCancelarEdicion = document.getElementById('btn-cancelar-edicion');
     const btnGuardarEdicion = document.getElementById('btn-guardar-edicion');
 
+
+    const btnCancelarModal = document.getElementById('btnCancelarRenovarAdmin');
+    const btnGuardarModal = document.getElementById('btnGuardarRenovarAdmin');
+
     if (!tablaBody || !inputBusqueda || !btnBuscar) {
         console.warn('No se pudo inicializar la Gestión: Faltan elementos esenciales en el DOM.');
         return;
@@ -57,8 +61,8 @@
                 <td>${emp.cargo || 'Sin asignar'}</td>
                 <td><span class="pill ${pillClase}">${emp.estado.toUpperCase()}</span></td>
                 <td>
-                    <button class="bt-menu-item bt-ejecucion-editar" data-id="${emp.id}">Editar</button>
-                 <!--   <button class="bt-menu-item bt-ejecucion-eliminar" data-id="${emp.id}">Eliminar</button> -->
+                <button class="bt-menu-item bt-ejecucion-editar" data-id="${emp.id}">Editar</button>
+                <button class="btn-menu-item btn-renovar-admin" data-id="${emp.id}">Renovar</button>
                 </td>
             `;
             tablaBody.appendChild(fila);
@@ -78,7 +82,7 @@
             })
             .catch(err => {
                 console.error('Error cargando empleados:', err);
-                tablaBody.innerHTML = '<tr><td colspan="6" style="text-align:center; color:red; font-weight:bold;">❌ Error al conectar con el servidor para listar personal.</td></tr>';
+                tablaBody.innerHTML = '<tr><td colspan="6" style="text-align:center; color:red; font-weight:bold;"> Error al conectar con el servidor para listar personal.</td></tr>';
             });
     }
 
@@ -173,7 +177,6 @@
             params.append('usuario_web', usuarioWeb);
             params.append('clave_web', claveWeb);
         }
-        // =========================================================================
 
         fetch('http://localhost:8080/OnTimeBackend/EmpleadoServlet', {
             method: 'POST',
@@ -262,7 +265,7 @@
         });
     }
 
-    tablaBody.addEventListener('click', (e) => {
+    tablaBody.addEventListener('click', async (e) => {
         const boton = e.target.closest('button');
         if (!boton) return;
         const id = boton.dataset.id;
@@ -276,6 +279,68 @@
             if (confirm(" ADVERTENCIA: ¿Está seguro de eliminar permanentemente a este empleado del sistema? Esta acción no se puede deshacer.")) {
                 ejecutarEliminacion(id);
             }
+        }
+        else if (boton.classList.contains('btn-renovar-admin')) {
+            e.preventDefault();
+
+            // Capturamos los elementos del nuevo modal flotante
+            const modalRenovar = document.getElementById('modalRenovarAdmin');
+            const inputHiddenId = document.getElementById('renovarContratoId');
+            const inputMeses = document.getElementById('mesesProrrogaAdmin');
+
+            if (modalRenovar && inputHiddenId) {
+                inputHiddenId.value = id; // Guardamos el ID del contrato en el casillero oculto
+                inputMeses.value = "6";    // Reseteamos el valor base por defecto
+                modalRenovar.style.display = 'flex'; // ◄ APERTURA VISUAL: Muestra el modal en pantalla
+            }
+        }
+
+    });
+
+    document.getElementById('btnCancelarRenovarAdmin')?.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation(); // Detiene el efecto burbuja en el árbol del DOM
+        const modalRenovar = document.getElementById('modalRenovarAdmin');
+        if (modalRenovar) {
+            modalRenovar.style.display = 'none'; // ◄ Fuerza el cierre físico instantáneo
+        }
+    });
+
+    // 🛡️ CONTROL DEL BOTÓN CONFIRMAR: Captura por ID y envío de la transacción real hacia Java
+    document.getElementById('btnGuardarRenovarAdmin')?.addEventListener('click', async (e) => {
+        e.preventDefault();
+
+        const contratoId = document.getElementById('renovarContratoId').value;
+        const meses = document.getElementById('mesesProrrogaAdmin').value;
+
+        if (!meses || isNaN(meses) || parseInt(meses) <= 0) {
+            alert("Por favor ingrese un número de meses válido.");
+            return;
+        }
+
+        const params = new URLSearchParams();
+        params.append("accion", "renovar");
+        params.append("contratoId", contratoId);
+        params.append("mesesProrroga", meses);
+
+        try {
+            const res = await fetch('http://localhost:8080/OnTimeBackend/ContratoServlet', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: params
+            });
+
+            if (res.ok) {
+                alert("¡Contrato prorrogado con éxito por el Administrador!");
+                const modalRenovar = document.getElementById('modalRenovarAdmin');
+                if (modalRenovar) modalRenovar.style.display = 'none'; // Cierra el modal
+                window.location.reload(); // Recarga la grilla visual
+            } else {
+                alert("El servidor rechazó la renovación del contrato.");
+            }
+        } catch (error) {
+            console.error("Error en la renovación asíncrona:", error);
+            alert("No se pudo conectar con el servidor.");
         }
     });
 

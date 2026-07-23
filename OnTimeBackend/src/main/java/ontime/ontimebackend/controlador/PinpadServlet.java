@@ -39,7 +39,7 @@ public class PinpadServlet extends HttpServlet {
             //si el dato no existe arroja error 
             response.setStatus(HttpServletResponse.SC_NOT_FOUND);
             PrintWriter out = response.getWriter();
-            out.print("{\"status\":\"error\", \"message\": \"El documento ingresado no se encuentra registrado en OnTime.\"}");
+            out.print("{\"status\":\"error\", \"message\": \"El documento ingresado no se encuentra registrado o esta inactivo.\"}");
             out.flush();
             return;// Interrumpe el flujo y expulsa la petición para evitar transacciones con datos fantasma
         }

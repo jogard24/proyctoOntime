@@ -66,9 +66,7 @@ public class FormularioRegistroServlet extends HttpServlet {
             String jornadaStr = request.getParameter("jornada_id");
             contrato.setJornadaId(jornadaStr != null ? Integer.parseInt(jornadaStr.trim()) : 1);
 
-            // =========================================================================
             // CAPTURA DE LAS FECHAS DESDE EL MODAL
-            // =========================================================================
             String fechaInicioStr = request.getParameter("fecha_inicio");
             String fechaFinStr = request.getParameter("fecha_fin");
 
@@ -77,7 +75,6 @@ public class FormularioRegistroServlet extends HttpServlet {
             
             // Control de nulidad para Término Indefinido: Si viene vacía del modal, se guarda como null
             contrato.setFechaFin(fechaFinStr != null && !fechaFinStr.trim().isEmpty() ? fechaFinStr : null);
-            // =========================================================================
 
             // 3. Ejecutar inserción atómica mediante el DAO descriptivo
             boolean exito = registroDAO.registrarNuevoEmpleado(emp, contrato);

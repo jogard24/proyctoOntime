@@ -16,11 +16,12 @@ public class HorarioServlet extends HttpServlet {
 
     private final HorarioDAO horarioDAO = new HorarioDAO();
 
-//caracteres especiales para evitar que textos con comillas rompan la estructura del JSON resultante.
+    //caracteres especiales para evitar que textos con comillas rompan la estructura del JSON resultante.
     private String escaparJson(String valor) {
         return (valor == null) ? "" : valor.replace("\"", "\\\"").replace("\n", "\\n").replace("\r", "\\r");
     }
-//Se ejecuta cuando la interfaz web solicita el listado de turnos para mostrar en pantalla
+
+    //Se ejecuta cuando la interfaz web solicita el listado de turnos para mostrar en pantalla
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         response.setContentType("application/json");
@@ -30,7 +31,7 @@ public class HorarioServlet extends HttpServlet {
         //llama al DAO para extraer la lista de objetos Horario desde MySQL
         List<Horario> horarios = horarioDAO.listarHorarios();
         
-//se construye en texto dinámico para empaquetar el JSON nativo
+        //se construye en texto dinámico para empaquetar el JSON nativo
         StringBuilder json = new StringBuilder("[");
         for (int i = 0; i < horarios.size(); i++) {
             Horario h = horarios.get(i);
@@ -67,7 +68,8 @@ public class HorarioServlet extends HttpServlet {
 
         int id = Integer.parseInt(idStr.trim());
         boolean resultado = false;
-//Convierte la cadena de texto de red en un entero limpio (INT) para base de datos
+        
+        //Convierte la cadena de texto de red en un entero limpio (INT) para base de datos
         try {//Evaluamos la variable accion utilizando un esquema de comparación
             if ("eliminar".equals(accion)) {// CASO: ELIMINACIÓN DE TURNOS
                 // Delega de forma directa la eliminacion física al método especializado del DAO
@@ -79,22 +81,29 @@ public class HorarioServlet extends HttpServlet {
                 //else determina que la solicitud no es una eliminación, por lo tanto, el software infiere que se trata de una inyección de datos
                 // Para 'crear' o 'actualizar', construimos el objeto Horario desde los parámetros planos
                 Horario h = new Horario();
-                h.setId(id);
                 h.setNombrejornada(request.getParameter("nombrejornada"));
                 h.setHoraEntrada(request.getParameter("horaEntrada"));
                 h.setHoraSalida(request.getParameter("horaSalida"));
-//Si la variable accion es igual a 'crear', llama al metodo crearHorario
+
+                //Si la variable accion es igual a 'crear', llama al metodo crearHorario
                 if ("crear".equals(accion)) {
+                    // 🚀 CONTROL DE AUTOINCREMENTAL: Si el id es mayor a 0 (edición) se inyecta, 
+                    // si viene en 0 (nuevo) se omite para dejar que MySQL asigne la llave primaria sola.
+                    if (id > 0) {
+                        h.setId(id);
+                    }
                     resultado = horarioDAO.crearHorario(h);
                     //de lo contrario si la accion es actualizar el flujo desvia a actualizarHorario
                 } else if ("actualizar".equals(accion)) {
+                    h.setId(id); // En actualización el ID sí es estrictamente obligatorio para el WHERE id = ?
                     resultado = horarioDAO.actualizarHorario(h);
                 }
             }
-//si resultado es verdadero que se haya modificado el horario de forma exitosa 
+            
+            //si resultado es verdadero que se haya modificado el horario de forma exitosa 
             if (resultado) {
-                //el servlet responde de forma exitosa
-                response.getWriter().write("{\"status\":\"exito\"}");
+                //el servlet responde de forma exitosa alineado al token 'success' de horarios.js
+                response.getWriter().write("{\"status\":\"success\"}");
             } else {
                 //de lo contrario falla 
                 response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
@@ -112,3 +121,4 @@ public class HorarioServlet extends HttpServlet {
         response.setStatus(HttpServletResponse.SC_OK);
     }
 }
+

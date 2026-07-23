@@ -60,8 +60,9 @@ export function configurarAsistenciaPinpad() {
 
             // const respuesta = await fetch('http://localhost:8080/OnTimeBackend/PinpadServlet', {
             // const respuesta = await fetch('http://192.168.1.2:8080/OnTimeBackend/PinpadServlet', {
-            const respuesta = await fetch('http://10.97.53.170:8080/OnTimeBackend/PinpadServlet', {
+            const respuesta = await fetch('http://192.168.1.27:8080/OnTimeBackend/PinpadServlet', {
                 method: 'POST',
+                
                 headers: {
                     'Content-Type': 'application/x-www-form-urlencoded',
                 },

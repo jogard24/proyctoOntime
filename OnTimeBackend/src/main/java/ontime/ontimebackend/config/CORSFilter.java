@@ -40,7 +40,7 @@ public class CORSFilter implements Filter {
             response.setHeader("Access-Control-Allow-Origin", origenFront);
         } else {
             // Si navegas desde el celular o tablet, le da el pase con la IP fija de tu red local
-            response.setHeader("Access-Control-Allow-Origin", "http://10.97.53.170:5500");
+            response.setHeader("Access-Control-Allow-Origin", "http://192.168.1.27:5500");
 //            response.setHeader("Access-Control-Allow-Origin", "http://192.168.1.2:5500");
         }
 

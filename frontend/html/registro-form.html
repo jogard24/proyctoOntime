@@ -14,7 +14,8 @@
 
             <div class="datos-principales">
                 <div class="input-login">
-                    <input class="label-modificador" type="text" name="nombre" id="nombre" placeholder=" " pattern="[A-Za-z\s]+" title="Solo se permiten letras" required>
+                    <input class="label-modificador" type="text" name="nombre" id="nombre" placeholder=" "
+                        pattern="[A-Za-z\s]+" title="Solo se permiten letras" required>
                     <label for="nombre" class="label-flotante">Nombre</label>
                 </div>
                 <div class="input-login">
@@ -22,8 +23,8 @@
                     <label for="apellido" class="label-flotante">Apellido</label>
                 </div>
                 <div class="input-login">
-                    <input class="label-modificador" type="tel" name="documento_identidad" id="documento_identidad" maxlength="10" pattern="\d{10}" title="Debe tener 10 números"
-                        placeholder=" " required>
+                    <input class="label-modificador" type="tel" name="documento_identidad" id="documento_identidad"
+                        maxlength="10" pattern="\d{10}" title="Debe tener 10 números" placeholder=" " required>
                     <label for="documento_identidad" class="label-flotante">Cédula</label>
                 </div>
                 <div class="input-login">
@@ -31,7 +32,8 @@
                     <label for="email" class="label-flotante">Email</label>
                 </div>
                 <div class="input-login">
-                    <input class="label-modificador" type="tel" name="celular" id="celular" maxlength="10" pattern="\d{10}" title="Debe tener 10 números" placeholder=" "  required>
+                    <input class="label-modificador" type="tel" name="celular" id="celular" maxlength="10"
+                        pattern="\d{10}" title="Debe tener 10 números" placeholder=" " required>
                     <label for="celular" class="label-flotante">Celular</label>
                 </div>
                 <div class="input-login">
@@ -110,7 +112,7 @@
             <div class="input-login">
                 <input class="label-modificador" type="number" min="1" name="jornadaContrato" id="jornadaContrato"
                     placeholder=" " required>
-                <label for="jornadaContrato" class="label-flotante">ID Jornada Laboral</label>
+                <label for="jornadaContrato" class="label-flotante">Jornada Laboral</label>
             </div>
 
             <!-- <div class="input-login">
@@ -137,6 +139,17 @@
                 <input type="date" id="regFechaFin"
                     style="padding:8px; border:1px solid #ccc; border-radius:4px; font-family: inherit;">
             </div>
+
+            <label
+                style="display: flex; flex-direction: column; font-weight: bold; font-family: sans-serif; margin-top: 10px;">
+                Periodicidad de Pago Pactada
+                <select id="contratoPeriodoPago" class="registro-input"
+                    style="padding: 8px; border: 1px solid #ccc; border-radius: 4px; margin-top: 5px;">
+                    <option value="Mensual">Pago Mensual (30 días)</option>
+                    <option value="Quincenal">Pago Quincenal (15 días)</option>
+                </select>
+            </label>
+
             <div class="input-login">
                 <textarea name="observacionContrato" id="observacionContrato" rows="3"
                     placeholder="Observaciones (opcional)"
